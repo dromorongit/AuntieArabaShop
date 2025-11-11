@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Shop with Auntie Araba</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .checkout-hero {
+            background: linear-gradient(135deg, #e91e63 0%, #9c27b0 50%, #673ab7 100%);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .checkout-hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #f8f9fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .checkout-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+            margin: 3rem 0;
+        }
+        
+        .checkout-form {
+            background: white;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .checkout-form h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+        
+        .form-section {
+            margin-bottom: 2rem;
+        }
+        
+        .form-section h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #e91e63;
+            border-bottom: 2px solid #e91e63;
+            padding-bottom: 0.5rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #e91e63;
+            box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+        }
+        
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .payment-option {
+            border: 2px solid #eee;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-option:hover {
+            border-color: #e91e63;
+            background: rgba(233, 30, 99, 0.05);
+        }
+        
+        .payment-option.selected {
+            border-color: #e91e63;
+            background: rgba(233, 30, 99, 0.1);
+        }
+        
+        .payment-option i {
+            font-size: 2rem;
+            color: #e91e63;
+            margin-bottom: 0.5rem;
+        }
+        
+        .payment-option h4 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .place-order-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #e91e63 0%, #9c27b0 100%);
+            color: white;
+            border: none;
+            padding: 1.5rem 2rem;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+        }
+        
+        .place-order-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(233, 30, 99, 0.4);
+        }
+        
+        .order-summary {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .order-summary h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+        
+        .order-items {
+            margin-bottom: 1.5rem;
+        }
+        
+        .order-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        
+        .order-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .order-item-info {
+            flex: 1;
+        }
+        
+        .order-item-info h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #333;
+        }
+        
+        .order-item-info p {
+            color: #e91e63;
+            font-weight: 600;
+        }
+        
+        .order-summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem 0;
+        }
+        
+        .order-summary-row.total {
+            border-top: 2px solid #e91e63;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #e91e63;
+            margin-top: 1rem;
+            padding-top: 1rem;
+        }
+        
+        .success-message {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        
+        .success-message i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .success-message h2 {
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <img src="LADYSTANDARD.PNG" alt="The Lady Standard Logo" class="logo-image">
+                    <div class="logo-text">
+                        <h1><a href="index.html" style="color: white; text-decoration: none;">Shop with Auntie Araba</a></h1>
+                        <p class="tagline">The Lady Standard</p>
+                    </div>
+                </div>
+                <nav class="navigation">
+                    <ul class="nav-menu">
+                        <li><a href="index.html" class="nav-link">Home</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="nav-link">Categories <i class="fas fa-chevron-down"></i></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="categories.html">All Categories</a></li>
+                                <li><a href="category.html?cat=ladies-tops">Ladies Basic Tops</a></li>
+                                <li><a href="category.html?cat=crop-tops">Crop Tops</a></li>
+                                <li><a href="category.html?cat=night-wear">Night Wear</a></li>
+                                <li><a href="category.html?cat=bum-shorts">Bum Shorts</a></li>
+                                <li><a href="category.html?cat=two-in-one-night">2-in-1 Night Wears</a></li>
+                                <li><a href="category.html?cat=two-in-one-tops">2-in-1 Tops and Downs</a></li>
+                                <li><a href="category.html?cat=elegant-dresses">Elegant Dresses</a></li>
+                                <li><a href="category.html?cat=stylish-dresses">Stylish Dresses</a></li>
+                                <li><a href="category.html?cat=office-dresses">Office Dresses</a></li>
+                                <li><a href="category.html?cat=panties">Panties</a></li>
+                                <li><a href="category.html?cat=nfl-jerseys">Unisex NFL Jerseys</a></li>
+                                <li><a href="category.html?cat=other-ladies">Other Ladies Fashion Items</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="contact.html" class="nav-link">Contact</a></li>
+                        <li><a href="about.html" class="nav-link">About</a></li>
+                    </ul>
+                </nav>
+                <div class="cart-icon">
+                    <a href="cart.html">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Checkout Hero Section -->
+    <section class="checkout-hero">
+        <div class="container">
+            <h1>Checkout</h1>
+            <p>Complete your order and get ready for delivery</p>
+        </div>
+    </section>
+
+    <!-- Success Message (Hidden by default) -->
+    <div class="container">
+        <div class="success-message" id="success-message" style="display: none;">
+            <i class="fas fa-check-circle"></i>
+            <h2>Order Placed Successfully!</h2>
+            <p>Thank you for your order. We will contact you shortly to confirm your purchase and arrange delivery.</p>
+            <a href="index.html" class="btn btn-primary" style="margin-top: 1rem;">Continue Shopping</a>
+        </div>
+    </div>
+
+    <!-- Checkout Content -->
+    <section class="checkout-container">
+        <div class="container">
+            <div class="checkout-form" id="checkout-form">
+                <h2>Complete Your Order</h2>
+                
+                <form id="order-form">
+                    <!-- Customer Information -->
+                    <div class="form-section">
+                        <h3>Customer Information</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">First Name *</label>
+                                <input type="text" id="firstName" name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name *</label>
+                                <input type="text" id="lastName" name="lastName" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email Address *</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number *</label>
+                                <input type="tel" id="phone" name="phone" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Address -->
+                    <div class="form-section">
+                        <h3>Shipping Address</h3>
+                        <div class="form-group">
+                            <label for="address">Street Address *</label>
+                            <input type="text" id="address" name="address" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city">City *</label>
+                                <input type="text" id="city" name="city" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="region">Region *</label>
+                                <select id="region" name="region" required>
+                                    <option value="">Select Region</option>
+                                    <option value="greater-accra">Greater Accra</option>
+                                    <option value="central">Central</option>
+                                    <option value="eastern">Eastern</option>
+                                    <option value="ashanti">Ashanti</option>
+                                    <option value="northern">Northern</option>
+                                    <option value="upper-east">Upper East</option>
+                                    <option value="upper-west">Upper West</option>
+                                    <option value="volta">Volta</option>
+                                    <option value="western">Western</option>
+                                    <option value="brong-ahafo">Brong Ahafo</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="form-section">
+                        <h3>Payment Method</h3>
+                        <div class="payment-methods">
+                            <div class="payment-option selected" data-method="mobile-money">
+                                <i class="fas fa-mobile-alt"></i>
+                                <h4>Mobile Money</h4>
+                                <p>MTN, Vodafone, AirtelTigo</p>
+                            </div>
+                            <div class="payment-option" data-method="cash-on-delivery">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <h4>Cash on Delivery</h4>
+                                <p>Pay when you receive</p>
+                            </div>
+                            <div class="payment-option" data-method="bank-transfer">
+                                <i class="fas fa-university"></i>
+                                <h4>Bank Transfer</h4>
+                                <p>Direct bank payment</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Notes -->
+                    <div class="form-section">
+                        <h3>Order Notes</h3>
+                        <div class="form-group">
+                            <label for="notes">Additional Notes (Optional)</label>
+                            <textarea id="notes" name="notes" rows="3" placeholder="Any special instructions for delivery..."></textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="place-order-btn">
+                        <i class="fas fa-lock"></i>
+                        Place Order - GHS <span id="order-total">0.00</span>
+                    </button>
+                </form>
+            </div>
+            
+            <div class="order-summary">
+                <h3>Order Summary</h3>
+                <div class="order-items" id="order-items">
+                    <!-- Order items will be populated by JavaScript -->
+                </div>
+                <div class="order-summary-row">
+                    <span>Subtotal:</span>
+                    <span id="summary-subtotal">GHS 0.00</span>
+                </div>
+                <div class="order-summary-row">
+                    <span>Shipping:</span>
+                    <span>GHS 15.00</span>
+                </div>
+                <div class="order-summary-row">
+                    <span>Tax:</span>
+                    <span id="summary-tax">GHS 0.00</span>
+                </div>
+                <div class="order-summary-row total">
+                    <span>Total:</span>
+                    <span id="summary-total">GHS 15.00</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Shop with Auntie Araba</h3>
+                    <p class="tagline">The Lady Standard</p>
+                    <p>Your premier destination for ladies fashion and style</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> marydiamondgh@gmail.com</p>
+                    <p><i class="fas fa-phone"></i> +233(0)244152807</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Shop with Auntie Araba. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Checkout functionality
+        let selectedPaymentMethod = 'mobile-money';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCheckoutData();
+            initializePaymentMethods();
+            initializeCheckoutForm();
+        });
+
+        function loadCheckoutData() {
+            const cartContainer = document.getElementById('order-items');
+            const cartSubtotal = document.getElementById('summary-subtotal');
+            const cartTax = document.getElementById('summary-tax');
+            const cartTotal = document.getElementById('summary-total');
+            const orderTotal = document.getElementById('order-total');
+            
+            if (cart.length === 0) {
+                cartContainer.innerHTML = '<p>Your cart is empty</p>';
+                return;
+            }
+            
+            let subtotal = 0;
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+                
+                const orderItem = document.createElement('div');
+                orderItem.className = 'order-item';
+                orderItem.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="order-item-info">
+                        <h4>${item.name}</h4>
+                        <p>Qty: ${item.quantity} × GHS ${item.price.toFixed(2)}</p>
+                    </div>
+                `;
+                cartContainer.appendChild(orderItem);
+            });
+            
+            const tax = subtotal * 0.12; // 12% tax
+            const total = subtotal + tax + 15; // +15 shipping
+            
+            cartSubtotal.textContent = `GHS ${subtotal.toFixed(2)}`;
+            cartTax.textContent = `GHS ${tax.toFixed(2)}`;
+            cartTotal.textContent = `GHS ${total.toFixed(2)}`;
+            orderTotal.textContent = `${total.toFixed(2)}`;
+        }
+
+        function initializePaymentMethods() {
+            const paymentOptions = document.querySelectorAll('.payment-option');
+            
+            paymentOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    paymentOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    selectedPaymentMethod = this.dataset.method;
+                });
+            });
+        }
+
+        function initializeCheckoutForm() {
+            const orderForm = document.getElementById('order-form');
+            const successMessage = document.getElementById('success-message');
+            const checkoutForm = document.getElementById('checkout-form');
+            
+            orderForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Validate form
+                const formData = new FormData(orderForm);
+                const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'address', 'city', 'region'];
+                
+                for (let field of requiredFields) {
+                    if (!formData.get(field)) {
+                        showNotification('Please fill in all required fields');
+                        return;
+                    }
+                }
+                
+                // Create order object
+                const order = {
+                    id: Date.now(),
+                    date: new Date().toISOString(),
+                    customer: {
+                        firstName: formData.get('firstName'),
+                        lastName: formData.get('lastName'),
+                        email: formData.get('email'),
+                        phone: formData.get('phone'),
+                        address: formData.get('address'),
+                        city: formData.get('city'),
+                        region: formData.get('region')
+                    },
+                    items: cart,
+                    paymentMethod: selectedPaymentMethod,
+                    notes: formData.get('notes') || '',
+                    total: cart.reduce((total, item) => total + (item.price * item.quantity), 0) * 1.12 + 15
+                };
+                
+                // Save order to localStorage (in real app, this would go to server)
+                const orders = JSON.parse(localStorage.getItem('auntieArabaOrders') || '[]');
+                orders.push(order);
+                localStorage.setItem('auntieArabaOrders', JSON.stringify(orders));
+                
+                // Clear cart
+                cart = [];
+                saveCart();
+                updateCartCount();
+                
+                // Show success message
+                checkoutForm.style.display = 'none';
+                successMessage.style.display = 'block';
+                
+                // Scroll to success message
+                successMessage.scrollIntoView({ behavior: 'smooth' });
+                
+                showNotification('Order placed successfully!');
+            });
+        }
+
+        // Update cart count on page load
+        updateCartCount();
+    </script>
+</body>
+</html>

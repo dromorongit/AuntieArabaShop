@@ -476,7 +476,8 @@ function proceedToCheckout() {
         showNotification('Your cart is empty!');
         return;
     }
-    showNotification('Checkout functionality will be implemented soon!');
+    // Redirect to checkout page
+    window.location.href = 'checkout.html';
 }
 
 // Contact form handling
