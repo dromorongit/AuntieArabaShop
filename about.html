@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Auntie Araba Shop</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .about-hero {
+            background: linear-gradient(135deg, #e91e63 0%, #9c27b0 50%, #673ab7 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .about-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #f8f9fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .about-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .about-section {
+            background: white;
+            border-radius: 15px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .about-section h2 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #e91e63 0%, #9c27b0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .about-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 1.5rem;
+        }
+        
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .value-card {
+            background: linear-gradient(135deg, rgba(233, 30, 99, 0.1) 0%, rgba(156, 39, 176, 0.1) 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .value-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(233, 30, 99, 0.2);
+        }
+        
+        .value-card i {
+            font-size: 3rem;
+            color: #e91e63;
+            margin-bottom: 1rem;
+        }
+        
+        .value-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .value-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .stats-section {
+            background: linear-gradient(135deg, #e91e63 0%, #9c27b0 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 3rem;
+            margin: 2rem 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+        
+        .stat-item h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-item p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .team-section {
+            text-align: center;
+        }
+        
+        .team-section h2 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #e91e63 0%, #9c27b0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .team-member {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .team-member h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .team-member .role {
+            color: #e91e63;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        .mission-vision {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .mission-box,
+        .vision-box {
+            background: white;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mission-box h3,
+        .vision-box h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #e91e63;
+        }
+        
+        @media (max-width: 768px) {
+            .about-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .about-content {
+                padding: 0 1rem;
+            }
+            
+            .about-section {
+                padding: 2rem;
+            }
+            
+            .mission-vision {
+                grid-template-columns: 1fr;
+            }
+            
+            .values-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <h1><a href="index.html" style="color: white; text-decoration: none;">Auntie Araba Shop</a></h1>
+                </div>
+                <nav class="navigation">
+                    <ul class="nav-menu">
+                        <li><a href="index.html" class="nav-link">Home</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="nav-link">Categories <i class="fas fa-chevron-down"></i></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="categories.html">All Categories</a></li>
+                                <li><a href="category.html?cat=ladies-tops">Ladies Basic Tops</a></li>
+                                <li><a href="category.html?cat=crop-tops">Crop Tops</a></li>
+                                <li><a href="category.html?cat=night-wear">Night Wear</a></li>
+                                <li><a href="category.html?cat=bum-shorts">Bum Shorts</a></li>
+                                <li><a href="category.html?cat=two-in-one-night">2-in-1 Night Wears</a></li>
+                                <li><a href="category.html?cat=two-in-one-tops">2-in-1 Tops and Downs</a></li>
+                                <li><a href="category.html?cat=elegant-dresses">Elegant Dresses</a></li>
+                                <li><a href="category.html?cat=stylish-dresses">Stylish Dresses</a></li>
+                                <li><a href="category.html?cat=office-dresses">Office Dresses</a></li>
+                                <li><a href="category.html?cat=panties">Panties</a></li>
+                                <li><a href="category.html?cat=nfl-jerseys">Unisex NFL Jerseys</a></li>
+                                <li><a href="category.html?cat=other-ladies">Other Ladies Fashion Items</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="contact.html" class="nav-link">Contact</a></li>
+                        <li><a href="about.html" class="nav-link active">About</a></li>
+                    </ul>
+                </nav>
+                <div class="cart-icon">
+                    <a href="cart.html">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- About Hero Section -->
+    <section class="about-hero">
+        <div class="container">
+            <h1>About Us</h1>
+            <p>Discover the story behind Auntie Araba Shop and our passion for fashion</p>
+        </div>
+    </section>
+
+    <!-- About Content -->
+    <section class="about-content">
+        <div class="about-section">
+            <h2>Our Story</h2>
+            <p>Welcome to Auntie Araba Shop, your premier destination for premium ladies fashion in Ghana. Founded in 2025, we have quickly established ourselves as a trusted name in the fashion industry, catering to the modern woman's style needs.</p>
+            
+            <p>Our journey began with a simple vision: to provide high-quality, stylish, and affordable fashion that empowers women to express their unique personalities through clothing. We believe that every woman deserves to feel confident and beautiful, and that's exactly what our carefully curated collection helps achieve.</p>
+            
+            <p>From elegant dresses to comfortable night wear, from trendy crop tops to professional office attire, we offer a comprehensive range of fashion items that cater to every aspect of a woman's wardrobe. Our commitment to quality and style has made us a favorite among fashion-conscious women across Ghana.</p>
+        </div>
+
+        <div class="mission-vision">
+            <div class="mission-box">
+                <h3><i class="fas fa-bullseye"></i> Our Mission</h3>
+                <p>To empower women through fashion by providing high-quality, stylish, and affordable clothing that enhances their confidence and allows them to express their unique personalities. We strive to be the go-to destination for ladies fashion in Ghana and beyond.</p>
+            </div>
+            
+            <div class="vision-box">
+                <h3><i class="fas fa-eye"></i> Our Vision</h3>
+                <p>To be the leading fashion retailer in West Africa, known for our commitment to quality, style, and customer satisfaction. We envision a future where every woman has access to fashion that makes her feel beautiful and confident.</p>
+            </div>
+        </div>
+
+        <div class="values-section">
+            <h2>Our Values</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <i class="fas fa-heart"></i>
+                    <h3>Quality</h3>
+                    <p>We are committed to providing only the highest quality products that meet our stringent standards for style, comfort, and durability.</p>
+                </div>
+                
+                <div class="value-card">
+                    <i class="fas fa-star"></i>
+                    <h3>Style</h3>
+                    <p>Our team of fashion experts carefully selects each item to ensure it meets the latest trends while maintaining timeless appeal.</p>
+                </div>
+                
+                <div class="value-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Customer First</h3>
+                    <p>Our customers are at the heart of everything we do. Their satisfaction and happiness are our top priorities.</p>
+                </div>
+                
+                <div class="value-card">
+                    <i class="fas fa-handshake"></i>
+                    <h3>Integrity</h3>
+                    <p>We believe in honest business practices, fair pricing, and transparent communication with our valued customers.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-section">
+            <h2 style="text-align: center; margin-bottom: 2rem; color: white;">Our Impact</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>1000+</h3>
+                    <p>Happy Customers</p>
+                </div>
+                <div class="stat-item">
+                    <h3>12+</h3>
+                    <p>Fashion Categories</p>
+                </div>
+                <div class="stat-item">
+                    <h3>500+</h3>
+                    <p>Products Available</p>
+                </div>
+                <div class="stat-item">
+                    <h3>24/7</h3>
+                    <p>Customer Support</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-section">
+            <h2>Meet Our Founder</h2>
+            <div class="team-member">
+                <h3>Mary Diamond</h3>
+                <p class="role">Founder & CEO</p>
+                <p>Mary Diamond, the visionary behind Auntie Araba Shop, has always been passionate about fashion and empowering women. With years of experience in the fashion industry, she founded Auntie Araba Shop with the goal of making stylish, high-quality fashion accessible to every woman in Ghana and beyond.</p>
+                <p>Her dedication to quality, style, and customer satisfaction has been the driving force behind the shop's rapid growth and success. Mary's mission is to ensure that every woman feels confident and beautiful in the clothes she wears.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Auntie Araba Shop</h3>
+                    <p>Your premier destination for ladies fashion and style</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> marydiamondgh@gmail.com</p>
+                    <p><i class="fas fa-phone"></i> +233(0)244152807</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Auntie Araba Shop. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

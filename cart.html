@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Auntie Araba Shop</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .cart-hero {
+            background: linear-gradient(135deg, #e91e63 0%, #9c27b0 50%, #673ab7 100%);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .cart-hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #f8f9fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .cart-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+            margin: 3rem 0;
+        }
+        
+        .cart-items {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .cart-item {
+            display: grid;
+            grid-template-columns: 100px 1fr auto auto auto;
+            gap: 1rem;
+            align-items: center;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        
+        .cart-item-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .cart-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .cart-item-info h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .cart-item-info p {
+            color: #e91e63;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: #f8f9fa;
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+        }
+        
+        .quantity-controls button {
+            background: #e91e63;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .quantity-controls button:hover {
+            background: #9c27b0;
+            transform: scale(1.1);
+        }
+        
+        .quantity-controls span {
+            font-weight: 600;
+            min-width: 20px;
+            text-align: center;
+        }
+        
+        .cart-item-total {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #e91e63;
+        }
+        
+        .remove-item {
+            background: #ff4081;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .remove-item:hover {
+            background: #d32f2f;
+            transform: scale(1.1);
+        }
+        
+        .cart-summary {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .cart-summary h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .summary-row.total {
+            border-top: 2px solid #e91e63;
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #e91e63;
+            margin-top: 1rem;
+            padding-top: 1rem;
+        }
+        
+        .checkout-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #e91e63 0%, #9c27b0 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+        }
+        
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(233, 30, 99, 0.4);
+        }
+        
+        .continue-shopping {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            color: #e91e63;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .continue-shopping:hover {
+            color: #9c27b0;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+        
+        .empty-cart i {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .cart-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .cart-item {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .cart-item-image {
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <h1><a href="index.html" style="color: white; text-decoration: none;">Auntie Araba Shop</a></h1>
+                </div>
+                <nav class="navigation">
+                    <ul class="nav-menu">
+                        <li><a href="index.html" class="nav-link">Home</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="nav-link">Categories <i class="fas fa-chevron-down"></i></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="categories.html">All Categories</a></li>
+                                <li><a href="category.html?cat=ladies-tops">Ladies Basic Tops</a></li>
+                                <li><a href="category.html?cat=crop-tops">Crop Tops</a></li>
+                                <li><a href="category.html?cat=night-wear">Night Wear</a></li>
+                                <li><a href="category.html?cat=bum-shorts">Bum Shorts</a></li>
+                                <li><a href="category.html?cat=two-in-one-night">2-in-1 Night Wears</a></li>
+                                <li><a href="category.html?cat=two-in-one-tops">2-in-1 Tops and Downs</a></li>
+                                <li><a href="category.html?cat=elegant-dresses">Elegant Dresses</a></li>
+                                <li><a href="category.html?cat=stylish-dresses">Stylish Dresses</a></li>
+                                <li><a href="category.html?cat=office-dresses">Office Dresses</a></li>
+                                <li><a href="category.html?cat=panties">Panties</a></li>
+                                <li><a href="category.html?cat=nfl-jerseys">Unisex NFL Jerseys</a></li>
+                                <li><a href="category.html?cat=other-ladies">Other Ladies Fashion Items</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="contact.html" class="nav-link">Contact</a></li>
+                        <li><a href="about.html" class="nav-link">About</a></li>
+                    </ul>
+                </nav>
+                <div class="cart-icon">
+                    <a href="cart.html">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Cart Hero Section -->
+    <section class="cart-hero">
+        <div class="container">
+            <h1>Shopping Cart</h1>
+            <p>Review your selected items and proceed to checkout</p>
+        </div>
+    </section>
+
+    <!-- Cart Content -->
+    <section class="cart-content">
+        <div class="container">
+            <div class="cart-items">
+                <div id="cart-items">
+                    <!-- Cart items will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <div class="cart-summary">
+                <h3>Order Summary</h3>
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span id="cart-subtotal">GHS 0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping:</span>
+                    <span>GHS 15.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Tax:</span>
+                    <span id="cart-tax">GHS 0.00</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total:</span>
+                    <span id="cart-total">GHS 15.00</span>
+                </div>
+                <button class="checkout-btn" onclick="proceedToCheckout()">
+                    <i class="fas fa-credit-card"></i>
+                    Proceed to Checkout
+                </button>
+                <a href="index.html" class="continue-shopping">
+                    <i class="fas fa-arrow-left"></i>
+                    Continue Shopping
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Auntie Araba Shop</h3>
+                    <p>Your premier destination for ladies fashion and style</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> marydiamondgh@gmail.com</p>
+                    <p><i class="fas fa-phone"></i> +233(0)244152807</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Auntie Araba Shop. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        function proceedToCheckout() {
+            if (cart.length === 0) {
+                showNotification('Your cart is empty!');
+                return;
+            }
+            showNotification('Checkout functionality will be implemented soon!');
+        }
+    </script>
+</body>
+</html>

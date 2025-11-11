@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Categories - Auntie Araba Shop</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .categories-hero {
+            background: linear-gradient(135deg, #e91e63 0%, #9c27b0 50%, #673ab7 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .categories-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #f8f9fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .category-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(233, 30, 99, 0.2);
+        }
+        
+        .category-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .category-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .category-card:hover .category-image img {
+            transform: scale(1.1);
+        }
+        
+        .category-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(233, 30, 99, 0.8), rgba(156, 39, 176, 0.8));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .category-card:hover .category-overlay {
+            opacity: 1;
+        }
+        
+        .category-info {
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .category-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .category-description {
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <h1><a href="index.html" style="color: white; text-decoration: none;">Auntie Araba Shop</a></h1>
+                </div>
+                <nav class="navigation">
+                    <ul class="nav-menu">
+                        <li><a href="index.html" class="nav-link">Home</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="nav-link active">Categories <i class="fas fa-chevron-down"></i></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="categories.html">All Categories</a></li>
+                                <li><a href="category.html?cat=ladies-tops">Ladies Basic Tops</a></li>
+                                <li><a href="category.html?cat=crop-tops">Crop Tops</a></li>
+                                <li><a href="category.html?cat=night-wear">Night Wear</a></li>
+                                <li><a href="category.html?cat=bum-shorts">Bum Shorts</a></li>
+                                <li><a href="category.html?cat=two-in-one-night">2-in-1 Night Wears</a></li>
+                                <li><a href="category.html?cat=two-in-one-tops">2-in-1 Tops and Downs</a></li>
+                                <li><a href="category.html?cat=elegant-dresses">Elegant Dresses</a></li>
+                                <li><a href="category.html?cat=stylish-dresses">Stylish Dresses</a></li>
+                                <li><a href="category.html?cat=office-dresses">Office Dresses</a></li>
+                                <li><a href="category.html?cat=panties">Panties</a></li>
+                                <li><a href="category.html?cat=nfl-jerseys">Unisex NFL Jerseys</a></li>
+                                <li><a href="category.html?cat=other-ladies">Other Ladies Fashion Items</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="contact.html" class="nav-link">Contact</a></li>
+                        <li><a href="about.html" class="nav-link">About</a></li>
+                    </ul>
+                </nav>
+                <div class="cart-icon">
+                    <a href="cart.html">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Categories Hero Section -->
+    <section class="categories-hero">
+        <div class="container">
+            <h1>Our Categories</h1>
+            <p>Explore our wide range of premium ladies fashion collections</p>
+        </div>
+    </section>
+
+    <!-- Categories Grid -->
+    <section class="categories-section">
+        <div class="container">
+            <div class="categories-grid">
+                <a href="category.html?cat=ladies-tops" class="category-card">
+                    <div class="category-image">
+                        <img src="https://images.unsplash.com/photo-1574180566232-aaad1b5b8450?w=400&h=200&fit=crop" alt="Ladies Basic Tops">
+                        <div class="category-overlay">
+                            <i class="fas fa-eye" style="color: white; font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                    <div class="category-info">
+                        <h3 class="category-name">Ladies Basic Tops</h3>
+                        <p class="category-description">Comfortable and stylish basic tops for everyday wear</p>
+                    </div>
+                </a>
+
+                <a href="category.html?cat=crop-tops" class="category-card">
+                    <div class="category-image">
+                        <img src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=200&fit=crop" alt="Crop Tops">
+                        <div class="category-overlay">
+                            <i class="fas fa-eye" style="color: white; font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                    <div class="category-info">
+                        <h3 class="category-name">Crop Tops</h3>
+                        <p class="category-description">Trendy crop tops for a modern, fashionable look</p>
+                    </div>
+                </a>
+
+                <a href="category.html?cat=night-wear" class="category-card">
+                    <div class="category-image">
+                        <img src="https://images.unsplash.com/photo-1544875707-687723820b25?w=400&h=200&fit=crop" alt="Night Wear">
+                        <div class="category-overlay">
+                            <i class="fas fa-eye" style="color: white; font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                    <div class="category-info">
+                        <h3 class="category-name">Night Wear</h3>
+                        <p class="category-description">Comfortable and elegant sleepwear for peaceful nights</p>
+                    </div>
+                </a>
+
+                <a href="category.html?cat=bum-shorts" class="category-card">
+                    <div class="category-image">
+                        <img src="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=400&h=200&fit=crop" alt="Bum Shorts">
+                        <div class="category-overlay">
+                            <i class="fas fa-eye" style="color: white; font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                    <div class="category-info">
+                        <h3 class="category-name">Bum Shorts</h3>
+                        <p class="category-description">Stylish and comfortable shorts for casual occasions</p>
+                    </div>
+                </a>
+
+                <a href="category.html?cat=two-in-one-night" class="category-card">
+                    <div class="category-image">
+                        <img src="https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&h=200&fit=crop" alt="2-in-1 Night Wears">
+                        <div class="category-overlay">
+                            <i class="fas fa-eye" style="color: white; font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                    <div class="category-info">
+                        <h3 class="category-name">2-in-1 Night Wears</h3>
+                        <p class="category-description">Versatile 2-in-1 nightwear sets for maximum comfort</p>
+                    </div>
+                </a>
+
+                <a href="category.html?cat=two-in-one-tops" class="category-card">
+                    <div class="category-image">
+                        <img src="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=200&fit=crop" alt="2-in-1 Tops and Downs">
+                        <div class="category-overlay">
+                            <i class="fas fa-eye" style="color: white; font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                    <div class="category-info">
+                        <h3 class="category-name">2-in-1 Tops and Downs</h3>
+                        <p class="category-description">Complete outfit sets for effortless styling</p>
+                    </div>
+                </a>
+
+                <a href="category.html?cat=elegant-dresses" class="category-card">
+                    <div class="category-image">
+                        <img src="https://images.unsplash.com/photo-1566479179817-c4ad2a6d7b0b?w=400&h=200&fit=crop" alt="Elegant Dresses">
+                        <div class="category-overlay">
+                            <i class="fas fa-eye" style="color: white; font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                    <div class="category-info">
+                        <h3 class="category-name">Elegant Dresses</h3>
+                        <p class="category-description">Sophisticated dresses for special occasions</p>
+                    </div>
+                </a>
+
+                <a href="category.html?cat=stylish-dresses" class="category-card">
+                    <div class="category-image">
+                        <img src="https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400&h=200&fit=crop" alt="Stylish Dresses">
+                        <div class="category-overlay">
+                            <i class="fas fa-eye" style="color: white; font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                    <div class="category-info">
+                        <h3 class="category-name">Stylish Dresses</h3>
+                        <p class="category-description">Contemporary and fashionable dress designs</p>
+                    </div>
+                </a>
+
+                <a href="category.html?cat=office-dresses" class="category-card">
+                    <div class="category-image">
+                        <img src="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=200&fit=crop" alt="Office Dresses">
+                        <div class="category-overlay">
+                            <i class="fas fa-eye" style="color: white; font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                    <div class="category-info">
+                        <h3 class="category-name">Office Dresses</h3>
+                        <p class="category-description">Professional and polished dresses for work environments</p>
+                    </div>
+                </a>
+
+                <a href="category.html?cat=panties" class="category-card">
+                    <div class="category-image">
+                        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=200&fit=crop" alt="Panties">
+                        <div class="category-overlay">
+                            <i class="fas fa-eye" style="color: white; font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                    <div class="category-info">
+                        <h3 class="category-name">Panties</h3>
+                        <p class="category-description">Comfortable and stylish intimate apparel</p>
+                    </div>
+                </a>
+
+                <a href="category.html?cat=nfl-jerseys" class="category-card">
+                    <div class="category-image">
+                        <img src="https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=200&fit=crop" alt="Unisex NFL Jerseys">
+                        <div class="category-overlay">
+                            <i class="fas fa-eye" style="color: white; font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                    <div class="category-info">
+                        <h3 class="category-name">Unisex NFL Jerseys</h3>
+                        <p class="category-description">Authentic NFL jerseys for sports enthusiasts</p>
+                    </div>
+                </a>
+
+                <a href="category.html?cat=other-ladies" class="category-card">
+                    <div class="category-image">
+                        <img src="https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?w=400&h=200&fit=crop" alt="Other Ladies Fashion Items">
+                        <div class="category-overlay">
+                            <i class="fas fa-eye" style="color: white; font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                    <div class="category-info">
+                        <h3 class="category-name">Other Ladies Fashion Items</h3>
+                        <p class="category-description">Additional fashion items and accessories</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Auntie Araba Shop</h3>
+                    <p>Your premier destination for ladies fashion and style</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> marydiamondgh@gmail.com</p>
+                    <p><i class="fas fa-phone"></i> +233(0)244152807</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Auntie Araba Shop. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
