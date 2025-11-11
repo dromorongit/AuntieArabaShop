@@ -44,6 +44,16 @@ body {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    margin-bottom: 0.25rem;
+}
+
+.logo .tagline {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+    font-style: italic;
+    margin: 0;
+    letter-spacing: 0.5px;
 }
 
 .navigation {
