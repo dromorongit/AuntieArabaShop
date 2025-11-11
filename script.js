@@ -17,9 +17,9 @@ const products = {
         },
         {
             id: 3,
-            name: 'Premium Night Wear Set',
+            name: 'Romper',
             price: 95.00,
-            image: 'https://images.unsplash.com/photo-1544875707-687723820b25?w=400&h=400&fit=crop',
+            image: 'ROMPER.jpg',
             category: 'night-wear'
         },
         {
