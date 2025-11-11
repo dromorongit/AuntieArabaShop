@@ -49,10 +49,10 @@ const products = {
         },
         {
             id: 7,
-            name: 'Bum Shorts Bundle',
+            name: 'Bum Shorts',
             price: 45.00,
             originalPrice: 60.00,
-            image: 'https://images.unsplash.com/photo-1581044777550-4cfa60707c03?w=400&h=400&fit=crop',
+            image: 'BUMSHORTS.jpg',
             category: 'bum-shorts'
         }
     ],
