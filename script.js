@@ -61,7 +61,7 @@ const products = {
             id: 8,
             name: 'Unisex NFL Jersey',
             price: 75.00,
-            image: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=400&fit=crop',
+            image: 'NFLJERSEY.jpg',
             category: 'nfl-jerseys'
         },
         {
