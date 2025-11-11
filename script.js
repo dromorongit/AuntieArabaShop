@@ -90,7 +90,52 @@ document.addEventListener('DOMContentLoaded', function() {
     loadProducts();
     loadCart();
     updateCartCount();
+    initializeMobileDropdowns();
 });
+
+// Mobile dropdown functionality
+function initializeMobileDropdowns() {
+    const dropdownTriggers = document.querySelectorAll('.dropdown > .nav-link');
+    
+    dropdownTriggers.forEach(trigger => {
+        trigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            const dropdown = this.parentElement;
+            const menu = dropdown.querySelector('.dropdown-menu');
+            
+            // Close any other open dropdowns
+            document.querySelectorAll('.dropdown-menu').forEach(otherMenu => {
+                if (otherMenu !== menu) {
+                    otherMenu.style.opacity = '0';
+                    otherMenu.style.visibility = 'hidden';
+                    otherMenu.style.transform = 'translateY(-10px)';
+                }
+            });
+            
+            // Toggle current dropdown
+            if (menu.style.opacity === '1') {
+                menu.style.opacity = '0';
+                menu.style.visibility = 'hidden';
+                menu.style.transform = 'translateY(-10px)';
+            } else {
+                menu.style.opacity = '1';
+                menu.style.visibility = 'visible';
+                menu.style.transform = 'translateY(0)';
+            }
+        });
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.dropdown')) {
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                menu.style.opacity = '0';
+                menu.style.visibility = 'hidden';
+                menu.style.transform = 'translateY(-10px)';
+            });
+        }
+    });
+}
 
 // Carousel Functionality
 function initializeCarousel() {

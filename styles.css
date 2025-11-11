@@ -103,6 +103,15 @@ body {
     transform: translateY(-2px);
 }
 
+/* Disable hover dropdown on touch devices */
+@media (hover: none) and (pointer: coarse) {
+    .dropdown:hover .dropdown-menu {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+    }
+}
+
 .dropdown {
     position: relative;
 }
@@ -126,6 +135,7 @@ body {
     overflow-x: hidden;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+    z-index: 9999;
 }
 
 .dropdown-menu::-webkit-scrollbar {
