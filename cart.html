@@ -366,18 +366,16 @@
             window.location.href = 'checkout.html';
         }
         
-        // Add event listener to the button to ensure it's attached
-        document.addEventListener('DOMContentLoaded', function() {
-            renderCart();
-            updateCartSummary();
-            const checkoutBtn = document.querySelector('.checkout-btn');
-            if (checkoutBtn) {
-                checkoutBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    proceedToCheckout();
-                });
-            }
-        });
+        // Render cart and add event listener
+        renderCart();
+        updateCartSummary();
+        const checkoutBtn = document.querySelector('.checkout-btn');
+        if (checkoutBtn) {
+            checkoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                proceedToCheckout();
+            });
+        }
     </script>
 </body>
 </html>
