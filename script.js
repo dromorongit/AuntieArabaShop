@@ -1,91 +1,62 @@
-// Product Data
-const products = {
-    'new-arrivals': [
-        {
-            id: 1,
-            name: 'Elegant Pink Crop Top',
-            price: 85.00,
-            image: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=400&fit=crop',
-            category: 'crop-tops'
-        },
-        {
-            id: 2,
-            name: 'Stylish Purple Dress',
-            price: 150.00,
-            image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400&h=400&fit=crop',
-            category: 'stylish-dresses'
-        },
-        {
-            id: 3,
-            name: 'Romper',
-            price: 95.00,
-            image: 'ROMPER.jpg',
-            category: 'night-wear'
-        },
-        {
-            id: 4,
-            name: 'Office Professional Dress',
-            price: 120.00,
-            image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=400&fit=crop',
-            category: 'office-dresses'
-        }
-    ],
-    'top-deals': [
-        {
-            id: 5,
-            name: 'Basic Ladies Top - Buy 2 Get 1',
-            price: 65.00,
-            originalPrice: 85.00,
-            image: 'https://images.unsplash.com/photo-1574180566232-aaad1b5b8450?w=400&h=400&fit=crop',
-            category: 'ladies-tops'
-        },
-        {
-            id: 6,
-            name: '2-in-1 Night Wear Special',
-            price: 110.00,
-            originalPrice: 140.00,
-            image: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&h=400&fit=crop',
-            category: 'two-in-one-night'
-        },
-        {
-            id: 7,
-            name: 'Bum Shorts',
-            price: 45.00,
-            originalPrice: 60.00,
-            image: 'BUMSHORTS.jpg',
-            category: 'bum-shorts'
-        }
-    ],
-    'fast-selling': [
-        {
-            id: 8,
-            name: 'Unisex NFL Jersey',
-            price: 75.00,
-            image: 'NFLJERSEY.jpg',
-            category: 'nfl-jerseys'
-        },
-        {
-            id: 9,
-            name: 'Luxury Panties Set',
-            price: 35.00,
-            image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop',
-            category: 'panties'
-        },
-        {
-            id: 10,
-            name: 'Elegant Evening Dress',
-            price: 180.00,
-            image: 'https://images.unsplash.com/photo-1566479179817-c4ad2a6d7b0b?w=400&h=400&fit=crop',
-            category: 'elegant-dresses'
-        }
-    ]
+// API Base URL
+const API_BASE = 'https://auntiearabashoppms-production.up.railway.app';
+
+// Product Data - will be populated from API
+let products = {
+    'new-arrivals': [],
+    'top-deals': [],
+    'fast-selling': []
 };
 
 // Shopping Cart
 let cart = [];
 
+// Fetch products from API
+async function fetchProducts() {
+    try {
+        const response = await fetch(`${API_BASE}/products`);
+        const data = await response.json();
+
+        // Map API data to shop format
+        const mappedProducts = data.map((product, index) => ({
+            id: product._id || index + 1,
+            name: product.product_name,
+            price: product.promo && product.promo_price ? product.promo_price : product.price_ghc,
+            originalPrice: product.promo ? product.price_ghc : null,
+            image: product.cover_image ? `${API_BASE}/${product.cover_image}` : 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop',
+            category: product.categories ? product.categories[0] : 'general',
+            stock_status: product.stock_status,
+            short_description: product.short_description
+        }));
+
+        // Assign to sections (simple logic: first 4 new-arrivals, next 3 top-deals, next 3 fast-selling)
+        products['new-arrivals'] = mappedProducts.slice(0, 4);
+        products['top-deals'] = mappedProducts.slice(4, 7);
+        products['fast-selling'] = mappedProducts.slice(7, 10);
+
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        // Fallback to hardcoded products if API fails
+        products = {
+            'new-arrivals': [
+                {
+                    id: 1,
+                    name: 'Elegant Pink Crop Top',
+                    price: 85.00,
+                    image: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=400&fit=crop',
+                    category: 'crop-tops'
+                },
+                // ... rest of hardcoded
+            ],
+            'top-deals': [],
+            'fast-selling': []
+        };
+    }
+}
+
 // Initialize the page
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    await fetchProducts();
     initializeCarousel();
     loadProducts();
     loadCart();
@@ -96,14 +67,14 @@ document.addEventListener('DOMContentLoaded', function() {
 // Mobile dropdown functionality
 function initializeMobileDropdowns() {
     const dropdownTriggers = document.querySelectorAll('.dropdown > .nav-link');
-    
+
     dropdownTriggers.forEach(trigger => {
         trigger.addEventListener('click', function(e) {
             e.preventDefault();
             const dropdown = this.parentElement;
             const menu = dropdown.querySelector('.dropdown-menu');
             const isVisible = menu.getAttribute('data-visible') === 'true';
-            
+
             // Close any other open dropdowns
             document.querySelectorAll('.dropdown-menu').forEach(otherMenu => {
                 if (otherMenu !== menu) {
@@ -113,7 +84,7 @@ function initializeMobileDropdowns() {
                     otherMenu.setAttribute('data-visible', 'false');
                 }
             });
-            
+
             // Toggle current dropdown
             if (isVisible) {
                 menu.style.opacity = '0';
@@ -128,7 +99,7 @@ function initializeMobileDropdowns() {
             }
         });
     });
-    
+
     // Close dropdown when clicking outside
     document.addEventListener('click', function(e) {
         if (!e.target.closest('.dropdown')) {
@@ -152,9 +123,9 @@ function initializeCarousel() {
     setInterval(() => {
         slides[currentSlide].classList.remove('active');
         indicators[currentSlide].classList.remove('active');
-        
+
         currentSlide = (currentSlide + 1) % slides.length;
-        
+
         slides[currentSlide].classList.add('active');
         indicators[currentSlide].classList.add('active');
     }, 5000);
@@ -164,9 +135,9 @@ function initializeCarousel() {
         indicator.addEventListener('click', () => {
             slides[currentSlide].classList.remove('active');
             indicators[currentSlide].classList.remove('active');
-            
+
             currentSlide = index;
-            
+
             slides[currentSlide].classList.add('active');
             indicators[currentSlide].classList.add('active');
         });
@@ -211,12 +182,12 @@ function createProductCard(product, isDeal = false) {
         <div class="product-info">
             <h3 class="product-name">${product.name}</h3>
             <p class="product-price">GHS ${product.price.toFixed(2)}</p>
-            ${isDeal && product.originalPrice ? 
-                `<p class="original-price">GHS ${product.originalPrice.toFixed(2)}</p>` : 
+            ${isDeal && product.originalPrice ?
+                `<p class="original-price">GHS ${product.originalPrice.toFixed(2)}</p>` :
                 ''}
             <div class="product-buttons">
-                <button class="btn btn-primary" onclick="viewProduct(${product.id})">View More</button>
-                <button class="btn btn-secondary" onclick="addToCart(${product.id})">Add to Cart</button>
+                <button class="btn btn-primary" onclick="viewProduct('${product.id}')">View More</button>
+                <button class="btn btn-secondary" onclick="addToCart('${product.id}')">Add to Cart</button>
             </div>
         </div>
     `;
@@ -234,13 +205,13 @@ function addToCart(productId) {
 
     if (product) {
         const existingItem = cart.find(item => item.id === productId);
-        
+
         if (existingItem) {
             existingItem.quantity += 1;
         } else {
             cart.push({...product, quantity: 1});
         }
-        
+
         saveCart();
         updateCartCount();
         showNotification('Product added to cart!');
@@ -292,7 +263,7 @@ function showNotification(message) {
         <i class="fas fa-check-circle"></i>
         <span>${message}</span>
     `;
-    
+
     // Style the notification
     Object.assign(notification.style, {
         position: 'fixed',
@@ -311,14 +282,14 @@ function showNotification(message) {
         transform: 'translateX(100%)',
         transition: 'transform 0.3s ease'
     });
-    
+
     document.body.appendChild(notification);
-    
+
     // Animate in
     setTimeout(() => {
         notification.style.transform = 'translateX(0)';
     }, 100);
-    
+
     // Remove after 3 seconds
     setTimeout(() => {
         notification.style.transform = 'translateX(100%)';
@@ -329,9 +300,10 @@ function showNotification(message) {
 }
 
 // Category Page Functions
-function loadCategoryProducts(category) {
+async function loadCategoryProducts(category) {
+    await fetchProducts(); // Ensure products are loaded
     const categoryProducts = [];
-    
+
     for (const cat in products) {
         products[cat].forEach(product => {
             if (product.category === category) {
@@ -339,7 +311,7 @@ function loadCategoryProducts(category) {
             }
         });
     }
-    
+
     return categoryProducts;
 }
 
@@ -353,11 +325,11 @@ function getUrlParameter(name) {
 
 // Initialize category page if on category page
 if (window.location.pathname.includes('category.html')) {
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
         const category = getUrlParameter('cat');
         const categoryTitle = document.getElementById('category-title');
         const productsContainer = document.getElementById('category-products');
-        
+
         if (categoryTitle && productsContainer) {
             const categoryNames = {
                 'ladies-tops': 'Ladies Basic Tops',
@@ -373,10 +345,10 @@ if (window.location.pathname.includes('category.html')) {
                 'nfl-jerseys': 'Unisex NFL Jerseys',
                 'other-ladies': 'Other Ladies Fashion Items'
             };
-            
+
             categoryTitle.textContent = categoryNames[category] || 'Products';
-            
-            const categoryProducts = loadCategoryProducts(category);
+
+            const categoryProducts = await loadCategoryProducts(category);
             categoryProducts.forEach(product => {
                 productsContainer.appendChild(createProductCard(product));
             });
@@ -395,9 +367,9 @@ if (window.location.pathname.includes('cart.html')) {
 function renderCart() {
     const cartContainer = document.getElementById('cart-items');
     if (!cartContainer) return;
-    
+
     cartContainer.innerHTML = '';
-    
+
     if (cart.length === 0) {
         cartContainer.innerHTML = `
             <div class="empty-cart">
@@ -409,10 +381,10 @@ function renderCart() {
         `;
         return;
     }
-    
+
     cart.forEach(item => {
         const itemTotal = item.price * item.quantity;
-        
+
         const cartItem = document.createElement('div');
         cartItem.className = 'cart-item';
         cartItem.innerHTML = `
@@ -423,19 +395,19 @@ function renderCart() {
                 <h3>${item.name}</h3>
                 <p>GHS ${item.price.toFixed(2)}</p>
                 <div class="quantity-controls">
-                    <button onclick="updateQuantity(${item.id}, -1)">-</button>
+                    <button onclick="updateQuantity('${item.id}', -1)">-</button>
                     <span>${item.quantity}</span>
-                    <button onclick="updateQuantity(${item.id}, 1)">+</button>
+                    <button onclick="updateQuantity('${item.id}', 1)">+</button>
                 </div>
             </div>
             <div class="cart-item-total">
                 GHS ${itemTotal.toFixed(2)}
             </div>
-            <button class="remove-item" onclick="removeFromCart(${item.id})">
+            <button class="remove-item" onclick="removeFromCart('${item.id}')">
                 <i class="fas fa-trash"></i>
             </button>
         `;
-        
+
         cartContainer.appendChild(cartItem);
     });
 }
@@ -459,12 +431,12 @@ function updateCartSummary() {
     const cartSubtotal = document.getElementById('cart-subtotal');
     const cartTax = document.getElementById('cart-tax');
     const cartTotal = document.getElementById('cart-total');
-    
+
     if (cartSubtotal && cartTax && cartTotal) {
         const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
         const tax = subtotal * 0.12; // 12% tax
         const total = subtotal + tax + 15; // +15 shipping
-        
+
         cartSubtotal.textContent = `GHS ${subtotal.toFixed(2)}`;
         cartTax.textContent = `GHS ${tax.toFixed(2)}`;
         cartTotal.textContent = `GHS ${total.toFixed(2)}`;
