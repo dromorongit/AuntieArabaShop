@@ -622,13 +622,6 @@ if (window.location.pathname.includes('category.html')) {
     });
 }
 
-// Cart page functions
-if (window.location.pathname.includes('cart.html')) {
-    document.addEventListener('DOMContentLoaded', function() {
-        renderCart();
-        updateCartSummary();
-    });
-}
 
 function renderCart() {
     const cartContainer = document.getElementById('cart-items');
