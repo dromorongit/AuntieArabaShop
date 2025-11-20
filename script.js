@@ -27,14 +27,15 @@ async function fetchProducts() {
             originalPrice: product.promo ? product.price_ghc : null,
             image: product.cover_image ? `${API_BASE}/${product.cover_image}` : 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop',
             category: product.categories ? product.categories[0] : 'general',
+            sections: product.sections || [],
             stock_status: product.stock_status,
             short_description: product.short_description
         }));
 
-        // Assign to sections (simple logic: first 4 new-arrivals, next 3 top-deals, next 3 fast-selling)
-        products['new-arrivals'] = mappedProducts.slice(0, 4);
-        products['top-deals'] = mappedProducts.slice(4, 7);
-        products['fast-selling'] = mappedProducts.slice(7, 10);
+        // Assign to sections based on product's sections field
+        products['new-arrivals'] = mappedProducts.filter(p => p.sections.includes('New Arrivals'));
+        products['top-deals'] = mappedProducts.filter(p => p.sections.includes('Top Deals'));
+        products['fast-selling'] = mappedProducts.filter(p => p.sections.includes('Fast Selling Products'));
 
     } catch (error) {
         console.error('Error fetching products:', error);
