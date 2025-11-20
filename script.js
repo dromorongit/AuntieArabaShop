@@ -1,3 +1,5 @@
+console.log('Script loaded');
+
 // API Base URL
 const API_BASE = 'https://auntiearabashoppms-production.up.railway.app';
 
@@ -249,9 +251,9 @@ function loadCart() {
     }
 }
 
-// View Product (placeholder for now)
+// View Product
 function viewProduct(productId) {
-    showNotification('Product details coming soon!');
+    window.location.href = `product.html?id=${productId}`;
 }
 
 // Show Notification
@@ -450,6 +452,69 @@ function proceedToCheckout() {
     }
     // Redirect to checkout page
     window.location.href = 'checkout.html';
+}
+
+// Product page functions
+if (window.location.pathname.includes('product.html')) {
+    document.addEventListener('DOMContentLoaded', function() {
+        const productId = getUrlParameter('id');
+        if (productId) {
+            loadProductDetails(productId);
+        }
+    });
+}
+
+function loadProductDetails(productId) {
+    fetch(`${API_BASE}/products/${productId}`)
+        .then(response => response.json())
+        .then(product => {
+            displayProductDetails(product);
+        })
+        .catch(error => {
+            console.error('Error loading product details:', error);
+            showNotification('Error loading product details');
+        });
+}
+
+function displayProductDetails(product) {
+    document.getElementById('product-name').textContent = product.product_name;
+    document.getElementById('product-price').textContent = `GHS ${product.price_ghc.toFixed(2)}`;
+    if (product.promo && product.promo_price) {
+        document.getElementById('product-price').innerHTML = `<span class="original-price">GHS ${product.price_ghc.toFixed(2)}</span> <span class="promo-price">GHS ${product.promo_price.toFixed(2)}</span>`;
+    }
+    document.getElementById('product-image').src = product.cover_image ? `${API_BASE}/${product.cover_image}` : 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop';
+    document.getElementById('short-description').textContent = product.short_description || '';
+    document.getElementById('long-description').textContent = product.long_description || '';
+    document.getElementById('fabric-type').textContent = product.fabric_type || 'N/A';
+    document.getElementById('stock-status').textContent = product.stock_status || 'In Stock';
+
+    // Sizes
+    const sizesContainer = document.getElementById('product-sizes');
+    if (product.sizes && product.sizes.length > 0) {
+        sizesContainer.innerHTML = product.sizes.map(size => `<span class="size-tag">${size}</span>`).join('');
+    } else {
+        sizesContainer.textContent = 'N/A';
+    }
+
+    // Colors
+    const colorsContainer = document.getElementById('product-colors');
+    if (product.colors && product.colors.length > 0) {
+        colorsContainer.innerHTML = product.colors.map(color => `<span class="color-tag">${color}</span>`).join('');
+    } else {
+        colorsContainer.textContent = 'N/A';
+    }
+
+    // Categories
+    const categoriesContainer = document.getElementById('product-categories');
+    if (product.categories && product.categories.length > 0) {
+        categoriesContainer.textContent = product.categories.join(', ');
+    } else {
+        categoriesContainer.textContent = 'N/A';
+    }
+
+    // Add to cart button
+    const addToCartBtn = document.getElementById('add-to-cart-btn');
+    addToCartBtn.onclick = () => addToCart(product._id);
 }
 
 // Contact form handling
