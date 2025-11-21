@@ -658,15 +658,15 @@ function renderCart() {
                 <h3>${item.name}</h3>
                 <p>GHS ${item.price.toFixed(2)}</p>
                 <div class="quantity-controls">
-                    <button onclick="updateQuantity(${JSON.stringify(item.id)}, -1)">-</button>
+                    <button onclick="updateQuantity('${item.id}', -1)">-</button>
                     <span>${item.quantity}</span>
-                    <button onclick="updateQuantity(${JSON.stringify(item.id)}, 1)">+</button>
+                    <button onclick="updateQuantity('${item.id}', 1)">+</button>
                 </div>
             </div>
             <div class="cart-item-total">
                 GHS ${itemTotal.toFixed(2)}
             </div>
-            <button class="remove-item" onclick="removeFromCart(${JSON.stringify(item.id)})">
+            <button class="remove-item" onclick="removeFromCart('${item.id}')">
                 <i class="fas fa-trash"></i>
             </button>
         `;
