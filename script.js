@@ -658,20 +658,31 @@ function renderCart() {
                 <h3>${item.name}</h3>
                 <p>GHS ${item.price.toFixed(2)}</p>
                 <div class="quantity-controls">
-                    <button onclick="updateQuantity('${item.id}', -1)">-</button>
+                    <button class="quantity-btn minus-btn" data-id="${item.id}">-</button>
                     <span>${item.quantity}</span>
-                    <button onclick="updateQuantity('${item.id}', 1)">+</button>
+                    <button class="quantity-btn plus-btn" data-id="${item.id}">+</button>
                 </div>
             </div>
             <div class="cart-item-total">
                 GHS ${itemTotal.toFixed(2)}
             </div>
-            <button class="remove-item" onclick="removeFromCart('${item.id}')">
+            <button class="remove-item" data-id="${item.id}">
                 <i class="fas fa-trash"></i>
             </button>
         `;
 
         cartContainer.appendChild(cartItem);
+    });
+
+    // Add event listeners for quantity buttons
+    document.querySelectorAll('.minus-btn').forEach(btn => {
+        btn.addEventListener('click', () => updateQuantity(btn.dataset.id, -1));
+    });
+    document.querySelectorAll('.plus-btn').forEach(btn => {
+        btn.addEventListener('click', () => updateQuantity(btn.dataset.id, 1));
+    });
+    document.querySelectorAll('.remove-item').forEach(btn => {
+        btn.addEventListener('click', () => removeFromCart(btn.dataset.id));
     });
 }
 
