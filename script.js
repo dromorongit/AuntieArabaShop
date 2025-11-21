@@ -260,9 +260,10 @@ function saveCart() {
 
 // Load Cart from LocalStorage
 function loadCart() {
-    // Clear cart for testing
-    cart = [];
-    saveCart();
+    const savedCart = localStorage.getItem('auntieArabaCart');
+    if (savedCart) {
+        cart = JSON.parse(savedCart);
+    }
 }
 
 // Authentication Functions
