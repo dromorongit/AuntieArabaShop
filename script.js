@@ -75,6 +75,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     updateCartCount();
     initializeMobileDropdowns();
     updateNavigation();
+    if (window.location.pathname.includes('cart.html')) {
+        renderCart();
+        updateCartSummary();
+    }
 });
 
 // Mobile dropdown functionality
