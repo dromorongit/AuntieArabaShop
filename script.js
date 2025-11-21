@@ -28,7 +28,7 @@ async function fetchProducts() {
 
         // Map API data to shop format
         const mappedProducts = data.map((product, index) => ({
-            id: product._id || index + 1,
+            id: String(product._id || index + 1),
             name: product.product_name,
             price: product.promo && product.promo_price ? product.promo_price : product.price_ghc,
             originalPrice: product.promo ? product.price_ghc : null,
@@ -50,7 +50,7 @@ async function fetchProducts() {
         products = {
             'new-arrivals': [
                 {
-                    id: 1,
+                    id: '1',
                     name: 'Elegant Pink Crop Top',
                     price: 85.00,
                     image: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=400&fit=crop',
@@ -237,6 +237,7 @@ function addToCart(productId) {
 
 // Remove from Cart
 function removeFromCart(productId) {
+    console.log('removeFromCart called with', productId);
     cart = cart.filter(item => item.id !== productId);
     saveCart();
     updateCartCount();
@@ -687,7 +688,9 @@ function renderCart() {
 }
 
 function updateQuantity(productId, change) {
+    console.log('updateQuantity called with', productId, change);
     const item = cart.find(item => item.id === productId);
+    console.log('found item:', item);
     if (item) {
         item.quantity += change;
         if (item.quantity <= 0) {
