@@ -492,11 +492,7 @@
                 </div>
                 <div class="order-summary-row">
                     <span>Shipping:</span>
-                    <span>GHS 15.00</span>
-                </div>
-                <div class="order-summary-row">
-                    <span>Tax:</span>
-                    <span id="summary-tax">GHS 0.00</span>
+                    <span>GHS 35.00</span>
                 </div>
                 <div class="order-summary-row total">
                     <span>Total:</span>
@@ -540,7 +536,7 @@
         <div class="modal-content">
             <h2>Mobile Money Payment</h2>
             <p>Please make payment to the following details:</p>
-            <p><strong>Phone Number:</strong> 0244152807</p>
+            <p><strong>Phone Number:</strong> 0244152807 (MTN)</p>
             <p><strong>Momo Name:</strong> Mary Amoah</p>
             <p>After payment, proceed with placing your order.</p>
             <p><strong>Make sure to take a screenshot</strong></p>
@@ -562,7 +558,6 @@
         function loadCheckoutData() {
             const cartContainer = document.getElementById('order-items');
             const cartSubtotal = document.getElementById('summary-subtotal');
-            const cartTax = document.getElementById('summary-tax');
             const cartTotal = document.getElementById('summary-total');
             const orderTotal = document.getElementById('order-total');
             
@@ -588,11 +583,10 @@
                 cartContainer.appendChild(orderItem);
             });
             
-            const tax = subtotal * 0.12; // 12% tax
-            const total = subtotal + tax + 15; // +15 shipping
-            
+            const shipping = 35; // 35 cedis shipping
+            const total = subtotal + shipping; // No tax
+
             cartSubtotal.textContent = `GHS ${subtotal.toFixed(2)}`;
-            cartTax.textContent = `GHS ${tax.toFixed(2)}`;
             cartTotal.textContent = `GHS ${total.toFixed(2)}`;
             orderTotal.textContent = `${total.toFixed(2)}`;
         }
@@ -647,7 +641,7 @@
                     items: cart,
                     paymentMethod: selectedPaymentMethod,
                     notes: formData.get('notes') || '',
-                    total: cart.reduce((total, item) => total + (item.price * item.quantity), 0) * 1.12 + 15
+                    total: cart.reduce((total, item) => total + (item.price * item.quantity), 0) + 35
                 };
                 
                 // Save order to localStorage (in real app, this would go to server)
