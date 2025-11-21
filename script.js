@@ -706,17 +706,14 @@ function updateQuantity(productId, change) {
 
 function updateCartSummary() {
     const cartSubtotal = document.getElementById('cart-subtotal');
-    const cartTax = document.getElementById('cart-tax');
     const cartTotal = document.getElementById('cart-total');
 
-    if (cartSubtotal && cartTax && cartTotal) {
+    if (cartSubtotal && cartTotal) {
         const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-        const tax = 0; // No tax
         const shipping = 35; // 35 cedis shipping
-        const total = subtotal + tax + shipping;
+        const total = subtotal + shipping; // No tax
 
         cartSubtotal.textContent = `GHS ${subtotal.toFixed(2)}`;
-        cartTax.textContent = `GHS ${tax.toFixed(2)}`;
         cartTotal.textContent = `GHS ${total.toFixed(2)}`;
     }
 }
