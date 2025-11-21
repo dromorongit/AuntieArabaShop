@@ -657,7 +657,6 @@ function renderCart() {
             </div>
             <div class="cart-item-info">
                 <h3>${item.name}</h3>
-                <p>GHS ${item.price.toFixed(2)}</p>
                 <div class="quantity-controls">
                     <button class="quantity-btn minus-btn" data-id="${item.id}">-</button>
                     <span>${item.quantity}</span>
