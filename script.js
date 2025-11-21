@@ -711,8 +711,9 @@ function updateCartSummary() {
 
     if (cartSubtotal && cartTax && cartTotal) {
         const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-        const tax = subtotal * 0.12; // 12% tax
-        const total = subtotal + tax + 15; // +15 shipping
+        const tax = 0; // No tax
+        const shipping = 35; // 35 cedis shipping
+        const total = subtotal + tax + shipping;
 
         cartSubtotal.textContent = `GHS ${subtotal.toFixed(2)}`;
         cartTax.textContent = `GHS ${tax.toFixed(2)}`;
