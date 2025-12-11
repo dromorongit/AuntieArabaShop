@@ -737,8 +737,7 @@ function updateCartSummary() {
 
     if (cartSubtotal && cartTotal) {
         const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-        const shipping = 35; // 35 cedis shipping
-        const total = subtotal + shipping; // No tax
+        const total = subtotal; // No shipping fee, no tax
 
         cartSubtotal.textContent = `GHS ${subtotal.toFixed(2)}`;
         cartTotal.textContent = `GHS ${total.toFixed(2)}`;
@@ -960,3 +959,137 @@ if (window.location.pathname.includes('contact.html')) {
         }
     });
 }
+
+// WhatsApp Floating Icon
+function createWhatsAppFloatingIcon() {
+    // Create the floating icon element
+    const whatsappIcon = document.createElement('div');
+    whatsappIcon.id = 'whatsapp-float';
+    whatsappIcon.innerHTML = `
+        <a href="https://wa.me/233244152807" target="_blank" class="whatsapp-link">
+            <i class="fab fa-whatsapp"></i>
+            <span class="whatsapp-tooltip">Chat with us on WhatsApp</span>
+        </a>
+    `;
+
+    // Add CSS for the floating icon
+    const style = document.createElement('style');
+    style.innerHTML = `
+        #whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 40px;
+            right: 40px;
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 3px #999;
+            z-index: 1000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #whatsapp-float:hover {
+            transform: scale(1.1);
+            box-shadow: 2px 2px 5px #888;
+        }
+
+        #whatsapp-float i {
+            margin-top: 16px;
+            display: block;
+        }
+
+        .whatsapp-tooltip {
+            position: absolute;
+            left: -160px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #333;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .whatsapp-tooltip:after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid #333;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+        }
+
+        #whatsapp-float:hover .whatsapp-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Make it draggable */
+        #whatsapp-float.dragging {
+            cursor: grabbing;
+            opacity: 0.8;
+        }
+    `;
+
+    // Add elements to the body
+    document.body.appendChild(style);
+    document.body.appendChild(whatsappIcon);
+
+    // Make it draggable
+    makeDraggable(whatsappIcon);
+}
+
+function makeDraggable(element) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    element.onmousedown = dragMouseDown;
+
+    function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // get the mouse cursor position at startup
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves
+        document.onmousemove = elementDrag;
+        element.classList.add('dragging');
+    }
+
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // calculate the new cursor position
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // set the element's new position
+        element.style.top = (element.offsetTop - pos2) + "px";
+        element.style.right = (element.offsetRight - pos1) + "px";
+    }
+
+    function closeDragElement() {
+        // stop moving when mouse button is released
+        document.onmouseup = null;
+        document.onmousemove = null;
+        element.classList.remove('dragging');
+    }
+}
+
+// Initialize WhatsApp icon on all pages
+document.addEventListener('DOMContentLoaded', function() {
+    createWhatsAppFloatingIcon();
+});
