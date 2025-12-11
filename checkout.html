@@ -402,8 +402,8 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="email">Email Address *</label>
-                                <input type="email" id="email" name="email" required>
+                                <label for="email">Email Address (Optional)</label>
+                                <input type="email" id="email" name="email" placeholder="Optional">
                             </div>
                             <div class="form-group">
                                 <label for="phone">Phone Number *</label>
@@ -489,10 +489,6 @@
                 <div class="order-summary-row">
                     <span>Subtotal:</span>
                     <span id="summary-subtotal">GHS 0.00</span>
-                </div>
-                <div class="order-summary-row">
-                    <span>Shipping:</span>
-                    <span>GHS 35.00</span>
                 </div>
                 <div class="order-summary-row total">
                     <span>Total:</span>
@@ -584,8 +580,7 @@
                 cartContainer.appendChild(orderItem);
             });
             
-            const shipping = 35; // 35 cedis shipping
-            const total = subtotal + shipping; // No tax
+            const total = subtotal; // No shipping fee, no tax
 
             cartSubtotal.textContent = `GHS ${subtotal.toFixed(2)}`;
             cartTotal.textContent = `GHS ${total.toFixed(2)}`;
@@ -611,21 +606,21 @@
             const orderForm = document.getElementById('order-form');
             const successMessage = document.getElementById('success-message');
             const checkoutForm = document.getElementById('checkout-form');
-            
+
             orderForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
+
                 // Validate form
                 const formData = new FormData(orderForm);
-                const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'address', 'city', 'region'];
-                
+                const requiredFields = ['firstName', 'lastName', 'phone', 'address', 'city', 'region'];
+
                 for (let field of requiredFields) {
                     if (!formData.get(field)) {
                         showNotification('Please fill in all required fields');
                         return;
                     }
                 }
-                
+
                 // Create order object
                 const order = {
                     id: Date.now(),
@@ -642,28 +637,78 @@
                     items: cart,
                     paymentMethod: selectedPaymentMethod,
                     notes: formData.get('notes') || '',
-                    total: cart.reduce((total, item) => total + (item.price * item.quantity), 0) + 35
+                    total: cart.reduce((total, item) => total + (item.price * item.quantity), 0)
                 };
-                
+
+                // Format order details for WhatsApp
+                const whatsappMessage = formatOrderForWhatsApp(order);
+
+                // Send order to WhatsApp
+                sendOrderToWhatsApp(whatsappMessage);
+
                 // Save order to localStorage (in real app, this would go to server)
                 const orders = JSON.parse(localStorage.getItem('auntieArabaOrders') || '[]');
                 orders.push(order);
                 localStorage.setItem('auntieArabaOrders', JSON.stringify(orders));
-                
+
                 // Clear cart
                 cart = [];
                 saveCart();
                 updateCartCount();
-                
+
                 // Show success message
                 checkoutForm.style.display = 'none';
                 successMessage.style.display = 'block';
-                
+
                 // Scroll to success message
                 successMessage.scrollIntoView({ behavior: 'smooth' });
-                
-                showNotification('Order placed successfully!');
+
+                showNotification('Order placed successfully! Your order details have been sent to WhatsApp.');
             });
+        }
+
+        function formatOrderForWhatsApp(order) {
+            // Format items
+            let itemsText = '';
+            order.items.forEach((item, index) => {
+                itemsText += `${index + 1}. ${item.name} - Qty: ${item.quantity} × GHS ${item.price.toFixed(2)}\n`;
+            });
+
+            // Create WhatsApp message
+            const message = `🛍️ *NEW ORDER* 🛍️
+*Order ID:* ${order.id}
+*Date:* ${new Date(order.date).toLocaleString()}
+
+👤 *Customer Details:*
+*Name:* ${order.customer.firstName} ${order.customer.lastName}
+*Phone:* ${order.customer.phone}
+${order.customer.email ? `*Email:* ${order.customer.email}\n` : ''}
+*Address:* ${order.customer.address}, ${order.customer.city}, ${order.customer.region}
+
+📦 *Order Items:*
+${itemsText}
+
+💰 *Payment Method:* ${order.paymentMethod}
+💵 *Total Amount:* GHS ${order.total.toFixed(2)}
+
+📝 *Notes:* ${order.notes || 'None'}
+
+Thank you for your order! We will contact you shortly to confirm your purchase and arrange delivery.`;
+
+            return encodeURIComponent(message);
+        }
+
+        function sendOrderToWhatsApp(message) {
+            // WhatsApp API URL
+            const whatsappUrl = `https://wa.me/233244152807?text=${message}`;
+
+            // Open WhatsApp in a new tab
+            window.open(whatsappUrl, '_blank');
+
+            // Also redirect the current page to WhatsApp after a short delay
+            setTimeout(() => {
+                window.location.href = whatsappUrl;
+            }, 1000);
         }
 
         // Update cart count on page load
