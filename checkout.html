@@ -447,20 +447,15 @@
                     <div class="form-section">
                         <h3>Payment Method</h3>
                         <div class="payment-methods">
-                            <button class="payment-option mobile-money-btn" type="button" onclick="selectMobileMoney()">
+                            <div class="payment-option mobile-money-btn" data-method="mobile-money" onclick="selectMobileMoney()">
                                 <i class="fas fa-mobile-alt"></i>
                                 <h4>Mobile Money</h4>
                                 <p>MTN, Vodafone, AirtelTigo</p>
-                            </button>
+                            </div>
                             <div class="payment-option" data-method="cash-on-delivery">
                                 <i class="fas fa-money-bill-wave"></i>
                                 <h4>Cash on Delivery</h4>
                                 <p>Pay when you receive</p>
-                            </div>
-                            <div class="payment-option" data-method="bank-transfer">
-                                <i class="fas fa-university"></i>
-                                <h4>Bank Transfer</h4>
-                                <p>Direct bank payment</p>
                             </div>
                         </div>
                     </div>
@@ -674,6 +669,14 @@
                 itemsText += `${index + 1}. ${item.name} - Qty: ${item.quantity} × GHS ${item.price.toFixed(2)}\n`;
             });
 
+            // Format payment method to be user-friendly
+            let paymentMethodDisplay = order.paymentMethod;
+            if (order.paymentMethod === 'mobile-money') {
+                paymentMethodDisplay = 'Mobile Money';
+            } else if (order.paymentMethod === 'cash-on-delivery') {
+                paymentMethodDisplay = 'Cash on Delivery';
+            }
+
             // Create WhatsApp message
             const message = `🛍️ *NEW ORDER* 🛍️
 *Order ID:* ${order.id}
@@ -688,7 +691,7 @@ ${order.customer.email ? `*Email:* ${order.customer.email}\n` : ''}
 📦 *Order Items:*
 ${itemsText}
 
-💰 *Payment Method:* ${order.paymentMethod}
+💰 *Payment Method:* ${paymentMethodDisplay}
 💵 *Total Amount:* GHS ${order.total.toFixed(2)}
 
 📝 *Notes:* ${order.notes || 'None'}
