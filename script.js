@@ -953,8 +953,32 @@ if (window.location.pathname.includes('contact.html')) {
         if (contactForm) {
             contactForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                showNotification('Thank you for your message! We will get back to you soon.');
-                contactForm.reset();
+                
+                // Get form values
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                const subject = document.getElementById('subject').value;
+                const message = document.getElementById('message').value;
+                
+                // Create WhatsApp message
+                const whatsappMessage = encodeURIComponent(
+                    `New Contact Message:\n\n` +
+                    `Name: ${name}\n` +
+                    `Email: ${email}\n` +
+                    `${phone ? `Phone: ${phone}\n` : ''}` +
+                    `Subject: ${subject}\n\n` +
+                    `Message: ${message}`
+                );
+                
+                // Redirect to WhatsApp
+                window.location.href = `https://wa.me/233244152807?text=${whatsappMessage}`;
+                
+                // Show notification and reset form
+                showNotification('Redirecting to WhatsApp to send your message...');
+                setTimeout(() => {
+                    contactForm.reset();
+                }, 1000);
             });
         }
     });
