@@ -138,7 +138,7 @@ async function fetchProducts() {
             'fast-selling': products['fast-selling'].length
         });
 
-        showNotification(`Loaded ${mappedProducts.length} products from your backend!`, 'success');
+        // Success notification removed as requested
 
     } catch (error) {
         console.error('Error fetching products from backend:', error);
