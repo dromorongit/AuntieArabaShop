@@ -199,7 +199,6 @@ body {
 .nav-link.active {
     background: var(--glass-bg);
     transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 8px 25px var(--shadow);
 }
 
 /* Disable hover dropdown on touch devices */
