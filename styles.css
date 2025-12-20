@@ -170,35 +170,23 @@ body {
 .nav-link {
     color: var(--white);
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 700;
+    font-size: 1rem;
     padding: 0.75rem 1.5rem;
-    border-radius: 30px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 8px;
+    transition: all 0.3s ease;
     position: relative;
-    overflow: hidden;
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
-}
-
-.nav-link::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-}
-
-.nav-link:hover::before {
-    left: 100%;
+    background: transparent;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .nav-link:hover,
 .nav-link.active {
-    background: var(--glass-bg);
-    transform: translateY(-3px) scale(1.05);
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+    font-weight: 800;
 }
 
 /* Disable hover dropdown on touch devices */
@@ -218,18 +206,17 @@ body {
     position: absolute;
     top: 100%;
     left: 0;
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
+    background: var(--white);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     min-width: 280px;
     max-height: 350px;
     list-style: none;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-20px) scale(0.95);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 15px;
-    box-shadow: 0 20px 40px var(--shadow);
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     margin-top: 0.5rem;
     overflow-y: auto;
     overflow-x: hidden;
@@ -272,32 +259,17 @@ body {
 .dropdown-menu a {
     display: block;
     padding: 1rem 1.5rem;
-    color: var(--white);
+    color: var(--text-color);
     text-decoration: none;
     transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.dropdown-menu a::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.5s;
-}
-
-.dropdown-menu a:hover::before {
-    left: 100%;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .dropdown-menu a:hover {
-    background: var(--glass-bg);
+    background: var(--light-bg);
     color: var(--primary-color);
-    transform: translateX(5px);
+    padding-left: 2rem;
 }
 
 .cart-icon {
