@@ -3,42 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Shop with Auntie Araba - The Lady Standard. Premium ladies fashion in Ghana. Elegant dresses, crop tops, night wear, and more.">
+    <meta name="keywords" content="ladies fashion, Ghana, dresses, crop tops, night wear, Auntie Araba">
+    <meta name="author" content="Shop with Auntie Araba">
     <title>Shop with Auntie Araba - The Lady Standard</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="LADYSTANDARD.PNG" type="image/png">
 </head>
 <body>
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <!-- Header -->
-    <header class="header">
+    <header class="header" role="banner">
         <div class="container">
             <div class="nav-wrapper">
                 <div class="logo">
-                    <img src="LADYSTANDARD.PNG" alt="The Lady Standard Logo" class="logo-image">
+                    <img src="LADYSTANDARD.PNG" alt="The Lady Standard Logo - Shop with Auntie Araba" class="logo-image">
                     <div class="logo-text">
                         <h1>Shop with Auntie Araba</h1>
                         <p class="tagline">The Lady Standard</p>
                     </div>
                 </div>
-                <nav class="navigation">
+                <nav class="navigation" role="navigation" aria-label="Main navigation">
                     <ul class="nav-menu">
-                        <li><a href="index.html" class="nav-link active">Home</a></li>
+                        <li><a href="index.html" class="nav-link active" aria-current="page">Home</a></li>
                         <li class="dropdown">
-                            <a href="#" class="nav-link">Categories <i class="fas fa-chevron-down"></i></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="categories.html">All Categories</a></li>
-                                <li><a href="category.html?cat=ladies-tops">Ladies Basic Tops</a></li>
-                                <li><a href="category.html?cat=crop-tops">Crop Tops</a></li>
-                                <li><a href="category.html?cat=night-wear">Night Wear</a></li>
-                                <li><a href="category.html?cat=bum-shorts">Bum Shorts</a></li>
-                                <li><a href="category.html?cat=two-in-one-night">2-in-1 Night Wears</a></li>
-                                <li><a href="category.html?cat=two-in-one-tops">2-in-1 Tops and Downs</a></li>
-                                <li><a href="category.html?cat=elegant-dresses">Elegant Dresses</a></li>
-                                <li><a href="category.html?cat=stylish-dresses">Stylish Dresses</a></li>
-                                <li><a href="category.html?cat=office-dresses">Office Dresses</a></li>
-                                <li><a href="category.html?cat=panties">Panties</a></li>
-                                <li><a href="category.html?cat=nfl-jerseys">Unisex NFL Jerseys</a></li>
-                                <li><a href="category.html?cat=other-ladies">Other Ladies Fashion Items</a></li>
+                            <a href="#" class="nav-link" aria-haspopup="true" aria-expanded="false" id="categories-menu">Categories <i class="fas fa-chevron-down" aria-hidden="true"></i></a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="categories-menu">
+                                <li role="none"><a href="categories.html" role="menuitem">All Categories</a></li>
+                                <li role="none"><a href="category.html?cat=ladies-tops" role="menuitem">Ladies Basic Tops</a></li>
+                                <li role="none"><a href="category.html?cat=crop-tops" role="menuitem">Crop Tops</a></li>
+                                <li role="none"><a href="category.html?cat=night-wear" role="menuitem">Night Wear</a></li>
+                                <li role="none"><a href="category.html?cat=bum-shorts" role="menuitem">Bum Shorts</a></li>
+                                <li role="none"><a href="category.html?cat=two-in-one-night" role="menuitem">2-in-1 Night Wears</a></li>
+                                <li role="none"><a href="category.html?cat=two-in-one-tops" role="menuitem">2-in-1 Tops and Downs</a></li>
+                                <li role="none"><a href="category.html?cat=elegant-dresses" role="menuitem">Elegant Dresses</a></li>
+                                <li role="none"><a href="category.html?cat=stylish-dresses" role="menuitem">Stylish Dresses</a></li>
+                                <li role="none"><a href="category.html?cat=office-dresses" role="menuitem">Office Dresses</a></li>
+                                <li role="none"><a href="category.html?cat=panties" role="menuitem">Panties</a></li>
+                                <li role="none"><a href="category.html?cat=nfl-jerseys" role="menuitem">Unisex NFL Jerseys</a></li>
+                                <li role="none"><a href="category.html?cat=other-ladies" role="menuitem">Other Ladies Fashion Items</a></li>
                             </ul>
                         </li>
                         <li><a href="contact.html" class="nav-link">Contact</a></li>
@@ -46,69 +53,72 @@
                     </ul>
                 </nav>
                 <div class="cart-icon">
-                    <a href="cart.html">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span class="cart-count">0</span>
+                    <a href="cart.html" aria-label="Shopping cart">
+                        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                        <span class="cart-count" aria-label="Items in cart">0</span>
                     </a>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Carousel Section -->
-    <section class="carousel-section">
-        <div class="carousel-container">
-            <div class="carousel">
-                <div class="carousel-slide active">
-                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=600&fit=crop" alt="Fashion Collection">
+    <main id="main-content" role="main">
+        <!-- Carousel Section -->
+        <section class="carousel-section" aria-labelledby="carousel-heading">
+            <h2 id="carousel-heading" class="sr-only">Featured Fashion Collections</h2>
+            <div class="carousel-container">
+                <div class="carousel">
+                    <div class="carousel-slide active">
+                        <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=600&fit=crop" alt="Elegant fashion collection showcasing latest trends">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=1200&h=600&fit=crop" alt="Premium fashion items with sophisticated styling">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?w=1200&h=600&fit=crop" alt="Beautiful ladies fashion collection">
+                    </div>
                 </div>
-                <div class="carousel-slide">
-                    <img src="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=1200&h=600&fit=crop" alt="Premium Fashion">
+                <div class="carousel-indicators" role="tablist" aria-label="Carousel navigation">
+                    <button class="indicator active" data-slide="0" role="tab" aria-selected="true" aria-label="View first slide"></button>
+                    <button class="indicator" data-slide="1" role="tab" aria-selected="false" aria-label="View second slide"></button>
+                    <button class="indicator" data-slide="2" role="tab" aria-selected="false" aria-label="View third slide"></button>
                 </div>
-                <div class="carousel-slide">
-                    <img src="https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?w=1200&h=600&fit=crop" alt="Ladies Fashion">
+            </div>
+        </section>
+
+        <!-- New Arrivals Section -->
+        <section class="products-section" aria-labelledby="new-arrivals-heading">
+            <div class="container">
+                <h2 id="new-arrivals-heading" class="section-title">New Arrivals</h2>
+                <div class="products-grid" id="new-arrivals" role="grid" aria-label="New arrival products">
+                    <!-- Products will be populated by JavaScript -->
                 </div>
             </div>
-            <div class="carousel-indicators">
-                <span class="indicator active" data-slide="0"></span>
-                <span class="indicator" data-slide="1"></span>
-                <span class="indicator" data-slide="2"></span>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- New Arrivals Section -->
-    <section class="products-section">
-        <div class="container">
-            <h2 class="section-title">New Arrivals</h2>
-            <div class="products-grid" id="new-arrivals">
-                <!-- Products will be populated by JavaScript -->
+        <!-- Top Deals Section -->
+        <section class="products-section deals-section" aria-labelledby="top-deals-heading">
+            <div class="container">
+                <h2 id="top-deals-heading" class="section-title">Top Deals</h2>
+                <div class="products-grid" id="top-deals" role="grid" aria-label="Top deal products">
+                    <!-- Products will be populated by JavaScript -->
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Top Deals Section -->
-    <section class="products-section deals-section">
-        <div class="container">
-            <h2 class="section-title">Top Deals</h2>
-            <div class="products-grid" id="top-deals">
-                <!-- Products will be populated by JavaScript -->
+        <!-- Fast Selling Products -->
+        <section class="products-section" aria-labelledby="fast-selling-heading">
+            <div class="container">
+                <h2 id="fast-selling-heading" class="section-title">Fast Selling Products</h2>
+                <div class="products-grid" id="fast-selling" role="grid" aria-label="Fast selling products">
+                    <!-- Products will be populated by JavaScript -->
+                </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Fast Selling Products -->
-    <section class="products-section">
-        <div class="container">
-            <h2 class="section-title">Fast Selling Products</h2>
-            <div class="products-grid" id="fast-selling">
-                <!-- Products will be populated by JavaScript -->
-            </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
@@ -118,16 +128,16 @@
                 </div>
                 <div class="footer-section">
                     <h3>Contact Us</h3>
-                    <p><i class="fas fa-envelope"></i> marydiamondgh@gmail.com</p>
-                    <p><i class="fas fa-phone"></i> +233(0)244152807</p>
+                    <p><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:marydiamondgh@gmail.com">marydiamondgh@gmail.com</a></p>
+                    <p><i class="fas fa-phone" aria-hidden="true"></i> <a href="tel:+233244152807">+233(0)244152807</a></p>
                 </div>
                 <div class="footer-section">
                     <h3>Follow Us</h3>
                     <div class="social-links">
-                        <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
-                        <a href="https://www.instagram.com/marydiamondgh" target="_blank"><i class="fab fa-instagram"></i></a>
-                        <a href="https://www.tiktok.com/@marydiamondgh" target="_blank"><i class="fab fa-tiktok"></i></a>
-                        <a href="https://wa.me/233244152807" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" target="_blank" rel="noopener" aria-label="Follow us on Facebook"><i class="fab fa-facebook" aria-hidden="true"></i></a>
+                        <a href="https://www.instagram.com/marydiamondgh" target="_blank" rel="noopener" aria-label="Follow us on Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+                        <a href="https://www.tiktok.com/@marydiamondgh" target="_blank" rel="noopener" aria-label="Follow us on TikTok"><i class="fab fa-tiktok" aria-hidden="true"></i></a>
+                        <a href="https://wa.me/233244152807" target="_blank" rel="noopener" aria-label="Contact us on WhatsApp"><i class="fab fa-whatsapp" aria-hidden="true"></i></a>
                     </div>
                 </div>
             </div>

@@ -13,17 +13,74 @@ let products = {
 // Shopping Cart
 let cart = [];
 
-// Authentication
-let currentUser = null;
-let authToken = null;
-let refreshToken = null;
+// Authentication removed - no user accounts
+
+// Performance optimizations
+const debounce = (func, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+};
+
+// Loading states management
+const loadingStates = new Map();
+
+function setLoading(element, isLoading) {
+    if (!element) return;
+
+    const elementId = element.id || element.className || 'unknown';
+    loadingStates.set(elementId, isLoading);
+
+    if (isLoading) {
+        element.style.opacity = '0.6';
+        element.style.pointerEvents = 'none';
+        element.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+    } else {
+        element.style.opacity = '1';
+        element.style.pointerEvents = 'auto';
+    }
+}
+
+// Micro-interactions
+function addRippleEffect(event) {
+    const button = event.currentTarget;
+    const circle = document.createElement('span');
+    const diameter = Math.max(button.clientWidth, button.clientHeight);
+    const radius = diameter / 2;
+
+    circle.style.width = circle.style.height = `${diameter}px`;
+    circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
+    circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
+    circle.classList.add('ripple');
+
+    const ripple = button.getElementsByClassName('ripple')[0];
+    if (ripple) {
+        ripple.remove();
+    }
+
+    button.appendChild(circle);
+}
+
+// Add ripple effect to buttons
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.btn').forEach(button => {
+        button.addEventListener('click', addRippleEffect);
+    });
+});
 
 // Fetch products from API
 async function fetchProducts() {
+    const loadingElement = document.querySelector('.products-section');
+    setLoading(loadingElement, true);
+
     try {
-        const response = await fetch(`${API_BASE}/products`, {
-            headers: getAuthHeaders()
-        });
+        const response = await fetch(`${API_BASE}/products`);
         const data = await response.json();
 
         // Map API data to shop format
@@ -45,6 +102,8 @@ async function fetchProducts() {
         products['top-deals'] = mappedProducts.filter(p => p.sections.includes('Top Deals'));
         products['fast-selling'] = mappedProducts.filter(p => p.sections.includes('Fast Selling Products'));
 
+        showNotification('Products loaded successfully!', 'success');
+
     } catch (error) {
         console.error('Error fetching products:', error);
         // Fallback to hardcoded products if API fails
@@ -62,20 +121,20 @@ async function fetchProducts() {
             'top-deals': [],
             'fast-selling': []
         };
+        showNotification('Using offline products', 'info');
+    } finally {
+        setLoading(loadingElement, false);
     }
 }
 
 // Initialize the page
 document.addEventListener('DOMContentLoaded', async function() {
-    loadAuthState();
-    checkTokenExpiration();
     await fetchProducts();
     initializeCarousel();
     loadProducts();
     loadCart();
     updateCartCount();
     initializeMobileDropdowns();
-    updateNavigation();
     if (window.location.pathname.includes('cart.html')) {
         renderCart();
         updateCartSummary();
@@ -268,187 +327,7 @@ function loadCart() {
     }
 }
 
-// Authentication Functions
-function loadAuthState() {
-    const savedAuth = localStorage.getItem('auntieArabaAuth');
-    if (savedAuth) {
-        const auth = JSON.parse(savedAuth);
-        currentUser = auth.user;
-        authToken = auth.token;
-        refreshToken = auth.refreshToken;
-    }
-}
-
-function saveAuthState() {
-    if (currentUser && authToken) {
-        const auth = {
-            user: currentUser,
-            token: authToken,
-            refreshToken: refreshToken
-        };
-        localStorage.setItem('auntieArabaAuth', JSON.stringify(auth));
-        localStorage.setItem('tokenTimestamp', Date.now());
-    } else {
-        localStorage.removeItem('auntieArabaAuth');
-        localStorage.removeItem('tokenTimestamp');
-    }
-}
-
-function isAuthenticated() {
-    return currentUser && authToken;
-}
-
-function getAuthHeaders() {
-    if (authToken) {
-        return {
-            'Authorization': `Bearer ${authToken}`,
-            'Content-Type': 'application/json'
-        };
-    }
-    return {
-        'Content-Type': 'application/json'
-    };
-}
-
-async function login(email, password) {
-    try {
-        const response = await fetch(`${API_BASE}/auth/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            currentUser = data.user;
-            authToken = data.token;
-            refreshToken = data.refreshToken;
-            saveAuthState();
-            return { success: true };
-        } else {
-            return { success: false, error: data.message || 'Login failed' };
-        }
-    } catch (error) {
-        console.error('Login error:', error);
-        return { success: false, error: 'Network error. Please try again.' };
-    }
-}
-
-async function register(name, email, password) {
-    try {
-        const response = await fetch(`${API_BASE}/auth/register`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ name, email, password })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            currentUser = data.user;
-            authToken = data.token;
-            refreshToken = data.refreshToken;
-            saveAuthState();
-            return { success: true };
-        } else {
-            return { success: false, error: data.message || 'Registration failed' };
-        }
-    } catch (error) {
-        console.error('Registration error:', error);
-        return { success: false, error: 'Network error. Please try again.' };
-    }
-}
-
-function logout() {
-    currentUser = null;
-    authToken = null;
-    refreshToken = null;
-    localStorage.removeItem('auntieArabaAuth');
-    window.location.href = 'index.html';
-}
-
-async function refreshAuthToken() {
-    if (!refreshToken) return false;
-
-    try {
-        const response = await fetch(`${API_BASE}/auth/refresh`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ refreshToken })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            authToken = data.token;
-            saveAuthState();
-            return true;
-        } else {
-            logout(); // Refresh failed, logout user
-            return false;
-        }
-    } catch (error) {
-        console.error('Token refresh error:', error);
-        logout();
-        return false;
-    }
-}
-
-function checkTokenExpiration() {
-    if (!authToken) return;
-
-    // Simple check - if token is older than 55 minutes, refresh it
-    // In production, you'd decode the JWT to check expiration
-    const tokenAge = Date.now() - (localStorage.getItem('tokenTimestamp') || 0);
-    const fiftyFiveMinutes = 55 * 60 * 1000;
-
-    if (tokenAge > fiftyFiveMinutes) {
-        refreshAuthToken();
-    }
-}
-
-function updateNavigation() {
-    const navMenus = document.querySelectorAll('.nav-menu');
-
-    navMenus.forEach(navMenu => {
-        // Remove existing auth-related items
-        const existingAuthItems = navMenu.querySelectorAll('.auth-item');
-        existingAuthItems.forEach(item => item.remove());
-
-        if (isAuthenticated()) {
-            // User is logged in - show profile and logout
-            const profileLi = document.createElement('li');
-            profileLi.className = 'auth-item';
-            profileLi.innerHTML = `<a href="profile.html" class="nav-link">Profile</a>`;
-
-            const logoutLi = document.createElement('li');
-            logoutLi.className = 'auth-item';
-            logoutLi.innerHTML = `<a href="#" onclick="logout()" class="nav-link">Logout</a>`;
-
-            navMenu.appendChild(profileLi);
-            navMenu.appendChild(logoutLi);
-        } else {
-            // User is not logged in - show login and register
-            const loginLi = document.createElement('li');
-            loginLi.className = 'auth-item';
-            loginLi.innerHTML = `<a href="login.html" class="nav-link">Login</a>`;
-
-            const registerLi = document.createElement('li');
-            registerLi.className = 'auth-item';
-            registerLi.innerHTML = `<a href="register.html" class="nav-link">Register</a>`;
-
-            navMenu.appendChild(loginLi);
-            navMenu.appendChild(registerLi);
-        }
-    });
-}
+// Navigation update removed - no authentication
 
 // View Product
 function viewProduct(productId) {
@@ -456,12 +335,21 @@ function viewProduct(productId) {
 }
 
 // Show Notification
-function showNotification(message) {
+function showNotification(message, type = 'success') {
+    const notificationTypes = {
+        success: { icon: 'fa-check-circle', color: 'var(--gradient-primary)' },
+        error: { icon: 'fa-exclamation-circle', color: 'linear-gradient(135deg, #ff4444 0%, #cc0000 100%)' },
+        info: { icon: 'fa-info-circle', color: 'linear-gradient(135deg, #2196F3 0%, #0D47A1 100%)' },
+        warning: { icon: 'fa-exclamation-triangle', color: 'linear-gradient(135deg, #FF9800 0%, #E65100 100%)' }
+    };
+
+    const config = notificationTypes[type] || notificationTypes.success;
+
     // Create notification element
     const notification = document.createElement('div');
     notification.className = 'notification';
     notification.innerHTML = `
-        <i class="fas fa-check-circle"></i>
+        <i class="fas ${config.icon}"></i>
         <span>${message}</span>
     `;
 
@@ -470,18 +358,20 @@ function showNotification(message) {
         position: 'fixed',
         top: '20px',
         right: '20px',
-        background: 'linear-gradient(135deg, #e91e63 0%, #9c27b0 100%)',
+        background: config.color,
         color: 'white',
         padding: '1rem 1.5rem',
-        borderRadius: '10px',
-        boxShadow: '0 10px 30px rgba(233, 30, 99, 0.3)',
+        borderRadius: '15px',
+        boxShadow: '0 15px 35px rgba(0, 0, 0, 0.2)',
         zIndex: '10000',
         display: 'flex',
         alignItems: 'center',
-        gap: '0.5rem',
+        gap: '0.75rem',
         fontWeight: '500',
         transform: 'translateX(100%)',
-        transition: 'transform 0.3s ease'
+        transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 255, 255, 0.2)'
     });
 
     document.body.appendChild(notification);
@@ -491,85 +381,18 @@ function showNotification(message) {
         notification.style.transform = 'translateX(0)';
     }, 100);
 
-    // Remove after 3 seconds
+    // Remove after 4 seconds
     setTimeout(() => {
         notification.style.transform = 'translateX(100%)';
         setTimeout(() => {
-            document.body.removeChild(notification);
-        }, 300);
-    }, 3000);
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 400);
+    }, 4000);
 }
 
-// Login/Register Form Handling
-if (window.location.pathname.includes('login.html')) {
-    document.addEventListener('DOMContentLoaded', function() {
-        const loginForm = document.getElementById('login-form');
-        const errorMessage = document.getElementById('error-message');
-
-        if (loginForm) {
-            loginForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-
-                errorMessage.style.display = 'none';
-                errorMessage.textContent = '';
-
-                const result = await login(email, password);
-
-                if (result.success) {
-                    showNotification('Login successful! Redirecting...');
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1000);
-                } else {
-                    errorMessage.textContent = result.error;
-                    errorMessage.style.display = 'block';
-                }
-            });
-        }
-    });
-}
-
-if (window.location.pathname.includes('register.html')) {
-    document.addEventListener('DOMContentLoaded', function() {
-        const registerForm = document.getElementById('register-form');
-        const errorMessage = document.getElementById('error-message');
-
-        if (registerForm) {
-            registerForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-
-                const name = document.getElementById('name').value;
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                const confirmPassword = document.getElementById('confirm-password').value;
-
-                errorMessage.style.display = 'none';
-                errorMessage.textContent = '';
-
-                if (password !== confirmPassword) {
-                    errorMessage.textContent = 'Passwords do not match';
-                    errorMessage.style.display = 'block';
-                    return;
-                }
-
-                const result = await register(name, email, password);
-
-                if (result.success) {
-                    showNotification('Registration successful! Redirecting...');
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1000);
-                } else {
-                    errorMessage.textContent = result.error;
-                    errorMessage.style.display = 'block';
-                }
-            });
-        }
-    });
-}
+// Login/Register forms removed - no authentication
 
 // Category Page Functions
 async function loadCategoryProducts(categorySlug) {
@@ -764,9 +587,7 @@ if (window.location.pathname.includes('product.html')) {
 }
 
 function loadProductDetails(productId) {
-    fetch(`${API_BASE}/products/${productId}`, {
-        headers: getAuthHeaders()
-    })
+    fetch(`${API_BASE}/products/${productId}`)
         .then(response => response.json())
         .then(product => {
             displayProductDetails(product);
@@ -818,133 +639,7 @@ function displayProductDetails(product) {
     addToCartBtn.onclick = () => addToCart(product._id);
 }
 
-// Profile page functions
-if (window.location.pathname.includes('profile.html')) {
-    document.addEventListener('DOMContentLoaded', function() {
-        if (!isAuthenticated()) {
-            window.location.href = 'login.html';
-            return;
-        }
-
-        loadUserProfile();
-        setupProfileForm();
-    });
-}
-
-async function loadUserProfile() {
-    try {
-        const response = await fetch(`${API_BASE}/auth/profile`, {
-            headers: getAuthHeaders()
-        });
-
-        if (response.ok) {
-            const user = await response.json();
-            displayUserProfile(user);
-            populateProfileForm(user);
-        } else if (response.status === 401) {
-            // Token expired, try refresh
-            if (await refreshAuthToken()) {
-                loadUserProfile(); // Retry
-            } else {
-                logout();
-            }
-        } else {
-            showNotification('Error loading profile');
-        }
-    } catch (error) {
-        console.error('Error loading profile:', error);
-        showNotification('Error loading profile');
-    }
-}
-
-function displayUserProfile(user) {
-    const profileInfo = document.getElementById('profile-info');
-    if (profileInfo) {
-        profileInfo.innerHTML = `
-            <div class="info-item">
-                <span class="info-label">Name:</span>
-                <span class="info-value">${user.name || 'N/A'}</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Email:</span>
-                <span class="info-value">${user.email || 'N/A'}</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Phone:</span>
-                <span class="info-value">${user.phone || 'N/A'}</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Address:</span>
-                <span class="info-value">${user.address || 'N/A'}</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Member Since:</span>
-                <span class="info-value">${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</span>
-            </div>
-        `;
-    }
-}
-
-function populateProfileForm(user) {
-    document.getElementById('name').value = user.name || '';
-    document.getElementById('email').value = user.email || '';
-    document.getElementById('phone').value = user.phone || '';
-    document.getElementById('address').value = user.address || '';
-}
-
-function setupProfileForm() {
-    const profileForm = document.getElementById('profile-form');
-    const errorMessage = document.getElementById('error-message');
-    const successMessage = document.getElementById('success-message');
-
-    if (profileForm) {
-        profileForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                address: document.getElementById('address').value
-            };
-
-            errorMessage.style.display = 'none';
-            successMessage.style.display = 'none';
-
-            try {
-                const response = await fetch(`${API_BASE}/auth/profile`, {
-                    method: 'PUT',
-                    headers: getAuthHeaders(),
-                    body: JSON.stringify(formData)
-                });
-
-                if (response.ok) {
-                    const updatedUser = await response.json();
-                    currentUser = updatedUser;
-                    saveAuthState();
-                    displayUserProfile(updatedUser);
-                    successMessage.textContent = 'Profile updated successfully!';
-                    successMessage.style.display = 'block';
-                    showNotification('Profile updated successfully!');
-                } else if (response.status === 401) {
-                    if (await refreshAuthToken()) {
-                        setupProfileForm(); // Retry
-                    } else {
-                        logout();
-                    }
-                } else {
-                    const error = await response.json();
-                    errorMessage.textContent = error.message || 'Error updating profile';
-                    errorMessage.style.display = 'block';
-                }
-            } catch (error) {
-                console.error('Error updating profile:', error);
-                errorMessage.textContent = 'Network error. Please try again.';
-                errorMessage.style.display = 'block';
-            }
-        });
-    }
-}
+// Profile page functions removed - no authentication
 
 // Contact form handling
 if (window.location.pathname.includes('contact.html')) {
