@@ -347,17 +347,42 @@ function createProductCard(product, isDeal = false) {
             ${isDeal && product.originalPrice ?
                 `<p class="original-price">GHS ${product.originalPrice.toFixed(2)}</p>` :
                 ''}
+            <div class="quantity-controls">
+                <button class="quantity-btn minus-btn" data-id="${product.id}">-</button>
+                <span class="quantity-display" data-id="${product.id}">1</span>
+                <button class="quantity-btn plus-btn" data-id="${product.id}">+</button>
+            </div>
             <div class="product-buttons">
                 <button class="btn btn-primary" onclick="viewProduct('${product.id}')">View More</button>
-                <button class="btn btn-secondary" onclick="addToCart('${product.id}')">Add to Cart</button>
+                <button class="btn btn-secondary" onclick="addToCart('${product.id}', parseInt(document.querySelector('.quantity-display[data-id="${'${product.id}'}"]').textContent))">Add to Cart</button>
             </div>
         </div>
     `;
+
+    // Add event listeners for quantity controls
+    const minusBtn = card.querySelector('.minus-btn');
+    const plusBtn = card.querySelector('.plus-btn');
+    const quantityDisplay = card.querySelector('.quantity-display');
+
+    minusBtn.addEventListener('click', () => {
+        let qty = parseInt(quantityDisplay.textContent);
+        if (qty > 1) {
+            qty--;
+            quantityDisplay.textContent = qty;
+        }
+    });
+
+    plusBtn.addEventListener('click', () => {
+        let qty = parseInt(quantityDisplay.textContent);
+        qty++;
+        quantityDisplay.textContent = qty;
+    });
+
     return card;
 }
 
 // Add to Cart
-function addToCart(productId) {
+function addToCart(productId, quantity = 1) {
     // Find product in all categories
     let product = null;
     for (const category in products) {
@@ -369,14 +394,14 @@ function addToCart(productId) {
         const existingItem = cart.find(item => item.id === productId);
 
         if (existingItem) {
-            existingItem.quantity += 1;
+            existingItem.quantity += quantity;
         } else {
-            cart.push({...product, quantity: 1});
+            cart.push({...product, quantity: quantity});
         }
 
         saveCart();
         updateCartCount();
-        showNotification('Product added to cart!');
+        showNotification(`${quantity} ${quantity > 1 ? 'items' : 'item'} added to cart!`);
     }
 }
 
@@ -737,7 +762,29 @@ function displayProductDetails(product) {
 
     // Add to cart button
     const addToCartBtn = document.getElementById('add-to-cart-btn');
-    addToCartBtn.onclick = () => addToCart(product._id);
+    addToCartBtn.onclick = () => {
+        const quantity = parseInt(document.getElementById('quantity-display').textContent);
+        addToCart(product._id, quantity);
+    };
+
+    // Quantity controls
+    const minusBtn = document.getElementById('quantity-minus');
+    const plusBtn = document.getElementById('quantity-plus');
+    const quantityDisplay = document.getElementById('quantity-display');
+
+    minusBtn.addEventListener('click', () => {
+        let qty = parseInt(quantityDisplay.textContent);
+        if (qty > 1) {
+            qty--;
+            quantityDisplay.textContent = qty;
+        }
+    });
+
+    plusBtn.addEventListener('click', () => {
+        let qty = parseInt(quantityDisplay.textContent);
+        qty++;
+        quantityDisplay.textContent = qty;
+    });
 }
 
 // Profile page functions removed - no authentication
