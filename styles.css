@@ -351,6 +351,35 @@ body {
     100% { transform: scale(1); }
 }
 
+/* Loading Spinner */
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: var(--primary-color);
+}
+
+.loading-spinner i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.loading-spinner p {
+    margin: 0;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.no-products {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-light);
+    font-style: italic;
+    grid-column: 1 / -1;
+}
+
 /* Ripple Effect */
 .ripple {
     position: absolute;

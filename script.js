@@ -30,6 +30,7 @@ const debounce = (func, wait) => {
 
 // Loading states management
 const loadingStates = new Map();
+const originalContent = new Map();
 
 function setLoading(element, isLoading) {
     if (!element) return;
@@ -38,12 +39,21 @@ function setLoading(element, isLoading) {
     loadingStates.set(elementId, isLoading);
 
     if (isLoading) {
+        // Store original content
+        if (!originalContent.has(elementId)) {
+            originalContent.set(elementId, element.innerHTML);
+        }
         element.style.opacity = '0.6';
         element.style.pointerEvents = 'none';
-        element.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+        element.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i><p>Loading products...</p></div>';
     } else {
         element.style.opacity = '1';
         element.style.pointerEvents = 'auto';
+        // Restore original content
+        const original = originalContent.get(elementId);
+        if (original) {
+            element.innerHTML = original;
+        }
     }
 }
 
@@ -76,9 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Fetch products from API
 async function fetchProducts() {
-    const loadingElement = document.querySelector('.products-section');
-    setLoading(loadingElement, true);
-
     try {
         const response = await fetch(`${API_BASE}/products`);
         const data = await response.json();
@@ -114,16 +121,49 @@ async function fetchProducts() {
                     name: 'Elegant Pink Crop Top',
                     price: 85.00,
                     image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop',
-                    category: 'crop-tops'
+                    category: 'crop-tops',
+                    sections: ['New Arrivals']
                 },
-                // ... rest of hardcoded
+                {
+                    id: '2',
+                    name: 'Classic White Blouse',
+                    price: 75.00,
+                    image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=400&fit=crop',
+                    category: 'ladies-tops',
+                    sections: ['New Arrivals']
+                },
+                {
+                    id: '3',
+                    name: 'Stylish Denim Jacket',
+                    price: 120.00,
+                    image: 'https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?w=400&h=400&fit=crop',
+                    category: 'other-ladies',
+                    sections: ['New Arrivals']
+                }
             ],
-            'top-deals': [],
-            'fast-selling': []
+            'top-deals': [
+                {
+                    id: '4',
+                    name: 'Summer Crop Top - 20% OFF',
+                    price: 60.00,
+                    originalPrice: 75.00,
+                    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop',
+                    category: 'crop-tops',
+                    sections: ['Top Deals']
+                }
+            ],
+            'fast-selling': [
+                {
+                    id: '5',
+                    name: 'Bestseller Night Wear',
+                    price: 90.00,
+                    image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=400&fit=crop',
+                    category: 'night-wear',
+                    sections: ['Fast Selling Products']
+                }
+            ]
         };
-        showNotification('Using offline products', 'info');
-    } finally {
-        setLoading(loadingElement, false);
+        showNotification('Using demo products', 'info');
     }
 }
 
@@ -226,25 +266,40 @@ function loadProducts() {
     // Load new arrivals
     const newArrivalsContainer = document.getElementById('new-arrivals');
     if (newArrivalsContainer) {
-        products['new-arrivals'].forEach(product => {
-            newArrivalsContainer.appendChild(createProductCard(product));
-        });
+        setLoading(newArrivalsContainer, false); // Clear any loading state
+        if (products['new-arrivals'].length > 0) {
+            products['new-arrivals'].forEach(product => {
+                newArrivalsContainer.appendChild(createProductCard(product));
+            });
+        } else {
+            newArrivalsContainer.innerHTML = '<p class="no-products">No new arrivals available at the moment.</p>';
+        }
     }
 
     // Load top deals
     const topDealsContainer = document.getElementById('top-deals');
     if (topDealsContainer) {
-        products['top-deals'].forEach(product => {
-            topDealsContainer.appendChild(createProductCard(product, true));
-        });
+        setLoading(topDealsContainer, false); // Clear any loading state
+        if (products['top-deals'].length > 0) {
+            products['top-deals'].forEach(product => {
+                topDealsContainer.appendChild(createProductCard(product, true));
+            });
+        } else {
+            topDealsContainer.innerHTML = '<p class="no-products">No deals available at the moment.</p>';
+        }
     }
 
     // Load fast selling
     const fastSellingContainer = document.getElementById('fast-selling');
     if (fastSellingContainer) {
-        products['fast-selling'].forEach(product => {
-            fastSellingContainer.appendChild(createProductCard(product));
-        });
+        setLoading(fastSellingContainer, false); // Clear any loading state
+        if (products['fast-selling'].length > 0) {
+            products['fast-selling'].forEach(product => {
+                fastSellingContainer.appendChild(createProductCard(product));
+            });
+        } else {
+            fastSellingContainer.innerHTML = '<p class="no-products">No fast selling products at the moment.</p>';
+        }
     }
 }
 
