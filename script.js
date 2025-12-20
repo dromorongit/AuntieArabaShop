@@ -86,33 +86,64 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Fetch products from API
 async function fetchProducts() {
+    console.log('Fetching products from API:', `${API_BASE}/products`);
+
     try {
-        const response = await fetch(`${API_BASE}/products`);
+        const response = await fetch(`${API_BASE}/products`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                // Add any required headers for your backend
+                // 'Authorization': 'Bearer YOUR_TOKEN_HERE', // Uncomment if needed
+            }
+        });
+
+        console.log('API Response status:', response.status);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
+        console.log('API Response data:', data);
+
+        if (!Array.isArray(data)) {
+            throw new Error('API did not return an array of products');
+        }
 
         // Map API data to shop format
         const mappedProducts = data.map((product, index) => ({
-            id: String(product._id || index + 1),
-            name: product.product_name,
-            price: product.promo && product.promo_price ? product.promo_price : product.price_ghc,
-            originalPrice: product.promo ? product.price_ghc : null,
-            image: product.cover_image ? `${API_BASE}/${product.cover_image}` : 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop',
-            categories: product.categories || [], // ✅ FIXED: Keep all categories as array
-            category: product.categories ? product.categories[0] : 'general', // Keep for backward compatibility
-            sections: product.sections || [],
-            stock_status: product.stock_status,
-            short_description: product.short_description
+            id: String(product._id || product.id || index + 1),
+            name: product.product_name || product.name || 'Unknown Product',
+            price: product.promo && product.promo_price ? parseFloat(product.promo_price) : parseFloat(product.price_ghc || product.price || 0),
+            originalPrice: product.promo ? parseFloat(product.price_ghc || product.price || 0) : null,
+            image: product.cover_image ? `${API_BASE}/${product.cover_image}` : (product.image || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop'),
+            categories: Array.isArray(product.categories) ? product.categories : (product.category ? [product.category] : []),
+            category: product.categories ? (Array.isArray(product.categories) ? product.categories[0] : product.categories) : (product.category || 'general'),
+            sections: Array.isArray(product.sections) ? product.sections : (product.section ? [product.section] : []),
+            stock_status: product.stock_status || 'In Stock',
+            short_description: product.short_description || product.description || ''
         }));
 
-        // Assign to sections based on product's sections field
-        products['new-arrivals'] = mappedProducts.filter(p => p.sections.includes('New Arrivals'));
-        products['top-deals'] = mappedProducts.filter(p => p.sections.includes('Top Deals'));
-        products['fast-selling'] = mappedProducts.filter(p => p.sections.includes('Fast Selling Products'));
+        console.log('Mapped products:', mappedProducts);
 
-        showNotification('Products loaded successfully!', 'success');
+        // Assign to sections based on product's sections field
+        products['new-arrivals'] = mappedProducts.filter(p => p.sections && p.sections.includes('New Arrivals'));
+        products['top-deals'] = mappedProducts.filter(p => p.sections && p.sections.includes('Top Deals'));
+        products['fast-selling'] = mappedProducts.filter(p => p.sections && p.sections.includes('Fast Selling Products'));
+
+        console.log('Products by section:', {
+            'new-arrivals': products['new-arrivals'].length,
+            'top-deals': products['top-deals'].length,
+            'fast-selling': products['fast-selling'].length
+        });
+
+        showNotification(`Loaded ${mappedProducts.length} products from your backend!`, 'success');
 
     } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error('Error fetching products from backend:', error);
+        showNotification(`Failed to load products: ${error.message}. Using demo products.`, 'error');
+
         // Fallback to hardcoded products if API fails
         products = {
             'new-arrivals': [
@@ -163,7 +194,6 @@ async function fetchProducts() {
                 }
             ]
         };
-        showNotification('Using demo products', 'info');
     }
 }
 
@@ -642,14 +672,30 @@ if (window.location.pathname.includes('product.html')) {
 }
 
 function loadProductDetails(productId) {
-    fetch(`${API_BASE}/products/${productId}`)
-        .then(response => response.json())
+    console.log('Loading product details for ID:', productId);
+
+    fetch(`${API_BASE}/products/${productId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            // Add any required headers for your backend
+            // 'Authorization': 'Bearer YOUR_TOKEN_HERE', // Uncomment if needed
+        }
+    })
+        .then(response => {
+            console.log('Product details response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(product => {
+            console.log('Product details:', product);
             displayProductDetails(product);
         })
         .catch(error => {
             console.error('Error loading product details:', error);
-            showNotification('Error loading product details');
+            showNotification(`Error loading product details: ${error.message}`, 'error');
         });
 }
 
