@@ -760,6 +760,16 @@ function displayProductDetails(product) {
         categoriesContainer.textContent = 'N/A';
     }
 
+    // Video
+    const videoContainer = document.getElementById('product-video');
+    if (product.video || product.cover_video) {
+        const videoSrc = product.video ? `${API_BASE}/${product.video}` : `${API_BASE}/${product.cover_video}`;
+        videoContainer.innerHTML = `<video controls style="max-width: 100%; height: auto; border-radius: 10px;"><source src="${videoSrc}" type="video/mp4">Your browser does not support the video tag.</video>`;
+        videoContainer.style.display = 'block';
+    } else {
+        videoContainer.style.display = 'none';
+    }
+
     // Add to cart button
     const addToCartBtn = document.getElementById('add-to-cart-btn');
     addToCartBtn.onclick = () => {
