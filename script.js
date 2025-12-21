@@ -770,6 +770,32 @@ function displayProductDetails(product) {
         videoContainer.style.display = 'none';
     }
 
+    // Additional Images Gallery
+    const galleryContainer = document.getElementById('product-gallery');
+    const mainImage = document.getElementById('product-image');
+    if (product.images && product.images.length > 0) {
+        const allImages = [product.cover_image, ...product.images].filter(img => img);
+        galleryContainer.innerHTML = allImages.map((img, index) => `
+            <div class="gallery-thumb ${index === 0 ? 'active' : ''}" data-src="${API_BASE}/${img}">
+                <img src="${API_BASE}/${img}" alt="Product image ${index + 1}">
+            </div>
+        `).join('');
+        galleryContainer.style.display = 'flex';
+
+        // Add click handlers to thumbnails
+        galleryContainer.querySelectorAll('.gallery-thumb').forEach(thumb => {
+            thumb.addEventListener('click', () => {
+                const src = thumb.dataset.src;
+                mainImage.src = src;
+                // Update active class
+                galleryContainer.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+                thumb.classList.add('active');
+            });
+        });
+    } else {
+        galleryContainer.style.display = 'none';
+    }
+
     // Add to cart button
     const addToCartBtn = document.getElementById('add-to-cart-btn');
     addToCartBtn.onclick = () => {
