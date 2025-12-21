@@ -112,18 +112,28 @@ async function fetchProducts() {
         }
 
         // Map API data to shop format
-        const mappedProducts = data.map((product, index) => ({
-            id: String(product._id || product.id || index + 1),
-            name: product.product_name || product.name || 'Unknown Product',
-            price: product.promo && product.promo_price ? parseFloat(product.promo_price) : parseFloat(product.price_ghc || product.price || 0),
-            originalPrice: product.promo ? parseFloat(product.price_ghc || product.price || 0) : null,
-            image: product.cover_image || product.image || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop',
-            categories: Array.isArray(product.categories) ? product.categories : (product.category ? [product.category] : []),
-            category: product.categories ? (Array.isArray(product.categories) ? product.categories[0] : product.categories) : (product.category || 'general'),
-            sections: Array.isArray(product.sections) ? product.sections : (product.section ? [product.section] : []),
-            stock_status: product.stock_status || 'In Stock',
-            short_description: product.short_description || product.description || ''
-        }));
+        const mappedProducts = data.map((product, index) => {
+            // Debug logging for image fields
+            console.log('Product image fields:', {
+                cover_image: product.cover_image,
+                image: product.image,
+                images: product.images,
+                all_fields: Object.keys(product)
+            });
+            
+            return {
+                id: String(product._id || product.id || index + 1),
+                name: product.product_name || product.name || 'Unknown Product',
+                price: product.promo && product.promo_price ? parseFloat(product.promo_price) : parseFloat(product.price_ghc || product.price || 0),
+                originalPrice: product.promo ? parseFloat(product.price_ghc || product.price || 0) : null,
+                image: product.cover_image || product.image || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop',
+                categories: Array.isArray(product.categories) ? product.categories : (product.category ? [product.category] : []),
+                category: product.categories ? (Array.isArray(product.categories) ? product.categories[0] : product.categories) : (product.category || 'general'),
+                sections: Array.isArray(product.sections) ? product.sections : (product.section ? [product.section] : []),
+                stock_status: product.stock_status || 'In Stock',
+                short_description: product.short_description || product.description || ''
+            };
+        });
 
         console.log('Mapped products:', mappedProducts);
 
@@ -731,6 +741,14 @@ function loadProductDetails(productId) {
 }
 
 function displayProductDetails(product) {
+    // Debug logging for image fields in product details
+    console.log('Product details image fields:', {
+        cover_image: product.cover_image,
+        image: product.image,
+        images: product.images,
+        all_fields: Object.keys(product)
+    });
+    
     document.getElementById('product-name').textContent = product.product_name;
     document.getElementById('product-price').textContent = `GHS ${product.price_ghc.toFixed(2)}`;
     if (product.promo && product.promo_price) {
