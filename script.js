@@ -348,13 +348,13 @@ function createProductCard(product, isDeal = false) {
                 `<p class="original-price">GHS ${product.originalPrice.toFixed(2)}</p>` :
                 ''}
             <div class="quantity-controls">
-                <button class="quantity-btn minus-btn" data-id="${product.id}">-</button>
-                <span class="quantity-display" data-id="${product.id}">1</span>
-                <button class="quantity-btn plus-btn" data-id="${product.id}">+</button>
+                <button class="quantity-btn minus-btn">-</button>
+                <span class="quantity-display">1</span>
+                <button class="quantity-btn plus-btn">+</button>
             </div>
             <div class="product-buttons">
                 <button class="btn btn-primary" onclick="viewProduct('${product.id}')">View More</button>
-                <button class="btn btn-secondary" onclick="addToCart('${product.id}', parseInt(document.querySelector('.quantity-display[data-id="${'${product.id}'}"]').textContent))">Add to Cart</button>
+                <button class="btn btn-secondary">Add to Cart</button>
             </div>
         </div>
     `;
@@ -363,6 +363,7 @@ function createProductCard(product, isDeal = false) {
     const minusBtn = card.querySelector('.minus-btn');
     const plusBtn = card.querySelector('.plus-btn');
     const quantityDisplay = card.querySelector('.quantity-display');
+    const addToCartBtn = card.querySelector('.btn-secondary');
 
     minusBtn.addEventListener('click', () => {
         let qty = parseInt(quantityDisplay.textContent);
@@ -376,6 +377,11 @@ function createProductCard(product, isDeal = false) {
         let qty = parseInt(quantityDisplay.textContent);
         qty++;
         quantityDisplay.textContent = qty;
+    });
+
+    addToCartBtn.addEventListener('click', () => {
+        const qty = parseInt(quantityDisplay.textContent);
+        addToCart(product.id, qty);
     });
 
     return card;
