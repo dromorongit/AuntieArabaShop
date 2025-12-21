@@ -117,7 +117,7 @@ async function fetchProducts() {
             name: product.product_name || product.name || 'Unknown Product',
             price: product.promo && product.promo_price ? parseFloat(product.promo_price) : parseFloat(product.price_ghc || product.price || 0),
             originalPrice: product.promo ? parseFloat(product.price_ghc || product.price || 0) : null,
-            image: product.cover_image ? `${API_BASE}/${product.cover_image}` : (product.image || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop'),
+            image: product.cover_image || product.image || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop',
             categories: Array.isArray(product.categories) ? product.categories : (product.category ? [product.category] : []),
             category: product.categories ? (Array.isArray(product.categories) ? product.categories[0] : product.categories) : (product.category || 'general'),
             sections: Array.isArray(product.sections) ? product.sections : (product.section ? [product.section] : []),
@@ -736,7 +736,7 @@ function displayProductDetails(product) {
     if (product.promo && product.promo_price) {
         document.getElementById('product-price').innerHTML = `<span class="original-price">GHS ${product.price_ghc.toFixed(2)}</span> <span class="promo-price">GHS ${product.promo_price.toFixed(2)}</span>`;
     }
-    document.getElementById('product-image').src = product.cover_image ? `${API_BASE}/${product.cover_image}` : 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop';
+    document.getElementById('product-image').src = product.cover_image || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop';
     document.getElementById('short-description').textContent = product.short_description || '';
     document.getElementById('long-description').textContent = product.long_description || '';
     document.getElementById('fabric-type').textContent = product.fabric_type || 'N/A';
@@ -769,7 +769,7 @@ function displayProductDetails(product) {
     // Video
     const videoContainer = document.getElementById('product-video');
     if (product.video || product.cover_video) {
-        const videoSrc = product.video ? `${API_BASE}/${product.video}` : `${API_BASE}/${product.cover_video}`;
+        const videoSrc = product.video || product.cover_video;
         videoContainer.innerHTML = `<video controls style="max-width: 100%; height: auto; border-radius: 10px;"><source src="${videoSrc}" type="video/mp4">Your browser does not support the video tag.</video>`;
         videoContainer.style.display = 'block';
     } else {
@@ -782,8 +782,8 @@ function displayProductDetails(product) {
     if (product.images && product.images.length > 0) {
         const allImages = [product.cover_image, ...product.images].filter(img => img);
         galleryContainer.innerHTML = allImages.map((img, index) => `
-            <div class="gallery-thumb ${index === 0 ? 'active' : ''}" data-src="${API_BASE}/${img}">
-                <img src="${API_BASE}/${img}" alt="Product image ${index + 1}">
+            <div class="gallery-thumb ${index === 0 ? 'active' : ''}" data-src="${img}">
+                <img src="${img}" alt="Product image ${index + 1}">
             </div>
         `).join('');
         galleryContainer.style.display = 'flex';
