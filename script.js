@@ -895,7 +895,8 @@ function createWhatsAppFloatingIcon() {
     whatsappIcon.innerHTML = `
         <a href="https://wa.me/233244152807" target="_blank" class="whatsapp-link">
             <i class="fab fa-whatsapp"></i>
-            <span class="whatsapp-tooltip">Chat with us on WhatsApp</span>
+            <div class="whatsapp-badge">1</div>
+            <span class="whatsapp-tooltip">💬 Chat with us on WhatsApp</span>
         </a>
     `;
 
@@ -904,48 +905,69 @@ function createWhatsAppFloatingIcon() {
     style.innerHTML = `
         #whatsapp-float {
             position: fixed;
-            width: 60px;
-            height: 60px;
-            bottom: 40px;
-            right: 40px;
-            background-color: #25d366;
+            width: 70px;
+            height: 70px;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
             color: #FFF;
-            border-radius: 50px;
+            border-radius: 50%;
             text-align: center;
-            font-size: 30px;
-            box-shadow: 2px 2px 3px #999;
+            font-size: 32px;
+            box-shadow: 0 8px 32px rgba(37, 211, 102, 0.4);
             z-index: 1000;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            animation: pulse 2s infinite;
         }
 
         #whatsapp-float:hover {
-            transform: scale(1.1);
-            box-shadow: 2px 2px 5px #888;
+            transform: scale(1.15) translateY(-5px);
+            box-shadow: 0 15px 40px rgba(37, 211, 102, 0.6);
+            background: linear-gradient(135deg, #20b858 0%, #0e7a6f 100%);
         }
 
         #whatsapp-float i {
-            margin-top: 16px;
+            margin-top: 18px;
             display: block;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 8px 32px rgba(37, 211, 102, 0.4);
+            }
+            50% {
+                box-shadow: 0 8px 32px rgba(37, 211, 102, 0.7), 0 0 0 10px rgba(37, 211, 102, 0.1);
+            }
+            100% {
+                box-shadow: 0 8px 32px rgba(37, 211, 102, 0.4);
+            }
         }
 
         .whatsapp-tooltip {
             position: absolute;
-            left: -160px;
+            left: -180px;
             top: 50%;
             transform: translateY(-50%);
-            background: #333;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             color: #fff;
-            padding: 8px 12px;
-            border-radius: 6px;
+            padding: 12px 20px;
+            border-radius: 25px;
             font-size: 14px;
+            font-weight: 500;
             white-space: nowrap;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
         }
 
-        .whatsapp-tooltip:after {
+        .whatsapp-tooltip:before {
             content: '';
             position: absolute;
             right: -8px;
@@ -953,7 +975,7 @@ function createWhatsAppFloatingIcon() {
             transform: translateY(-50%);
             width: 0;
             height: 0;
-            border-left: 8px solid #333;
+            border-left: 10px solid #2c3e50;
             border-top: 8px solid transparent;
             border-bottom: 8px solid transparent;
         }
@@ -961,12 +983,131 @@ function createWhatsAppFloatingIcon() {
         #whatsapp-float:hover .whatsapp-tooltip {
             opacity: 1;
             visibility: visible;
+            transform: translateY(-50%) translateX(-10px);
         }
 
         /* Make it draggable */
         #whatsapp-float.dragging {
             cursor: grabbing;
             opacity: 0.8;
+            animation: none;
+        }
+
+        /* Floating animation */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        #whatsapp-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Notification badge */
+        .whatsapp-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4757;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            border: 2px solid white;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-5px);
+            }
+            60% {
+                transform: translateY(-3px);
+            }
+        }
+
+        /* Ripple effect */
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Typing indicator animation */
+        .whatsapp-typing {
+            position: absolute;
+            bottom: 80px;
+            right: 30px;
+            background: #fff;
+            padding: 10px 15px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            font-size: 12px;
+            color: #333;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .whatsapp-typing.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .typing-dots {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #25d366;
+            margin: 0 1px;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Enhanced responsiveness */
+        @media (max-width: 768px) {
+            #whatsapp-float {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            #whatsapp-float i {
+                margin-top: 16px;
+            }
         }
     `;
 
@@ -974,8 +1115,105 @@ function createWhatsAppFloatingIcon() {
     document.body.appendChild(style);
     document.body.appendChild(whatsappIcon);
 
+    // Add interactive effects
+    addInteractiveEffects(whatsappIcon);
+
     // Make it draggable
     makeDraggable(whatsappIcon);
+}
+
+function addInteractiveEffects(element) {
+    let hoverTimeout;
+    let typingIndicator;
+    
+    // Add click ripple effect
+    element.addEventListener('click', function(e) {
+        // Create ripple effect
+        const ripple = document.createElement('div');
+        ripple.style.position = 'absolute';
+        ripple.style.borderRadius = '50%';
+        ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+        ripple.style.transform = 'scale(0)';
+        ripple.style.animation = 'ripple 0.6s linear';
+        ripple.style.left = (e.offsetX - 10) + 'px';
+        ripple.style.top = (e.offsetY - 10) + 'px';
+        ripple.style.width = '20px';
+        ripple.style.height = '20px';
+        ripple.style.pointerEvents = 'none';
+        
+        this.appendChild(ripple);
+        
+        setTimeout(() => {
+            ripple.remove();
+        }, 600);
+    });
+    
+    // Add typing indicator on hover
+    element.addEventListener('mouseenter', function() {
+        hoverTimeout = setTimeout(() => {
+            showTypingIndicator(element);
+        }, 2000);
+    });
+    
+    element.addEventListener('mouseleave', function() {
+        clearTimeout(hoverTimeout);
+        hideTypingIndicator();
+    });
+}
+
+function showTypingIndicator(element) {
+    if (document.querySelector('.whatsapp-typing')) return;
+    
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'whatsapp-typing';
+    typingDiv.innerHTML = `
+        <div class="typing-dots">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+        </div>
+        <span style="margin-left: 8px;">Customer service is typing...</span>
+    `;
+    
+    document.body.appendChild(typingDiv);
+    
+    setTimeout(() => {
+        typingDiv.classList.add('show');
+    }, 100);
+    
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+        hideTypingIndicator();
+    }, 3000);
+}
+
+function hideTypingIndicator() {
+    const typingDiv = document.querySelector('.whatsapp-typing');
+    if (typingDiv) {
+        typingDiv.classList.remove('show');
+        setTimeout(() => {
+            typingDiv.remove();
+        }, 300);
+    }
+    
+    // Add entrance animation
+    element.style.opacity = '0';
+    element.style.transform = 'scale(0) translateY(20px)';
+    
+    setTimeout(() => {
+        element.style.transition = 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        element.style.opacity = '1';
+        element.style.transform = 'scale(1) translateY(0)';
+    }, 500);
+    
+    // Add hover sound effect simulation with visual feedback
+    element.addEventListener('mouseenter', function() {
+        this.style.animation = 'float 3s ease-in-out infinite, pulse 2s infinite';
+    });
+    
+    element.addEventListener('mouseleave', function() {
+        this.style.animation = 'float 3s ease-in-out infinite';
+    });
 }
 
 function makeDraggable(element) {
