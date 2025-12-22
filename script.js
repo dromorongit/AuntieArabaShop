@@ -84,126 +84,204 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Fetch products from API
+// Enhanced Fetch products from API with comprehensive debugging
 async function fetchProducts() {
-    console.log('Fetching products from API:', `${API_BASE}/products`);
+    console.log('🔄 Starting product fetch from Railway API...');
+    console.log('🌐 API Base URL:', API_BASE);
+    console.log('📡 Full API Endpoint:', `${API_BASE}/products`);
 
     try {
+        // Add timeout and CORS handling
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+
+        console.log('📡 Making API request with CORS...');
         const response = await fetch(`${API_BASE}/products`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                // Add any required headers for your backend
-                // 'Authorization': 'Bearer YOUR_TOKEN_HERE', // Uncomment if needed
-            }
+                'Accept': 'application/json',
+                'Cache-Control': 'no-cache',
+            },
+            mode: 'cors',
+            signal: controller.signal
         });
 
-        console.log('API Response status:', response.status);
+        clearTimeout(timeoutId);
+        console.log('📊 API Response received:', {
+            status: response.status,
+            statusText: response.statusText,
+            headers: Object.fromEntries(response.headers.entries()),
+            url: response.url
+        });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
         }
 
         const data = await response.json();
-        console.log('API Response data:', data);
+        console.log('📦 Raw API data received:', data);
+        console.log('📈 Data analysis:', {
+            isArray: Array.isArray(data),
+            length: data?.length,
+            type: typeof data,
+            firstItem: data?.[0] ? Object.keys(data[0]) : 'No items'
+        });
 
         if (!Array.isArray(data)) {
-            throw new Error('API did not return an array of products');
+            throw new Error(`API did not return an array. Got: ${typeof data}`);
         }
 
-        // Map API data to shop format
+        if (data.length === 0) {
+            throw new Error('API returned empty product array');
+        }
+
+        // Enhanced product mapping with detailed debugging
         const mappedProducts = data.map((product, index) => {
-            // Debug logging for image fields
-            console.log('Product image fields:', {
-                cover_image: product.cover_image,
-                image: product.image,
-                images: product.images,
-                all_fields: Object.keys(product)
+            console.log(`🔍 Mapping product ${index + 1}:`, {
+                original_id: product._id,
+                name: product.product_name,
+                price: product.price_ghc,
+                promo: product.promo,
+                promo_price: product.promo_price,
+                sections: product.sections,
+                categories: product.categories,
+                stock_status: product.stock_status
             });
             
-            return {
+            const mappedProduct = {
                 id: String(product._id || product.id || index + 1),
-                name: product.product_name || product.name || 'Unknown Product',
-                price: product.promo && product.promo_price ? parseFloat(product.promo_price) : parseFloat(product.price_ghc || product.price || 0),
+                name: product.product_name || product.name || `Product ${index + 1}`,
+                price: product.promo && product.promo_price ? 
+                    parseFloat(product.promo_price) : 
+                    parseFloat(product.price_ghc || product.price || 0),
                 originalPrice: product.promo ? parseFloat(product.price_ghc || product.price || 0) : null,
-                image: product.cover_image || product.image || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop',
-                categories: Array.isArray(product.categories) ? product.categories : (product.category ? [product.category] : []),
-                category: product.categories ? (Array.isArray(product.categories) ? product.categories[0] : product.categories) : (product.category || 'general'),
-                sections: Array.isArray(product.sections) ? product.sections : (product.section ? [product.section] : []),
+                image: product.cover_image || 
+                      (product.other_images && product.other_images[0]) || 
+                      'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop',
+                categories: Array.isArray(product.categories) ? product.categories : 
+                           (product.category ? [product.category] : []),
+                category: product.categories ? 
+                         (Array.isArray(product.categories) ? product.categories[0] : product.categories) : 
+                         (product.category || 'general'),
+                sections: Array.isArray(product.sections) ? product.sections : 
+                         (product.section ? [product.section] : []),
                 stock_status: product.stock_status || 'In Stock',
-                short_description: product.short_description || product.description || ''
+                short_description: product.short_description || product.description || '',
+                sizes: product.sizes || [],
+                colors: product.colors || [],
+                fabric_type: product.fabric_type || ''
             };
+            
+            console.log(`✅ Mapped product ${index + 1}:`, mappedProduct);
+            return mappedProduct;
         });
 
-        console.log('Mapped products:', mappedProducts);
+        console.log('📋 All mapped products:', mappedProducts);
 
-        // Assign to sections based on product's sections field
-        products['new-arrivals'] = mappedProducts.filter(p => p.sections && p.sections.includes('New Arrivals'));
-        products['top-deals'] = mappedProducts.filter(p => p.sections && p.sections.includes('Top Deals'));
-        products['fast-selling'] = mappedProducts.filter(p => p.sections && p.sections.includes('Fast Selling Products'));
-
-        console.log('Products by section:', {
-            'new-arrivals': products['new-arrivals'].length,
-            'top-deals': products['top-deals'].length,
-            'fast-selling': products['fast-selling'].length
+        // Enhanced section filtering with debugging
+        const newArrivals = mappedProducts.filter(p => {
+            const hasNewArrivals = p.sections && p.sections.includes('New Arrivals');
+            console.log(`🆕 "${p.name}" in New Arrivals:`, hasNewArrivals, 'Sections:', p.sections);
+            return hasNewArrivals;
+        });
+        
+        const topDeals = mappedProducts.filter(p => {
+            const hasTopDeals = p.sections && p.sections.includes('Top Deals');
+            console.log(`🏷️ "${p.name}" in Top Deals:`, hasTopDeals, 'Sections:', p.sections);
+            return hasTopDeals;
+        });
+        
+        const fastSelling = mappedProducts.filter(p => {
+            const hasFastSelling = p.sections && p.sections.includes('Fast Selling Products');
+            console.log(`⚡ "${p.name}" in Fast Selling:`, hasFastSelling, 'Sections:', p.sections);
+            return hasFastSelling;
         });
 
-        // Success notification removed as requested
+        // Update global products object
+        products = {
+            'new-arrivals': newArrivals,
+            'top-deals': topDeals,
+            'fast-selling': fastSelling
+        };
+
+        console.log('📊 Final products distribution:', {
+            'new-arrivals': newArrivals.length,
+            'top-deals': topDeals.length,
+            'fast-selling': fastSelling.length,
+            total: mappedProducts.length
+        });
+
+        // Success notification
+        showNotification(`✅ Successfully loaded ${mappedProducts.length} products!`, 'success');
 
     } catch (error) {
-        console.error('Error fetching products from backend:', error);
-        showNotification(`Failed to load products: ${error.message}. Using demo products.`, 'error');
+        console.error('❌ Error fetching products from Railway API:', error);
+        
+        let errorMessage = `Failed to load products: ${error.message}`;
+        
+        if (error.name === 'AbortError') {
+            errorMessage = 'Request timed out. Please check your connection.';
+        } else if (error.message.includes('CORS')) {
+            errorMessage = 'CORS error. Check browser console for details.';
+        } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+            errorMessage = 'Network error. Please check your internet connection.';
+        }
+        
+        showNotification(`❌ ${errorMessage} Using demo products.`, 'error');
+        console.log('🔄 Falling back to demo products...');
 
-        // Fallback to hardcoded products if API fails
+        // Enhanced fallback products based on actual API data structure
         products = {
             'new-arrivals': [
                 {
-                    id: '1',
-                    name: 'Elegant Pink Crop Top',
+                    id: 'demo-1',
+                    name: 'Christmas Night Wear',
                     price: 85.00,
-                    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop',
-                    category: 'crop-tops',
-                    sections: ['New Arrivals']
+                    image: 'https://res.cloudinary.com/dzngjsqpe/image/upload/v1766282340/auntie-araba-shop-uploads/1766282339892-IMG_2053.jpg',
+                    category: 'night-wear',
+                    sections: ['New Arrivals'],
+                    sizes: ['S', 'L', 'XL'],
+                    colors: ['Green'],
+                    fabric_type: 'Silk'
                 },
                 {
-                    id: '2',
-                    name: 'Classic White Blouse',
-                    price: 75.00,
-                    image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=400&fit=crop',
-                    category: 'ladies-tops',
-                    sections: ['New Arrivals']
-                },
-                {
-                    id: '3',
-                    name: 'Stylish Denim Jacket',
-                    price: 120.00,
-                    image: 'https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?w=400&h=400&fit=crop',
-                    category: 'other-ladies',
-                    sections: ['New Arrivals']
+                    id: 'demo-2',
+                    name: 'Unisex Ash Hoodie Set',
+                    price: 130.00,
+                    originalPrice: 150.00,
+                    image: 'https://res.cloudinary.com/dzngjsqpe/image/upload/v1766296830/auntie-araba-shop-uploads/1766296829560-IMG_2055.jpg',
+                    category: '2-in-1-tops',
+                    sections: ['New Arrivals', 'Top Deals'],
+                    sizes: ['S', 'L'],
+                    colors: ['Ash'],
+                    fabric_type: 'Cotton-Silk Fabric'
                 }
             ],
             'top-deals': [
                 {
-                    id: '4',
-                    name: 'Summer Crop Top - 20% OFF',
-                    price: 60.00,
-                    originalPrice: 75.00,
-                    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop',
-                    category: 'crop-tops',
+                    id: 'demo-3',
+                    name: 'Unisex Ash Hoodie Set - Special Price',
+                    price: 130.00,
+                    originalPrice: 150.00,
+                    image: 'https://res.cloudinary.com/dzngjsqpe/image/upload/v1766296830/auntie-araba-shop-uploads/1766296829560-IMG_2055.jpg',
+                    category: '2-in-1-tops',
                     sections: ['Top Deals']
                 }
             ],
             'fast-selling': [
                 {
-                    id: '5',
-                    name: 'Bestseller Night Wear',
-                    price: 90.00,
-                    image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=400&fit=crop',
+                    id: 'demo-4',
+                    name: 'Christmas Night Wear - Best Seller',
+                    price: 85.00,
+                    image: 'https://res.cloudinary.com/dzngjsqpe/image/upload/v1766282340/auntie-araba-shop-uploads/1766282339892-IMG_2053.jpg',
                     category: 'night-wear',
                     sections: ['Fast Selling Products']
                 }
             ]
         };
+        
+        showNotification('⚠️ Using demo products. Check console for troubleshooting.', 'warning');
     }
 }
 

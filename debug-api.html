@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Debug Tool</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        button { padding: 10px 15px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>API Diagnostic Tool</h1>
+    
+    <div class="debug-section info">
+        <h3>API Endpoint Status</h3>
+        <button onclick="testAPI()">Test API Connection</button>
+        <div id="api-status"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>Console Logs</h3>
+        <button onclick="clearLogs()">Clear Logs</button>
+        <div id="console-logs"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>Network Requests</h3>
+        <button onclick="testDetailedAPI()">Test with Full Headers</button>
+        <div id="network-status"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://auntiearabashoppms-production.up.railway.app';
+        
+        // Override console.log to capture logs
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const logDiv = document.getElementById('console-logs');
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `<pre>${new Date().toLocaleTimeString()}: ${args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ')}</pre>`;
+            logDiv.appendChild(logEntry);
+        };
+
+        async function testAPI() {
+            const statusDiv = document.getElementById('api-status');
+            statusDiv.innerHTML = '<p>Testing API connection...</p>';
+            
+            try {
+                console.log('Starting API test...');
+                const response = await fetch(`${API_BASE}/products`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('API Response data:', data);
+                
+                statusDiv.innerHTML = `
+                    <div class="success">
+                        <h4>✅ API Connection Successful!</h4>
+                        <p><strong>Status:</strong> ${response.status}</p>
+                        <p><strong>Products Count:</strong> ${data.length}</p>
+                        <p><strong>Data:</strong></p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('API Test Error:', error);
+                statusDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ API Connection Failed</h4>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p><strong>Type:</strong> ${error.constructor.name}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        async function testDetailedAPI() {
+            const networkDiv = document.getElementById('network-status');
+            networkDiv.innerHTML = '<p>Testing with detailed headers...</p>';
+            
+            try {
+                console.log('Starting detailed API test...');
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
+                
+                const response = await fetch(`${API_BASE}/products`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Cache-Control': 'no-cache',
+                    },
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                console.log('Detailed Response:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: Object.fromEntries(response.headers.entries()),
+                    url: response.url
+                });
+                
+                const data = await response.json();
+                
+                networkDiv.innerHTML = `
+                    <div class="success">
+                        <h4>✅ Detailed API Test Successful</h4>
+                        <p><strong>Status:</strong> ${response.status} ${response.statusText}</p>
+                        <p><strong>URL:</strong> ${response.url}</p>
+                        <p><strong>Content-Type:</strong> ${response.headers.get('content-type')}</p>
+                        <p><strong>CORS Headers:</strong></p>
+                        <ul>
+                            <li>Access-Control-Allow-Origin: ${response.headers.get('access-control-allow-origin')}</li>
+                            <li>Access-Control-Allow-Methods: ${response.headers.get('access-control-allow-methods')}</li>
+                        </ul>
+                        <p><strong>Response Data:</strong></p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Detailed API Test Error:', error);
+                networkDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ Detailed API Test Failed</h4>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p><strong>Type:</strong> ${error.constructor.name}</p>
+                        ${error.name === 'AbortError' ? '<p><strong>Timeout:</strong> Request took too long</p>' : ''}
+                    </div>
+                `;
+            }
+        }
+        
+        function clearLogs() {
+            document.getElementById('console-logs').innerHTML = '';
+        }
+        
+        // Test CORS
+        async function testCORS() {
+            try {
+                const response = await fetch(`${API_BASE}/products`, {
+                    method: 'OPTIONS'
+                });
+                console.log('CORS Preflight Response:', response.status, Object.fromEntries(response.headers.entries()));
+            } catch (error) {
+                console.error('CORS Test Error:', error);
+            }
+        }
+        
+        // Run CORS test on load
+        testCORS();
+    </script>
+</body>
+</html>
