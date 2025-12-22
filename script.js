@@ -354,7 +354,7 @@ function createProductCard(product, isDeal = false) {
         <div class="product-info">
             <h3 class="product-name">${product.name}</h3>
             <p class="product-price">GHS ${product.price.toFixed(2)}</p>
-            ${isDeal && product.originalPrice ?
+            ${product.originalPrice ?
                 `<p class="original-price">GHS ${product.originalPrice.toFixed(2)}</p>` :
                 ''}
             <div class="quantity-controls">
