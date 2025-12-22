@@ -299,52 +299,89 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 });
 
-// Mobile dropdown functionality
+// Enhanced Mobile dropdown functionality with proper toggle behavior
 function initializeMobileDropdowns() {
     const dropdownTriggers = document.querySelectorAll('.dropdown > .nav-link');
 
     dropdownTriggers.forEach(trigger => {
         trigger.addEventListener('click', function(e) {
             e.preventDefault();
+            e.stopPropagation(); // Prevent event bubbling
+            
             const dropdown = this.parentElement;
             const menu = dropdown.querySelector('.dropdown-menu');
             const isVisible = menu.getAttribute('data-visible') === 'true';
 
-            // Close any other open dropdowns
+            console.log('Dropdown clicked:', { trigger: this.textContent, isVisible: isVisible });
+
+            // Close any other open dropdowns first
             document.querySelectorAll('.dropdown-menu').forEach(otherMenu => {
                 if (otherMenu !== menu) {
-                    otherMenu.style.opacity = '0';
-                    otherMenu.style.visibility = 'hidden';
-                    otherMenu.style.transform = 'translateY(-10px)';
-                    otherMenu.setAttribute('data-visible', 'false');
+                    closeDropdown(otherMenu);
                 }
             });
 
             // Toggle current dropdown
             if (isVisible) {
-                menu.style.opacity = '0';
-                menu.style.visibility = 'hidden';
-                menu.style.transform = 'translateY(-10px)';
-                menu.setAttribute('data-visible', 'false');
+                closeDropdown(menu);
+                // Update aria-expanded for accessibility
+                this.setAttribute('aria-expanded', 'false');
             } else {
-                menu.style.opacity = '1';
-                menu.style.visibility = 'visible';
-                menu.style.transform = 'translateY(0)';
-                menu.setAttribute('data-visible', 'true');
+                openDropdown(menu);
+                // Update aria-expanded for accessibility
+                this.setAttribute('aria-expanded', 'true');
             }
         });
     });
 
-    // Close dropdown when clicking outside
+    // Close dropdown when clicking outside (but not on dropdown triggers)
     document.addEventListener('click', function(e) {
         if (!e.target.closest('.dropdown')) {
-            document.querySelectorAll('.dropdown-menu').forEach(menu => {
-                menu.style.opacity = '0';
-                menu.style.visibility = 'hidden';
-                menu.style.transform = 'translateY(-10px)';
-                menu.setAttribute('data-visible', 'false');
-            });
+            console.log('Clicking outside dropdown, closing all');
+            closeAllDropdowns();
         }
+    });
+
+    // Close dropdown when pressing Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            console.log('Escape key pressed, closing all dropdowns');
+            closeAllDropdowns();
+        }
+    });
+}
+
+// Helper function to open a dropdown
+function openDropdown(menu) {
+    menu.style.opacity = '1';
+    menu.style.visibility = 'visible';
+    menu.style.transform = 'translateY(0)';
+    menu.setAttribute('data-visible', 'true');
+    
+    // Add animation class for smooth transition
+    menu.classList.add('dropdown-open');
+}
+
+// Helper function to close a dropdown
+function closeDropdown(menu) {
+    menu.style.opacity = '0';
+    menu.style.visibility = 'hidden';
+    menu.style.transform = 'translateY(-10px)';
+    menu.setAttribute('data-visible', 'false');
+    
+    // Remove animation class
+    menu.classList.remove('dropdown-open');
+}
+
+// Helper function to close all dropdowns
+function closeAllDropdowns() {
+    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        closeDropdown(menu);
+    });
+    
+    // Reset all aria-expanded attributes
+    document.querySelectorAll('.dropdown > .nav-link').forEach(trigger => {
+        trigger.setAttribute('aria-expanded', 'false');
     });
 }
 

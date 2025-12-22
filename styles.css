@@ -214,7 +214,7 @@ body {
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 8px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     margin-top: 0.5rem;
@@ -223,6 +223,7 @@ body {
     scrollbar-width: thin;
     scrollbar-color: var(--primary-color) transparent;
     z-index: 9999;
+    backdrop-filter: blur(10px);
 }
 
 .dropdown-menu::-webkit-scrollbar {
@@ -270,6 +271,79 @@ body {
     background: var(--light-bg);
     color: var(--primary-color);
     padding-left: 2rem;
+}
+
+/* Enhanced dropdown animation class */
+.dropdown-open {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) scale(1) !important;
+    animation: dropdownSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes dropdownSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+        visibility: hidden;
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        visibility: visible;
+    }
+}
+
+/* Dropdown trigger enhancements */
+.dropdown > .nav-link[aria-expanded="true"] {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Focus states for accessibility */
+.dropdown > .nav-link:focus {
+    outline: 2px solid var(--white);
+    outline-offset: 2px;
+}
+
+.dropdown-menu a:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
+    background: var(--light-bg);
+}
+
+/* Prevent text selection on dropdown trigger */
+.dropdown > .nav-link {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Enhanced mobile dropdown behavior */
+@media (max-width: 768px) {
+    .dropdown-menu {
+        min-width: 250px;
+        max-height: 300px;
+        margin-top: 0.25rem;
+    }
+    
+    .dropdown-open {
+        animation: dropdownSlideInMobile 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    @keyframes dropdownSlideInMobile {
+        from {
+            opacity: 0;
+            transform: translateY(-15px) scale(0.98);
+            visibility: hidden;
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            visibility: visible;
+        }
+    }
 }
 
 .cart-icon {
