@@ -860,6 +860,24 @@ body {
     font-size: 1.2rem;
 }
 
+/* Footer contact links styling */
+.footer-section a {
+    color: var(--white) !important;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.footer-section a:hover {
+    color: var(--primary-color) !important;
+    text-decoration: underline;
+}
+
+.footer-section a:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
 .social-links {
     display: flex;
     gap: 1.5rem;
