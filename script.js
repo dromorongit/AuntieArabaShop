@@ -551,10 +551,18 @@ async function loadCategoryProducts(categorySlug) {
     console.log('Loading products for category:', categorySlug, '->', targetCategory);
 
     // Filter products from all sections that have this category
+    // Use a Set to track unique product IDs and prevent duplicates
+    const uniqueProductIds = new Set();
+    const categoryProducts = [];
+    
     Object.values(products).forEach(sectionProducts => {
         sectionProducts.forEach(product => {
             if (product.categories && product.categories.includes(targetCategory)) {
-                categoryProducts.push(product);
+                // Only add if we haven't seen this product ID before
+                if (!uniqueProductIds.has(product.id)) {
+                    uniqueProductIds.add(product.id);
+                    categoryProducts.push(product);
+                }
             }
         });
     });
