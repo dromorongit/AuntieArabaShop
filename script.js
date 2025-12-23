@@ -49,10 +49,13 @@ function setLoading(element, isLoading) {
     } else {
         element.style.opacity = '1';
         element.style.pointerEvents = 'auto';
-        // Restore original content
+        // Restore original content or clear if no original exists
         const original = originalContent.get(elementId);
-        if (original) {
+        if (original && original.trim() !== '') {
             element.innerHTML = original;
+        } else {
+            // Clear the loading state - don't restore anything
+            element.innerHTML = '';
         }
     }
 }
@@ -760,6 +763,9 @@ function getUrlParameter(name) {
 // Initialize category page if on category page
 if (window.location.pathname.includes('category.html')) {
     document.addEventListener('DOMContentLoaded', async function() {
+        // Initialize dropdown functionality
+        initializeMobileDropdowns();
+        
         const category = getUrlParameter('cat');
         const categoryTitle = document.getElementById('category-title');
         const productsContainer = document.getElementById('category-products');
