@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdown Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" role="banner">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <img src="LADYSTANDARD.PNG" alt="The Lady Standard Logo" class="logo-image">
+                    <div class="logo-text">
+                        <h1>Shop with Auntie Araba</h1>
+                        <p class="tagline">The Lady Standard</p>
+                    </div>
+                </div>
+                <nav class="navigation" role="navigation" aria-label="Main navigation">
+                    <ul class="nav-menu">
+                        <li><a href="index.html" class="nav-link active" aria-current="page">Home</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="nav-link" aria-haspopup="true" aria-expanded="false" id="categories-menu">Categories <i class="fas fa-chevron-down" aria-hidden="true"></i></a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="categories-menu">
+                                <li role="none"><a href="#" role="menuitem">All Categories</a></li>
+                                <li role="none"><a href="#" role="menuitem">Ladies Basic Tops</a></li>
+                                <li role="none"><a href="#" role="menuitem">Crop Tops</a></li>
+                                <li role="none"><a href="#" role="menuitem">Night Wear</a></li>
+                                <li role="none"><a href="#" role="menuitem">Unisex NFL Jerseys</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="contact.html" class="nav-link">Contact</a></li>
+                        <li><a href="about.html" class="nav-link">About</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container" style="margin-top: 2rem;">
+        <h1>Dropdown Test Page</h1>
+        <p>Click on the "Categories" button to test the dropdown functionality.</p>
+        
+        <div id="debug-info" style="background: #f0f0f0; padding: 1rem; margin: 1rem 0; border-radius: 5px;">
+            <h3>Debug Information:</h3>
+            <div id="debug-content">Loading...</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Add debugging to the dropdown functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Dropdown test page loaded');
+            
+            const debugContent = document.getElementById('debug-content');
+            
+            // Check if dropdown elements exist
+            const dropdown = document.querySelector('.dropdown');
+            const trigger = document.querySelector('.dropdown > .nav-link');
+            const menu = document.querySelector('.dropdown-menu');
+            
+            debugContent.innerHTML = `
+                <p><strong>Dropdown element found:</strong> ${dropdown ? 'Yes' : 'No'}</p>
+                <p><strong>Trigger element found:</strong> ${trigger ? 'Yes' : 'No'}</p>
+                <p><strong>Menu element found:</strong> ${menu ? 'Yes' : 'No'}</p>
+                <p><strong>Dropdown classes:</strong> ${dropdown ? dropdown.className : 'N/A'}</p>
+                <p><strong>Trigger href:</strong> ${trigger ? trigger.getAttribute('href') : 'N/A'}</p>
+                <p><strong>Menu classes:</strong> ${menu ? menu.className : 'N/A'}</p>
+            `;
+            
+            // Test manual click event
+            if (trigger) {
+                trigger.addEventListener('click', function(e) {
+                    console.log('Trigger clicked manually!');
+                    debugContent.innerHTML += '<p style="color: green;"><strong>✅ Trigger click event detected!</strong></p>';
+                });
+            }
+            
+            // Check if initializeMobileDropdowns function exists
+            if (typeof initializeMobileDropdowns === 'function') {
+                debugContent.innerHTML += '<p style="color: green;"><strong>✅ initializeMobileDropdowns function exists</strong></p>';
+            } else {
+                debugContent.innerHTML += '<p style="color: red;"><strong>❌ initializeMobileDropdowns function NOT found</strong></p>';
+            }
+        });
+    </script>
+</body>
+</html>

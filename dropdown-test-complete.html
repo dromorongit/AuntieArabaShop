@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdown Functionality Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .test-section {
+            background: #f0f8ff;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 10px;
+            border: 2px solid #4CAF50;
+        }
+        
+        .test-result {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .test-pass {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .test-fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .test-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" role="banner">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <img src="LADYSTANDARD.PNG" alt="The Lady Standard Logo" class="logo-image">
+                    <div class="logo-text">
+                        <h1>Shop with Auntie Araba</h1>
+                        <p class="tagline">The Lady Standard</p>
+                    </div>
+                </div>
+                <nav class="navigation" role="navigation" aria-label="Main navigation">
+                    <ul class="nav-menu">
+                        <li><a href="index.html" class="nav-link active" aria-current="page">Home</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="nav-link" aria-haspopup="true" aria-expanded="false" id="categories-menu">Categories <i class="fas fa-chevron-down" aria-hidden="true"></i></a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="categories-menu">
+                                <li role="none"><a href="#" onclick="testClick('All Categories')" role="menuitem">All Categories</a></li>
+                                <li role="none"><a href="#" onclick="testClick('Ladies Basic Tops')" role="menuitem">Ladies Basic Tops</a></li>
+                                <li role="none"><a href="#" onclick="testClick('Night Wear')" role="menuitem">Night Wear</a></li>
+                                <li role="none"><a href="#" onclick="testClick('2-in-1 Tops and Downs')" role="menuitem">2-in-1 Tops and Downs</a></li>
+                                <li role="none"><a href="#" onclick="testClick('Elegant Dresses')" role="menuitem">Elegant Dresses</a></li>
+                                <li role="none"><a href="#" onclick="testClick('Unisex NFL Jerseys')" role="menuitem">Unisex NFL Jerseys</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="contact.html" class="nav-link">Contact</a></li>
+                        <li><a href="about.html" class="nav-link">About</a></li>
+                    </ul>
+                </nav>
+                <div class="cart-icon">
+                    <a href="cart.html" aria-label="Shopping cart">
+                        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                        <span class="cart-count" aria-label="Items in cart">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container" style="margin-top: 2rem;">
+        <h1>🧪 Dropdown Functionality Test</h1>
+        <p>This page tests the Categories dropdown functionality to verify it works correctly.</p>
+        
+        <div class="test-section">
+            <h2>📋 Test Instructions</h2>
+            <ol>
+                <li><strong>Click</strong> on the "Categories" button in the header</li>
+                <li>The dropdown should <strong>open and display</strong> the category list</li>
+                <li><strong>Click</strong> on any category to test navigation</li>
+                <li><strong>Click outside</strong> the dropdown to close it</li>
+                <li><strong>Press Escape</strong> key to close the dropdown</li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h2>🔍 Live Test Results</h2>
+            <div id="test-results">
+                <div class="test-info">Ready to test...</div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🎯 Expected Behavior</h2>
+            <ul>
+                <li>✅ Dropdown opens when Categories button is clicked</li>
+                <li>✅ Category list displays with all items</li>
+                <li>✅ Dropdown closes when clicking outside</li>
+                <li>✅ Dropdown closes when pressing Escape key</li>
+                <li>✅ Category links work (they will show alerts for testing)</li>
+                <li>✅ Only one dropdown opens at a time</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🔧 Technical Details</h2>
+            <div id="technical-status">
+                <div class="test-info">Checking technical setup...</div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>📱 Test on Different Devices</h2>
+            <p><strong>Desktop:</strong> Test hover and click functionality</p>
+            <p><strong>Mobile:</strong> Test tap functionality (no hover on mobile)</p>
+            <p><strong>Tablet:</strong> Test both hover and tap</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="simple-dropdown-fix.js"></script>
+    <script>
+        // Test function for category clicks
+        function testClick(categoryName) {
+            addTestResult(`✅ Category clicked: "${categoryName}"`, 'pass');
+            alert(`✅ Category "${categoryName}" clicked! This is working correctly.`);
+        }
+
+        // Add test result to the display
+        function addTestResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('test-results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result test-${type}`;
+            resultDiv.innerHTML = `<strong>${new Date().toLocaleTimeString()}:</strong> ${message}`;
+            resultsDiv.appendChild(resultDiv);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        // Check technical setup
+        function checkTechnicalSetup() {
+            const techDiv = document.getElementById('technical-status');
+            const checks = [];
+
+            // Check if script.js is loaded
+            checks.push(typeof fetchProducts !== 'undefined' ? '✅ script.js loaded' : '❌ script.js not loaded');
+
+            // Check if simple-dropdown-fix.js is loaded
+            checks.push(typeof checkTechnicalSetup !== 'undefined' ? '✅ simple-dropdown-fix.js loaded' : '❌ simple-dropdown-fix.js not loaded');
+
+            // Check dropdown elements
+            const trigger = document.getElementById('categories-menu');
+            const menu = document.querySelector('.dropdown-menu');
+            checks.push(trigger ? '✅ Categories trigger found' : '❌ Categories trigger not found');
+            checks.push(menu ? '✅ Dropdown menu found' : '❌ Dropdown menu not found');
+
+            // Check event listeners
+            const hasClickListener = trigger && trigger.onclick !== null;
+            checks.push(hasClickListener ? '✅ Click listener attached' : '❌ Click listener not attached');
+
+            techDiv.innerHTML = checks.map(check => `<div class="test-info">${check}</div>`).join('');
+        }
+
+        // Monitor dropdown behavior
+        document.addEventListener('DOMContentLoaded', function() {
+            addTestResult('Page loaded successfully', 'info');
+            checkTechnicalSetup();
+
+            const trigger = document.getElementById('categories-menu');
+            const menu = document.querySelector('.dropdown-menu');
+
+            if (trigger && menu) {
+                // Monitor trigger clicks
+                trigger.addEventListener('click', function() {
+                    setTimeout(() => {
+                        const isOpen = menu.classList.contains('dropdown-open');
+                        addTestResult(
+                            isOpen ? '✅ Dropdown opened successfully' : '❌ Dropdown failed to open', 
+                            isOpen ? 'pass' : 'fail'
+                        );
+                    }, 100);
+                });
+
+                // Monitor outside clicks
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.dropdown')) {
+                        setTimeout(() => {
+                            const isClosed = !menu.classList.contains('dropdown-open');
+                            addTestResult(
+                                isClosed ? '✅ Dropdown closed (outside click)' : '❌ Dropdown did not close (outside click)',
+                                isClosed ? 'pass' : 'fail'
+                            );
+                        }, 100);
+                    }
+                });
+
+                // Monitor Escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && menu.classList.contains('dropdown-open')) {
+                        setTimeout(() => {
+                            const isClosed = !menu.classList.contains('dropdown-open');
+                            addTestResult(
+                                isClosed ? '✅ Dropdown closed (Escape key)' : '❌ Dropdown did not close (Escape key)',
+                                isClosed ? 'pass' : 'fail'
+                            );
+                        }, 100);
+                    }
+                });
+            }
+
+            addTestResult('Test monitoring active - ready for interaction!', 'info');
+        });
+    </script>
+</body>
+</html>

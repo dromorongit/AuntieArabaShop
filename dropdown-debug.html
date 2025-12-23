@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdown Debug Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Override any conflicting styles */
+        .dropdown-menu {
+            display: none !important;
+            position: absolute !important;
+            top: 100% !important;
+            left: 0 !important;
+            background: white !important;
+            border: 1px solid #ccc !important;
+            min-width: 250px !important;
+            z-index: 10000 !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+        }
+        
+        .dropdown-menu.show {
+            display: block !important;
+        }
+        
+        .dropdown-menu li {
+            list-style: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        .dropdown-menu a {
+            display: block !important;
+            padding: 12px 16px !important;
+            text-decoration: none !important;
+            color: #333 !important;
+            border-bottom: 1px solid #eee !important;
+        }
+        
+        .dropdown-menu a:hover {
+            background: #f5f5f5 !important;
+        }
+        
+        .dropdown-menu a:last-child {
+            border-bottom: none !important;
+        }
+        
+        /* Force visibility */
+        .dropdown:hover .dropdown-menu {
+            display: block !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" role="banner">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <img src="LADYSTANDARD.PNG" alt="The Lady Standard Logo" class="logo-image">
+                    <div class="logo-text">
+                        <h1>Shop with Auntie Araba</h1>
+                        <p class="tagline">The Lady Standard</p>
+                    </div>
+                </div>
+                <nav class="navigation" role="navigation" aria-label="Main navigation">
+                    <ul class="nav-menu">
+                        <li><a href="index.html" class="nav-link active" aria-current="page">Home</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="nav-link" id="debug-categories">Categories <i class="fas fa-chevron-down"></i></a>
+                            <ul class="dropdown-menu" id="debug-dropdown-menu">
+                                <li><a href="#" onclick="alert('All Categories clicked')">All Categories</a></li>
+                                <li><a href="#" onclick="alert('Night Wear clicked')">Night Wear</a></li>
+                                <li><a href="#" onclick="alert('2-in-1 Tops clicked')">2-in-1 Tops and Downs</a></li>
+                                <li><a href="#" onclick="alert('Elegant Dresses clicked')">Elegant Dresses</a></li>
+                                <li><a href="#" onclick="alert('NFL Jerseys clicked')">Unisex NFL Jerseys</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="contact.html" class="nav-link">Contact</a></li>
+                        <li><a href="about.html" class="nav-link">About</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container" style="margin-top: 2rem;">
+        <h1>Dropdown Debug Test</h1>
+        <p>This is a simplified test to verify dropdown functionality.</p>
+        
+        <div style="background: #f0f8ff; padding: 1rem; margin: 1rem 0; border-radius: 5px; border: 1px solid #4CAF50;">
+            <h3>✅ Debug Information:</h3>
+            <div id="debug-status">Ready to test...</div>
+        </div>
+    </div>
+
+    <script>
+        console.log('Dropdown debug script loaded');
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const debugStatus = document.getElementById('debug-status');
+            const dropdownTrigger = document.getElementById('debug-categories');
+            const dropdownMenu = document.getElementById('debug-dropdown-menu');
+            
+            debugStatus.innerHTML = '<p>✅ DOM loaded successfully</p>';
+            debugStatus.innerHTML += '<p>✅ Dropdown trigger found: ' + (dropdownTrigger ? 'Yes' : 'No') + '</p>';
+            debugStatus.innerHTML += '<p>✅ Dropdown menu found: ' + (dropdownMenu ? 'Yes' : 'No') + '</p>';
+            
+            if (dropdownTrigger && dropdownMenu) {
+                debugStatus.innerHTML += '<p style="color: green;"><strong>✅ Setting up click event...</strong></p>';
+                
+                dropdownTrigger.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Dropdown clicked!');
+                    debugStatus.innerHTML += '<p style="color: blue;"><strong>🔄 Click event fired!</strong></p>';
+                    
+                    // Simple toggle
+                    dropdownMenu.classList.toggle('show');
+                    
+                    const isVisible = dropdownMenu.classList.contains('show');
+                    debugStatus.innerHTML += '<p><strong>Menu visible:</strong> ' + isVisible + '</p>';
+                    console.log('Menu visible:', isVisible);
+                });
+                
+                debugStatus.innerHTML += '<p style="color: green;"><strong>✅ Click event attached successfully!</strong></p>';
+            } else {
+                debugStatus.innerHTML += '<p style="color: red;"><strong>❌ Elements not found!</strong></p>';
+            }
+            
+            // Test hover as backup
+            const dropdown = document.querySelector('.dropdown');
+            if (dropdown) {
+                dropdown.addEventListener('mouseenter', function() {
+                    console.log('Hover entered');
+                    dropdownMenu.classList.add('show');
+                });
+                
+                dropdown.addEventListener('mouseleave', function() {
+                    console.log('Hover left');
+                    dropdownMenu.classList.remove('show');
+                });
+                
+                debugStatus.innerHTML += '<p>✅ Hover events also attached as backup</p>';
+            }
+        });
+    </script>
+</body>
+</html>
