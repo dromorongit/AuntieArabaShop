@@ -73,7 +73,7 @@
             statusDiv.innerHTML = `<div class="${type}">${message}</div>`;
         }
 
-        async function fetchProducts() {
+        async function fetchProducts(showNotification = true) {
             console.log('🔄 Starting product fetch from Railway API...');
             showStatus('Fetching products from API...', 'info');
             

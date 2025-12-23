@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Enhanced Fetch products from API with comprehensive debugging
-async function fetchProducts() {
+async function fetchProducts(showNotification = true) {
     console.log('🔄 Starting product fetch from Railway API...');
     console.log('🌐 API Base URL:', API_BASE);
     console.log('📡 Full API Endpoint:', `${API_BASE}/products`);
@@ -212,8 +212,10 @@ async function fetchProducts() {
             total: mappedProducts.length
         });
 
-        // Success notification
-        showNotification(`✅ Successfully loaded ${mappedProducts.length} products!`, 'success');
+        // Success notification (only show on homepage)
+        if (showNotification) {
+            showNotification(`✅ Successfully loaded ${mappedProducts.length} products!`, 'success');
+        }
 
     } catch (error) {
         console.error('❌ Error fetching products from Railway API:', error);
@@ -637,7 +639,7 @@ function showNotification(message, type = 'success') {
 
 // Category Page Functions
 async function loadCategoryProducts(categorySlug) {
-    await fetchProducts(); // Ensure products are loaded
+    await fetchProducts(false); // Ensure products are loaded without notification
 
     // Map URL slugs to database category names
     const categoryMapping = {
