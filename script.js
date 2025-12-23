@@ -638,7 +638,6 @@ function showNotification(message, type = 'success') {
 // Category Page Functions
 async function loadCategoryProducts(categorySlug) {
     await fetchProducts(); // Ensure products are loaded
-    const categoryProducts = [];
 
     // Map URL slugs to database category names
     const categoryMapping = {
@@ -678,7 +677,7 @@ async function loadCategoryProducts(categorySlug) {
 
     if (!targetCategory) {
         console.warn('Unknown category slug:', categorySlug);
-        return categoryProducts;
+        return [];
     }
 
     console.log('Loading products for category:', categorySlug, '->', targetCategory);

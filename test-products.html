@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Test Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .product-card { 
+            border: 1px solid #ddd; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .product-image img { 
+            width: 100px; 
+            height: 100px; 
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .product-info h3 { margin: 0 0 10px 0; }
+        .loading { 
+            background: #f0f0f0; 
+            padding: 20px; 
+            text-align: center; 
+            border-radius: 5px;
+        }
+        .error { 
+            background: #ffe6e6; 
+            color: #cc0000; 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin: 10px 0;
+        }
+        .success { 
+            background: #e6ffe6; 
+            color: #006600; 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Loading Test</h1>
+    <div id="status"></div>
+    <h2>New Arrivals</h2>
+    <div id="new-arrivals">
+        <div class="loading">Loading products...</div>
+    </div>
+    <h2>Top Deals</h2>
+    <div id="top-deals">
+        <div class="loading">Loading products...</div>
+    </div>
+    <h2>Fast Selling</h2>
+    <div id="fast-selling">
+        <div class="loading">Loading products...</div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://auntiearabashoppms-production.up.railway.app';
+        let products = {
+            'new-arrivals': [],
+            'top-deals': [],
+            'fast-selling': []
+        };
+
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+
+        async function fetchProducts() {
+            console.log('🔄 Starting product fetch from Railway API...');
+            showStatus('Fetching products from API...', 'info');
+            
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+                console.log('📡 Making API request...');
+                const response = await fetch(`${API_BASE}/products`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Cache-Control': 'no-cache',
+                    },
+                    mode: 'cors',
+                    signal: controller.signal
+                });
+
+                clearTimeout(timeoutId);
+                console.log('📊 API Response:', response.status, response.statusText);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('📦 Raw API data:', data);
+
+                if (!Array.isArray(data)) {
+                    throw new Error(`API did not return an array. Got: ${typeof data}`);
+                }
+
+                if (data.length === 0) {
+                    throw new Error('API returned empty product array');
+                }
+
+                // Enhanced product mapping
+                const mappedProducts = data.map((product, index) => {
+                    console.log(`🔍 Mapping product ${index + 1}:`, product);
+                    
+                    const mappedProduct = {
+                        id: String(product._id || product.id || index + 1),
+                        name: product.product_name || product.name || `Product ${index + 1}`,
+                        price: product.promo && product.promo_price ? 
+                            parseFloat(product.promo_price) : 
+                            parseFloat(product.price_ghc || product.price || 0),
+                        originalPrice: product.promo ? parseFloat(product.price_ghc || product.price || 0) : null,
+                        image: product.cover_image || 
+                              (product.other_images && product.other_images[0]) || 
+                              'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop',
+                        categories: Array.isArray(product.categories) ? product.categories : 
+                                   (product.category ? [product.category] : []),
+                        category: product.categories ? 
+                                 (Array.isArray(product.categories) ? product.categories[0] : product.categories) : 
+                                 (product.category || 'general'),
+                        sections: Array.isArray(product.sections) ? product.sections : 
+                                 (product.section ? [product.section] : []),
+                        stock_status: product.stock_status || 'In Stock'
+                    };
+                    
+                    console.log(`✅ Mapped product:`, mappedProduct);
+                    return mappedProduct;
+                });
+
+                // Enhanced section filtering
+                const newArrivals = mappedProducts.filter(p => {
+                    const hasNewArrivals = p.sections && p.sections.includes('New Arrivals');
+                    console.log(`🆕 "${p.name}" in New Arrivals:`, hasNewArrivals);
+                    return hasNewArrivals;
+                });
+                
+                const topDeals = mappedProducts.filter(p => {
+                    const hasTopDeals = p.sections && p.sections.includes('Top Deals');
+                    console.log(`🏷️ "${p.name}" in Top Deals:`, hasTopDeals);
+                    return hasTopDeals;
+                });
+                
+                const fastSelling = mappedProducts.filter(p => {
+                    const hasFastSelling = p.sections && p.sections.includes('Fast Selling Products');
+                    console.log(`⚡ "${p.name}" in Fast Selling:`, hasFastSelling);
+                    return hasFastSelling;
+                });
+
+                // Update global products object
+                products = {
+                    'new-arrivals': newArrivals,
+                    'top-deals': topDeals,
+                    'fast-selling': fastSelling
+                };
+
+                console.log('📊 Final products distribution:', {
+                    'new-arrivals': newArrivals.length,
+                    'top-deals': topDeals.length,
+                    'fast-selling': fastSelling.length,
+                    total: mappedProducts.length
+                });
+
+                showStatus(`✅ Successfully loaded ${mappedProducts.length} products!`, 'success');
+                loadProducts();
+
+            } catch (error) {
+                console.error('❌ Error fetching products:', error);
+                showStatus(`❌ Failed to load products: ${error.message}`, 'error');
+            }
+        }
+
+        function loadProducts() {
+            // Load new arrivals
+            const newArrivalsContainer = document.getElementById('new-arrivals');
+            newArrivalsContainer.innerHTML = '';
+            if (products['new-arrivals'].length > 0) {
+                products['new-arrivals'].forEach(product => {
+                    newArrivalsContainer.appendChild(createProductCard(product));
+                });
+            } else {
+                newArrivalsContainer.innerHTML = '<p>No new arrivals available.</p>';
+            }
+
+            // Load top deals
+            const topDealsContainer = document.getElementById('top-deals');
+            topDealsContainer.innerHTML = '';
+            if (products['top-deals'].length > 0) {
+                products['top-deals'].forEach(product => {
+                    topDealsContainer.appendChild(createProductCard(product));
+                });
+            } else {
+                topDealsContainer.innerHTML = '<p>No deals available.</p>';
+            }
+
+            // Load fast selling
+            const fastSellingContainer = document.getElementById('fast-selling');
+            fastSellingContainer.innerHTML = '';
+            if (products['fast-selling'].length > 0) {
+                products['fast-selling'].forEach(product => {
+                    fastSellingContainer.appendChild(createProductCard(product));
+                });
+            } else {
+                fastSellingContainer.innerHTML = '<p>No fast selling products available.</p>';
+            }
+        }
+
+        function createProductCard(product) {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <div class="product-image">
+                    <img src="${product.image}" alt="${product.name}" onerror="this.src='https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop'">
+                </div>
+                <div class="product-info">
+                    <h3>${product.name}</h3>
+                    <p><strong>Price:</strong> GHS ${product.price.toFixed(2)}</p>
+                    ${product.originalPrice ? `<p><strong>Original:</strong> GHS ${product.originalPrice.toFixed(2)}</p>` : ''}
+                    <p><strong>Category:</strong> ${product.category}</p>
+                    <p><strong>Sections:</strong> ${product.sections.join(', ')}</p>
+                    <p><strong>Stock:</strong> ${product.stock_status}</p>
+                </div>
+            `;
+            return card;
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', async function() {
+            await fetchProducts();
+        });
+    </script>
+</body>
+</html>
