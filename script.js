@@ -301,50 +301,60 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 });
 
-// Enhanced Mobile dropdown functionality with proper toggle behavior
+// Simplified and reliable dropdown functionality
 function initializeMobileDropdowns() {
+    console.log('Initializing dropdowns...');
+    
     const dropdownTriggers = document.querySelectorAll('.dropdown > .nav-link');
+    console.log('Found dropdown triggers:', dropdownTriggers.length);
 
-    dropdownTriggers.forEach(trigger => {
-        trigger.addEventListener('click', function(e) {
+    dropdownTriggers.forEach((trigger, index) => {
+        console.log(`Setting up dropdown ${index + 1}:`, trigger.textContent.trim());
+        
+        // Remove any existing event listeners to prevent duplicates
+        const newTrigger = trigger.cloneNode(true);
+        trigger.parentNode.replaceChild(newTrigger, trigger);
+        
+        newTrigger.addEventListener('click', function(e) {
             e.preventDefault();
-            e.stopPropagation(); // Prevent event bubbling
+            e.stopPropagation();
+            
+            console.log('Dropdown clicked:', this.textContent.trim());
             
             const dropdown = this.parentElement;
             const menu = dropdown.querySelector('.dropdown-menu');
             
-            // Check if this dropdown is currently open
-            const isCurrentlyOpen = menu.classList.contains('dropdown-open') || 
-                                   menu.getAttribute('data-visible') === 'true';
+            if (!menu) {
+                console.error('Dropdown menu not found!');
+                return;
+            }
+            
+            // Check current state
+            const isOpen = menu.style.display === 'block' || 
+                          menu.classList.contains('dropdown-open') ||
+                          menu.getAttribute('data-visible') === 'true';
 
-            console.log('Dropdown clicked:', { trigger: this.textContent, isCurrentlyOpen: isCurrentlyOpen });
+            console.log('Current state - isOpen:', isOpen);
 
-            // Close any other open dropdowns first
+            // Close all other dropdowns first
             document.querySelectorAll('.dropdown-menu').forEach(otherMenu => {
                 if (otherMenu !== menu) {
                     closeDropdown(otherMenu);
-                    // Reset aria-expanded for other triggers
-                    const otherTrigger = otherMenu.closest('.dropdown').querySelector('.nav-link');
-                    if (otherTrigger) {
-                        otherTrigger.setAttribute('aria-expanded', 'false');
-                    }
                 }
             });
 
             // Toggle current dropdown
-            if (isCurrentlyOpen) {
+            if (isOpen) {
                 closeDropdown(menu);
-                // Update aria-expanded for accessibility
                 this.setAttribute('aria-expanded', 'false');
             } else {
                 openDropdown(menu);
-                // Update aria-expanded for accessibility
                 this.setAttribute('aria-expanded', 'true');
             }
         });
     });
 
-    // Close dropdown when clicking outside (but not on dropdown triggers)
+    // Close dropdowns when clicking outside
     document.addEventListener('click', function(e) {
         if (!e.target.closest('.dropdown')) {
             console.log('Clicking outside dropdown, closing all');
@@ -352,17 +362,23 @@ function initializeMobileDropdowns() {
         }
     });
 
-    // Close dropdown when pressing Escape key
+    // Close dropdowns with Escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             console.log('Escape key pressed, closing all dropdowns');
             closeAllDropdowns();
         }
     });
+    
+    console.log('Dropdown initialization complete');
 }
 
-// Helper function to open a dropdown
+// Simplified helper function to open a dropdown
 function openDropdown(menu) {
+    console.log('Opening dropdown:', menu);
+    
+    // Use display:block for immediate visibility, then add classes for animation
+    menu.style.display = 'block';
     menu.style.opacity = '1';
     menu.style.visibility = 'visible';
     menu.style.transform = 'translateY(0)';
@@ -370,10 +386,16 @@ function openDropdown(menu) {
     
     // Add animation class for smooth transition
     menu.classList.add('dropdown-open');
+    
+    console.log('Dropdown opened successfully');
 }
 
-// Helper function to close a dropdown
+// Simplified helper function to close a dropdown
 function closeDropdown(menu) {
+    console.log('Closing dropdown:', menu);
+    
+    // Hide immediately
+    menu.style.display = 'none';
     menu.style.opacity = '0';
     menu.style.visibility = 'hidden';
     menu.style.transform = 'translateY(-10px)';
@@ -381,10 +403,14 @@ function closeDropdown(menu) {
     
     // Remove animation class
     menu.classList.remove('dropdown-open');
+    
+    console.log('Dropdown closed successfully');
 }
 
 // Helper function to close all dropdowns
 function closeAllDropdowns() {
+    console.log('Closing all dropdowns...');
+    
     document.querySelectorAll('.dropdown-menu').forEach(menu => {
         closeDropdown(menu);
     });
@@ -393,6 +419,8 @@ function closeAllDropdowns() {
     document.querySelectorAll('.dropdown > .nav-link').forEach(trigger => {
         trigger.setAttribute('aria-expanded', 'false');
     });
+    
+    console.log('All dropdowns closed');
 }
 
 // Carousel Functionality

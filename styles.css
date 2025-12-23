@@ -208,6 +208,7 @@ body {
 
 /* Only show dropdown when explicitly opened by JS */
 .dropdown-open {
+    display: block !important;
     opacity: 1 !important;
     visibility: visible !important;
     transform: translateY(0) scale(1) !important;
@@ -246,6 +247,8 @@ body {
     scrollbar-color: var(--primary-color) transparent;
     z-index: 9999;
     backdrop-filter: blur(10px);
+    /* Ensure menu is hidden by default */
+    display: none;
 }
 
 .dropdown-menu::-webkit-scrollbar {
