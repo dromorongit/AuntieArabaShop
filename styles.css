@@ -189,16 +189,7 @@ body {
     font-weight: 800;
 }
 
-/* Disable hover dropdown on touch devices and prevent CSS hover interference */
-@media (hover: none) and (pointer: coarse) {
-    .dropdown:hover .dropdown-menu {
-        opacity: 0 !important;
-        visibility: hidden !important;
-        transform: translateY(-10px) !important;
-    }
-}
-
-/* Additional protection against CSS hover interference on all devices */
+/* Enhanced dropdown behavior - removed conflicting hover rules */
 .dropdown-menu {
     opacity: 0;
     visibility: hidden;
@@ -206,19 +197,13 @@ body {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Only show dropdown when explicitly opened by JS */
+/* Show dropdown when JavaScript adds dropdown-open class */
 .dropdown-open {
     display: block !important;
     opacity: 1 !important;
     visibility: visible !important;
     transform: translateY(0) scale(1) !important;
     animation: dropdownSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Ensure hover doesn't interfere */
-.dropdown:hover .dropdown-menu {
-    opacity: 0 !important;
-    visibility: hidden !important;
 }
 
 .dropdown {
@@ -247,8 +232,6 @@ body {
     scrollbar-color: var(--primary-color) transparent;
     z-index: 9999;
     backdrop-filter: blur(10px);
-    /* Ensure menu is hidden by default */
-    display: none;
 }
 
 .dropdown-menu::-webkit-scrollbar {
@@ -268,11 +251,7 @@ body {
     background: var(--secondary-color);
 }
 
-.dropdown:hover .dropdown-menu {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0) scale(1);
-}
+/* Removed conflicting hover rules - dropdown is now JavaScript-controlled only */
 
 .dropdown-menu li {
     border-bottom: 1px solid var(--glass-border);
@@ -298,13 +277,7 @@ body {
     padding-left: 2rem;
 }
 
-/* Enhanced dropdown animation class */
-.dropdown-open {
-    opacity: 1 !important;
-    visibility: visible !important;
-    transform: translateY(0) scale(1) !important;
-    animation: dropdownSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
+/* Dropdown trigger enhancements */
 
 @keyframes dropdownSlideIn {
     from {

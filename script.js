@@ -377,15 +377,19 @@ function initializeMobileDropdowns() {
 function openDropdown(menu) {
     console.log('Opening dropdown:', menu);
     
-    // Use display:block for immediate visibility, then add classes for animation
+    // Show immediately first
     menu.style.display = 'block';
-    menu.style.opacity = '1';
-    menu.style.visibility = 'visible';
-    menu.style.transform = 'translateY(0)';
-    menu.setAttribute('data-visible', 'true');
     
-    // Add animation class for smooth transition
-    menu.classList.add('dropdown-open');
+    // Then animate in
+    setTimeout(() => {
+        menu.style.opacity = '1';
+        menu.style.visibility = 'visible';
+        menu.style.transform = 'translateY(0) scale(1)';
+        menu.setAttribute('data-visible', 'true');
+        
+        // Add animation class for smooth transition
+        menu.classList.add('dropdown-open');
+    }, 10); // Small delay to ensure display change takes effect
     
     console.log('Dropdown opened successfully');
 }
@@ -394,15 +398,19 @@ function openDropdown(menu) {
 function closeDropdown(menu) {
     console.log('Closing dropdown:', menu);
     
-    // Hide immediately
-    menu.style.display = 'none';
+    // Hide using CSS classes and inline styles
+    menu.classList.remove('dropdown-open');
     menu.style.opacity = '0';
     menu.style.visibility = 'hidden';
     menu.style.transform = 'translateY(-10px)';
     menu.setAttribute('data-visible', 'false');
     
-    // Remove animation class
-    menu.classList.remove('dropdown-open');
+    // Use a timeout to fully hide after animation
+    setTimeout(() => {
+        if (!menu.classList.contains('dropdown-open')) {
+            menu.style.display = 'none';
+        }
+    }, 400); // Match CSS transition duration
     
     console.log('Dropdown closed successfully');
 }
