@@ -189,13 +189,35 @@ body {
     font-weight: 800;
 }
 
-/* Disable hover dropdown on touch devices */
+/* Disable hover dropdown on touch devices and prevent CSS hover interference */
 @media (hover: none) and (pointer: coarse) {
     .dropdown:hover .dropdown-menu {
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(-10px);
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transform: translateY(-10px) !important;
     }
+}
+
+/* Additional protection against CSS hover interference on all devices */
+.dropdown-menu {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Only show dropdown when explicitly opened by JS */
+.dropdown-open {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) scale(1) !important;
+    animation: dropdownSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ensure hover doesn't interfere */
+.dropdown:hover .dropdown-menu {
+    opacity: 0 !important;
+    visibility: hidden !important;
 }
 
 .dropdown {

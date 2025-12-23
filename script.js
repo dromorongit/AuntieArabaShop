@@ -312,19 +312,27 @@ function initializeMobileDropdowns() {
             
             const dropdown = this.parentElement;
             const menu = dropdown.querySelector('.dropdown-menu');
-            const isVisible = menu.getAttribute('data-visible') === 'true';
+            
+            // Check if this dropdown is currently open
+            const isCurrentlyOpen = menu.classList.contains('dropdown-open') || 
+                                   menu.getAttribute('data-visible') === 'true';
 
-            console.log('Dropdown clicked:', { trigger: this.textContent, isVisible: isVisible });
+            console.log('Dropdown clicked:', { trigger: this.textContent, isCurrentlyOpen: isCurrentlyOpen });
 
             // Close any other open dropdowns first
             document.querySelectorAll('.dropdown-menu').forEach(otherMenu => {
                 if (otherMenu !== menu) {
                     closeDropdown(otherMenu);
+                    // Reset aria-expanded for other triggers
+                    const otherTrigger = otherMenu.closest('.dropdown').querySelector('.nav-link');
+                    if (otherTrigger) {
+                        otherTrigger.setAttribute('aria-expanded', 'false');
+                    }
                 }
             });
 
             // Toggle current dropdown
-            if (isVisible) {
+            if (isCurrentlyOpen) {
                 closeDropdown(menu);
                 // Update aria-expanded for accessibility
                 this.setAttribute('aria-expanded', 'false');
