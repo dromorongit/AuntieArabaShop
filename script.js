@@ -1426,3 +1426,175 @@ function makeDraggable(element) {
 document.addEventListener('DOMContentLoaded', function() {
     createWhatsAppFloatingIcon();
 });
+
+// Enhanced Category Routing System
+class CategoryRouter {
+    constructor() {
+        this.routes = {
+            'category': this.handleCategoryRoute.bind(this)
+        };
+        this.init();
+    }
+
+    init() {
+        // Listen for hash changes
+        window.addEventListener('hashchange', () => this.handleRoute());
+        
+        // Handle initial load
+        this.handleRoute();
+    }
+
+    handleRoute() {
+        const hash = window.location.hash.substring(1); // Remove #
+        const pathParts = hash.split('/');
+        
+        if (pathParts.length >= 2 && pathParts[0] === 'category') {
+            const categorySlug = pathParts[1];
+            this.routes['category'](categorySlug);
+        } else {
+            // Handle legacy URL format (category.html?cat=...)
+            this.handleLegacyUrl();
+        }
+    }
+
+    handleLegacyUrl() {
+        const category = getUrlParameter('cat');
+        if (category && window.location.pathname.includes('category.html')) {
+            // Convert legacy URL to new format and redirect
+            const newUrl = `#/category/${category}`;
+            window.history.replaceState(null, null, newUrl);
+            this.routes['category'](category);
+        }
+    }
+
+    async handleCategoryRoute(categorySlug) {
+        const categoryTitle = document.getElementById('category-title');
+        const productsContainer = document.getElementById('category-products');
+
+        if (!categoryTitle || !productsContainer) {
+            console.warn('Category page elements not found');
+            return;
+        }
+
+        // Clear existing products
+        productsContainer.innerHTML = '';
+        
+        // Show loading state
+        setLoading(productsContainer, true);
+
+        try {
+            // Update page title and breadcrumb
+            const categoryNames = {
+                'ladies-tops': 'Ladies Basic Tops',
+                'crop-tops': 'Crop Tops',
+                'ladies-hoodies': 'Ladies Hoodies',
+                'unisex-hoodies': 'Unisex Hoodies',
+                'cropped-hoodies': 'Cropped Hoodies',
+                'night-wear': 'Night Wear',
+                'bum-shorts': 'Bum Shorts',
+                'two-in-one-night': '2-in-1 Night Wears',
+                'two-in-one-tops': '2-in-1 Tops and Downs',
+                'jalabiyas': 'Jalabiyas',
+                'abayas': 'Abayas',
+                'modest-long-dresses': 'Modest Long Dresses',
+                'elegant-dresses': 'Elegant Dresses',
+                'stylish-dresses': 'Stylish Dresses',
+                'office-dresses': 'Office Dresses',
+                'casual-dresses': 'Casual Dresses',
+                'bodycon-dresses': 'Bodycon Dresses',
+                'maxi-dresses': 'Maxi Dresses',
+                'two-piece-casual-sets': 'Two-Piece Casual Sets',
+                'lounge-sets': 'Lounge Sets',
+                'top-trouser-sets': 'Top & Trouser Sets',
+                'leggings': 'Leggings',
+                'trousers': 'Trousers',
+                'palazzo-pants': 'Palazzo Pants',
+                'skirts': 'Skirts',
+                'panties': 'Panties',
+                'scarves-headwraps': 'Scarves/Headwraps',
+                'sleep-caps': 'Sleep Caps',
+                'nfl-jerseys': 'Unisex NFL Jerseys',
+                'other-ladies': 'Other Ladies Fashion Items'
+            };
+
+            const categoryName = categoryNames[categorySlug] || 'Products';
+            categoryTitle.textContent = categoryName;
+            
+            // Update page title
+            document.title = `${categoryName} - Shop with Auntie Araba`;
+            
+            // Update breadcrumb
+            this.updateBreadcrumb(categoryName);
+
+            // Load and display products
+            const categoryProducts = await loadCategoryProducts(categorySlug);
+            
+            setLoading(productsContainer, false);
+            
+            if (categoryProducts.length > 0) {
+                categoryProducts.forEach(product => {
+                    productsContainer.appendChild(createProductCard(product));
+                });
+            } else {
+                productsContainer.innerHTML = `
+                    <div class="no-products" style="text-align: center; padding: 3rem; color: #666;">
+                        <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 1rem; color: #ddd;"></i>
+                        <h3>No products found in ${categoryName}</h3>
+                        <p>We're constantly updating our inventory. Check back soon!</p>
+                        <a href="categories.html" class="btn btn-primary" style="margin-top: 1rem;">Browse All Categories</a>
+                    </div>
+                `;
+            }
+            
+        } catch (error) {
+            console.error('Error loading category products:', error);
+            setLoading(productsContainer, false);
+            productsContainer.innerHTML = `
+                <div class="error-message" style="text-align: center; padding: 3rem; color: #ff4444;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <h3>Error loading products</h3>
+                    <p>Please try again later.</p>
+                </div>
+            `;
+        }
+    }
+
+    updateBreadcrumb(categoryName) {
+        const breadcrumb = document.querySelector('.breadcrumb .container');
+        if (breadcrumb) {
+            breadcrumb.innerHTML = `
+                <a href="index.html">Home</a>
+                <i class="fas fa-chevron-right"></i>
+                <a href="categories.html">Categories</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>${categoryName}</span>
+            `;
+        }
+    }
+
+    navigateToCategoryPage(categorySlug) {
+        // For navigation links that should go to category page
+        if (window.location.pathname.includes('category.html')) {
+            window.location.hash = `#/category/${categorySlug}`;
+        } else {
+            // Redirect to category page with hash routing
+            window.location.href = `category.html#category/${categorySlug}`;
+        }
+    }
+}
+
+// Initialize router globally
+let router;
+document.addEventListener('DOMContentLoaded', function() {
+    router = new CategoryRouter();
+});
+
+// Navigation function for category links
+function navigateToCategory(categorySlug) {
+    if (router) {
+        router.navigateToCategoryPage(categorySlug);
+    } else {
+        // Fallback to direct navigation
+        window.location.href = `category.html#category/${categorySlug}`;
+    }
+}
