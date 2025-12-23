@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Enhanced Fetch products from API with comprehensive debugging
-async function fetchProducts(showNotification = true) {
+async function fetchProducts(showNotification = false) {
     console.log('🔄 Starting product fetch from Railway API...');
     console.log('🌐 API Base URL:', API_BASE);
     console.log('📡 Full API Endpoint:', `${API_BASE}/products`);
