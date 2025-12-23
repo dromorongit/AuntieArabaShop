@@ -1479,6 +1479,17 @@ class CategoryRouter {
     }
 
     init() {
+        // Only initialize router-related event listeners if we're on category page or if DOM is ready
+        if (document.readyState === 'loading') {
+            // DOM is still loading, wait for it
+            document.addEventListener('DOMContentLoaded', () => this.setupRouter());
+        } else {
+            // DOM is already ready
+            this.setupRouter();
+        }
+    }
+    
+    setupRouter() {
         // Listen for hash changes
         window.addEventListener('hashchange', () => this.handleRoute());
         
@@ -1510,11 +1521,13 @@ class CategoryRouter {
     }
 
     async handleCategoryRoute(categorySlug) {
+        console.log('Handling category route for:', categorySlug);
+        
         const categoryTitle = document.getElementById('category-title');
         const productsContainer = document.getElementById('category-products');
 
         if (!categoryTitle || !productsContainer) {
-            console.warn('Category page elements not found');
+            console.warn('Category page elements not found. This might not be a category page.');
             return;
         }
 
@@ -1615,27 +1628,34 @@ class CategoryRouter {
     }
 
     navigateToCategoryPage(categorySlug) {
+        console.log('navigateToCategoryPage called with:', categorySlug);
+        console.log('Current path:', window.location.pathname);
+        
         // For navigation links that should go to category page
         if (window.location.pathname.includes('category.html')) {
+            console.log('Already on category page, using hash navigation');
             window.location.hash = `#/category/${categorySlug}`;
         } else {
+            console.log('Not on category page, redirecting to category page');
             // Redirect to category page with hash routing
             window.location.href = `category.html#category/${categorySlug}`;
         }
     }
 }
 
-// Initialize router globally
-let router;
-document.addEventListener('DOMContentLoaded', function() {
-    router = new CategoryRouter();
-});
+// Initialize router globally - moved outside DOMContentLoaded to fix race condition
+let router = new CategoryRouter();
 
 // Navigation function for category links
 function navigateToCategory(categorySlug) {
+    console.log('navigateToCategory called with:', categorySlug);
+    console.log('Router available:', !!router);
+    
     if (router) {
+        console.log('Using router for navigation');
         router.navigateToCategoryPage(categorySlug);
     } else {
+        console.log('Router not available, using fallback navigation');
         // Fallback to direct navigation
         window.location.href = `category.html#category/${categorySlug}`;
     }
