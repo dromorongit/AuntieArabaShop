@@ -3,146 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dropdown Debug Test</title>
+    <title>Dropdown Debug - Shop with Auntie Araba</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Override any conflicting styles */
-        .dropdown-menu {
-            display: none !important;
-            position: absolute !important;
-            top: 100% !important;
-            left: 0 !important;
-            background: white !important;
-            border: 1px solid #ccc !important;
-            min-width: 250px !important;
-            z-index: 10000 !important;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
-        }
-        
-        .dropdown-menu.show {
-            display: block !important;
-        }
-        
-        .dropdown-menu li {
-            list-style: none !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        
-        .dropdown-menu a {
-            display: block !important;
-            padding: 12px 16px !important;
-            text-decoration: none !important;
-            color: #333 !important;
-            border-bottom: 1px solid #eee !important;
-        }
-        
-        .dropdown-menu a:hover {
-            background: #f5f5f5 !important;
-        }
-        
-        .dropdown-menu a:last-child {
-            border-bottom: none !important;
-        }
-        
-        /* Force visibility */
-        .dropdown:hover .dropdown-menu {
-            display: block !important;
+        .debug-info {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #333;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            max-width: 300px;
+            z-index: 10000;
         }
     </style>
 </head>
 <body>
+    <div class="debug-info" id="debug-info">
+        Debug info will appear here...
+    </div>
+
     <!-- Header -->
-    <header class="header" role="banner">
+    <header class="header">
         <div class="container">
             <div class="nav-wrapper">
                 <div class="logo">
                     <img src="LADYSTANDARD.PNG" alt="The Lady Standard Logo" class="logo-image">
                     <div class="logo-text">
-                        <h1>Shop with Auntie Araba</h1>
+                        <h1><a href="index.html" style="color: white; text-decoration: none;">Shop with Auntie Araba</a></h1>
                         <p class="tagline">The Lady Standard</p>
                     </div>
                 </div>
-                <nav class="navigation" role="navigation" aria-label="Main navigation">
+                <nav class="navigation">
                     <ul class="nav-menu">
-                        <li><a href="index.html" class="nav-link active" aria-current="page">Home</a></li>
+                        <li><a href="index.html" class="nav-link">Home</a></li>
                         <li class="dropdown">
-                            <a href="#" class="nav-link" id="debug-categories">Categories <i class="fas fa-chevron-down"></i></a>
-                            <ul class="dropdown-menu" id="debug-dropdown-menu">
-                                <li><a href="#" onclick="alert('All Categories clicked')">All Categories</a></li>
-                                <li><a href="#" onclick="alert('Night Wear clicked')">Night Wear</a></li>
-                                <li><a href="#" onclick="alert('2-in-1 Tops clicked')">2-in-1 Tops and Downs</a></li>
-                                <li><a href="#" onclick="alert('Elegant Dresses clicked')">Elegant Dresses</a></li>
-                                <li><a href="#" onclick="alert('NFL Jerseys clicked')">Unisex NFL Jerseys</a></li>
+                            <a href="#" class="nav-link" aria-haspopup="true" aria-expanded="false" id="categories-menu">Categories <i class="fas fa-chevron-down"></i></a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="categories-menu">
+                                <li role="none"><a href="categories.html" role="menuitem">All Categories</a></li>
+                                <li role="none"><a href="#" onclick="debugNavigate('ladies-tops')" role="menuitem">Ladies Basic Tops</a></li>
+                                <li role="none"><a href="#" onclick="debugNavigate('crop-tops')" role="menuitem">Crop Tops</a></li>
+                                <li role="none"><a href="#" onclick="debugNavigate('night-wear')" role="menuitem">Night Wear</a></li>
+                                <li role="none"><a href="#" onclick="debugNavigate('jalabiyas')" role="menuitem">Jalabiyas</a></li>
+                                <li role="none"><a href="#" onclick="debugNavigate('abayas')" role="menuitem">Abayas</a></li>
+                                <li role="none"><a href="#" onclick="debugNavigate('elegant-dresses')" role="menuitem">Elegant Dresses</a></li>
                             </ul>
                         </li>
                         <li><a href="contact.html" class="nav-link">Contact</a></li>
                         <li><a href="about.html" class="nav-link">About</a></li>
                     </ul>
                 </nav>
+                <div class="cart-icon">
+                    <a href="cart.html">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">0</span>
+                    </a>
+                </div>
             </div>
         </div>
     </header>
 
-    <div class="container" style="margin-top: 2rem;">
-        <h1>Dropdown Debug Test</h1>
-        <p>This is a simplified test to verify dropdown functionality.</p>
+    <!-- Main Content -->
+    <main style="padding: 2rem;">
+        <h1>Dropdown Debug Page</h1>
+        <p>This page is for testing dropdown functionality on category pages.</p>
+        <p>Try clicking the Categories dropdown and then clicking "Jalabiyas" to test navigation.</p>
         
-        <div style="background: #f0f8ff; padding: 1rem; margin: 1rem 0; border-radius: 5px; border: 1px solid #4CAF50;">
-            <h3>✅ Debug Information:</h3>
-            <div id="debug-status">Ready to test...</div>
+        <div style="margin-top: 2rem;">
+            <h2>Debug Instructions:</h2>
+            <ol>
+                <li>Click the Categories dropdown button</li>
+                <li>Click on "Jalabiyas" in the dropdown</li>
+                <li>Check the debug info panel (top right) for any errors</li>
+                <li>Check browser console for JavaScript errors</li>
+            </ol>
         </div>
-    </div>
+    </main>
 
+    <script src="script.js"></script>
     <script>
-        console.log('Dropdown debug script loaded');
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            const debugStatus = document.getElementById('debug-status');
-            const dropdownTrigger = document.getElementById('debug-categories');
-            const dropdownMenu = document.getElementById('debug-dropdown-menu');
+        // Debug functions
+        function debugNavigate(categorySlug) {
+            console.log('🔍 debugNavigate called with:', categorySlug);
+            updateDebugInfo(`debugNavigate called with: ${categorySlug}`);
             
-            debugStatus.innerHTML = '<p>✅ DOM loaded successfully</p>';
-            debugStatus.innerHTML += '<p>✅ Dropdown trigger found: ' + (dropdownTrigger ? 'Yes' : 'No') + '</p>';
-            debugStatus.innerHTML += '<p>✅ Dropdown menu found: ' + (dropdownMenu ? 'Yes' : 'No') + '</p>';
-            
-            if (dropdownTrigger && dropdownMenu) {
-                debugStatus.innerHTML += '<p style="color: green;"><strong>✅ Setting up click event...</strong></p>';
-                
-                dropdownTrigger.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('Dropdown clicked!');
-                    debugStatus.innerHTML += '<p style="color: blue;"><strong>🔄 Click event fired!</strong></p>';
-                    
-                    // Simple toggle
-                    dropdownMenu.classList.toggle('show');
-                    
-                    const isVisible = dropdownMenu.classList.contains('show');
-                    debugStatus.innerHTML += '<p><strong>Menu visible:</strong> ' + isVisible + '</p>';
-                    console.log('Menu visible:', isVisible);
-                });
-                
-                debugStatus.innerHTML += '<p style="color: green;"><strong>✅ Click event attached successfully!</strong></p>';
+            if (typeof navigateToCategory === 'function') {
+                console.log('✅ navigateToCategory function exists, calling it...');
+                updateDebugInfo('✅ navigateToCategory function exists, calling it...');
+                navigateToCategory(categorySlug);
             } else {
-                debugStatus.innerHTML += '<p style="color: red;"><strong>❌ Elements not found!</strong></p>';
+                console.error('❌ navigateToCategory function not found!');
+                updateDebugInfo('❌ navigateToCategory function not found!');
+            }
+        }
+        
+        function updateDebugInfo(message) {
+            const debugElement = document.getElementById('debug-info');
+            const timestamp = new Date().toLocaleTimeString();
+            debugElement.innerHTML += `<br>[${timestamp}] ${message}`;
+            console.log('Debug:', message);
+        }
+        
+        // Monitor dropdown clicks
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDebugInfo('Page loaded, checking for dropdown elements...');
+            
+            const dropdownTrigger = document.getElementById('categories-menu');
+            const dropdownMenu = document.querySelector('.dropdown-menu');
+            
+            if (dropdownTrigger) {
+                updateDebugInfo('✅ Dropdown trigger found');
+                dropdownTrigger.addEventListener('click', function(e) {
+                    updateDebugInfo('🔍 Dropdown trigger clicked');
+                });
+            } else {
+                updateDebugInfo('❌ Dropdown trigger NOT found');
             }
             
-            // Test hover as backup
-            const dropdown = document.querySelector('.dropdown');
-            if (dropdown) {
-                dropdown.addEventListener('mouseenter', function() {
-                    console.log('Hover entered');
-                    dropdownMenu.classList.add('show');
-                });
-                
-                dropdown.addEventListener('mouseleave', function() {
-                    console.log('Hover left');
-                    dropdownMenu.classList.remove('show');
-                });
-                
-                debugStatus.innerHTML += '<p>✅ Hover events also attached as backup</p>';
+            if (dropdownMenu) {
+                updateDebugInfo('✅ Dropdown menu found');
+            } else {
+                updateDebugInfo('❌ Dropdown menu NOT found');
+            }
+            
+            // Check if initializeMobileDropdowns exists
+            if (typeof initializeMobileDropdowns === 'function') {
+                updateDebugInfo('✅ initializeMobileDropdowns function exists');
+            } else {
+                updateDebugInfo('❌ initializeMobileDropdowns function NOT found');
+            }
+            
+            // Check if router exists
+            if (typeof router !== 'undefined' && router) {
+                updateDebugInfo('✅ Router exists');
+            } else {
+                updateDebugInfo('❌ Router NOT found');
             }
         });
     </script>
