@@ -46,7 +46,7 @@ export default function AboutPage() {
             className="text-center"
           >
             <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
-              About <span className="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">Auntie Araba</span>
+              About <span className="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">Shop Auntie Araba</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Your premier destination for stylish ladies wear in Ghana. We believe that everyone deserves to look and feel their best.
@@ -88,7 +88,7 @@ export default function AboutPage() {
               <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">Our Story</h2>
               <div className="space-y-4 text-gray-600">
                 <p>
-                  Auntie Araba Shop was founded with a simple mission: to provide high-quality, 
+                  Shop Auntie Araba was founded with a simple mission: to provide high-quality, 
                   stylish fashion at affordable prices for women across Ghana.
                 </p>
                 <p>
@@ -113,7 +113,7 @@ export default function AboutPage() {
                   <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-primary-400 to-secondary-500 rounded-full flex items-center justify-center">
                     <span className="text-4xl text-white font-bold">A</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-800">Auntie Araba</h3>
+                  <h3 className="text-2xl font-bold text-gray-800">Shop Auntie Araba</h3>
                   <p className="text-gray-500">Since 2020</p>
                 </div>
               </div>
@@ -133,7 +133,7 @@ export default function AboutPage() {
           >
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Our Values</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              These core values guide everything we do at Auntie Araba Shop
+              These core values guide everything we do at Shop Auntie Araba
             </p>
           </motion.div>
 

@@ -42,7 +42,7 @@ export function formatWhatsAppMessage(
     bank_transfer: 'Bank Transfer',
   };
 
-  const message = `*New Order - Auntie Araba Shop*
+  const message = `*New Order - Shop Auntie Araba*
 
 *Order ID:* ${orderId}
 *Customer Name:* ${customerName}
@@ -55,7 +55,7 @@ ${itemsList}
 *Payment Method:* ${paymentMethodMap[paymentMethod] || paymentMethod}
 *Delivery Address:* ${deliveryAddress}
 
-Thank you for shopping with Auntie Araba Shop!`;
+Thank you for shopping with Shop Auntie Araba!`;
 
   return encodeURIComponent(message);
 }

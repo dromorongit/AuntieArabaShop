@@ -30,13 +30,13 @@ export default function Navbar() {
             <div className="relative w-10 h-10 md:w-12 md:h-12">
               <Image
                 src="/LADYSTANDARD.PNG"
-                alt="Auntie Araba Shop Logo"
+                alt="Shop Auntie Araba Logo"
                 fill
                 className="object-contain rounded-full"
               />
             </div>
             <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
-              Auntie Araba
+              Shop Auntie Araba
             </span>
           </Link>
 

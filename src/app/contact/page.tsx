@@ -19,7 +19,7 @@ export default function ContactPage() {
     setIsSubmitting(true);
 
     // Create WhatsApp message
-    const message = `*Contact Form Submission - Auntie Araba Shop*
+    const message = `*Contact Form Submission - Shop Auntie Araba*
 
 *Name:* ${formData.name}
 *Email:* ${formData.email || 'Not provided'}

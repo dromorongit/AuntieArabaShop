@@ -16,11 +16,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Auntie Araba Shop - Premium Fashion in Ghana",
+  title: "Shop Auntie Araba - Premium Fashion in Ghana",
   description: "Your premier destination for stylish ladies wear in Ghana. Quality fashion at affordable prices. Shop ladies tops, dresses, night wear and more.",
   keywords: ["fashion", "ladies wear", "Ghana", "online shop", "dresses", "tops", "night wear"],
   openGraph: {
-    title: "Auntie Araba Shop - Premium Fashion in Ghana",
+    title: "Shop Auntie Araba - Premium Fashion in Ghana",
     description: "Your premier destination for stylish ladies wear in Ghana.",
     type: "website",
   },

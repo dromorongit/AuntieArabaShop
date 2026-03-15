@@ -18,12 +18,12 @@ export default function Footer() {
               <div className="relative w-12 h-12">
                 <Image
                   src="/LADYSTANDARD.PNG"
-                  alt="Auntie Araba Shop Logo"
+                  alt="Shop Auntie Araba Logo"
                   fill
                   className="object-contain rounded-full"
                 />
               </div>
-              <span className="text-2xl font-bold">Auntie Araba</span>
+              <span className="text-2xl font-bold">Shop Auntie Araba</span>
             </div>
             <p className="text-primary-100 text-sm">
               Your premier destination for stylish ladies wear in Ghana. Quality
@@ -138,7 +138,7 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-white/10 text-center">
           <p className="text-primary-200">
-            &copy; {currentYear} Auntie Araba Shop. All rights reserved.
+            &copy; {currentYear} Shop Auntie Araba. All rights reserved.
           </p>
         </div>
       </div>
