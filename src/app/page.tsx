@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Star, Truck, Shield, Headphones } from 'lucide-react';
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
+import Counter from '@/components/Counter';
 import { categories, formatPrice } from '@/lib/utils';
 
 // Sample products for demo (will be replaced with database data)
@@ -146,15 +147,15 @@ export default function Home() {
               {/* Stats */}
               <div className="flex gap-8 pt-4">
                 <div>
-                  <p className="text-3xl font-bold text-primary-600">10K+</p>
+                  <p className="text-3xl font-bold text-primary-600"><Counter value={10000} suffix="+" /></p>
                   <p className="text-sm text-gray-500">Happy Customers</p>
                 </div>
                 <div>
-                  <p className="text-3xl font-bold text-primary-600">500+</p>
+                  <p className="text-3xl font-bold text-primary-600"><Counter value={500} suffix="+" /></p>
                   <p className="text-sm text-gray-500">Products</p>
                 </div>
                 <div>
-                  <p className="text-3xl font-bold text-primary-600">4.9</p>
+                  <p className="text-3xl font-bold text-primary-600"><Counter value={4.9} suffix="" /></p>
                   <p className="text-sm text-gray-500">Rating</p>
                 </div>
               </div>

@@ -2,13 +2,14 @@
 
 import { motion } from 'framer-motion';
 import { Store, Heart, Award, Users } from 'lucide-react';
+import Counter from '@/components/Counter';
 
 export default function AboutPage() {
   const stats = [
-    { label: 'Happy Customers', value: '10,000+' },
-    { label: 'Products', value: '500+' },
-    { label: 'Years Experience', value: '5+' },
-    { label: 'Rating', value: '4.9' },
+    { label: 'Happy Customers', value: 10000, suffix: '+' },
+    { label: 'Products', value: 500, suffix: '+' },
+    { label: 'Years Experience', value: 5, suffix: '+' },
+    { label: 'Rating', value: 4.9, suffix: '' },
   ];
 
   const values = [
@@ -67,7 +68,7 @@ export default function AboutPage() {
                 transition={{ delay: index * 0.1 }}
                 className="text-center"
               >
-                <p className="text-4xl font-bold text-primary-600 mb-2">{stat.value}</p>
+                <p className="text-4xl font-bold text-primary-600 mb-2"><Counter value={stat.value} suffix={stat.suffix} /></p>
                 <p className="text-gray-600">{stat.label}</p>
               </motion.div>
             ))}
