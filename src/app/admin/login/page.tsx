@@ -44,8 +44,12 @@ export default function AdminLogin() {
         <div className="bg-white rounded-2xl shadow-xl p-8">
           {/* Logo */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-500 rounded-full mb-4">
-              <span className="text-3xl font-bold text-white">A</span>
+            <div className="inline-flex items-center justify-center w-16 h-16 mb-4">
+              <img 
+                src="/LADYSTANDARD.PNG" 
+                alt="Shop Auntie Araba" 
+                className="w-full h-full object-contain rounded-full"
+              />
             </div>
             <h1 className="text-2xl font-bold text-gray-800">Admin Login</h1>
             <p className="text-gray-500 mt-2">Shop Auntie Araba</p>
