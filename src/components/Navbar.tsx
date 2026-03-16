@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Menu, X, Home, Info, Phone } from 'lucide-react';
+import { ShoppingBag, Menu, X, Home, Info, Phone, Search } from 'lucide-react';
 import { useCartStore } from '@/store/cart';
 import { categories } from '@/lib/utils';
 import { cn } from '@/lib/utils';
@@ -12,6 +13,9 @@ import { cn } from '@/lib/utils';
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
   const { openCart, getTotalItems } = useCartStore();
   const totalItems = getTotalItems();
 
@@ -20,6 +24,15 @@ export default function Navbar() {
     { href: '/about', label: 'About', icon: Info },
     { href: '/contact', label: 'Contact', icon: Phone },
   ];
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setIsSearchOpen(false);
+      setSearchQuery('');
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-primary-100/50">
@@ -103,8 +116,15 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Cart Button */}
-          <div className="flex items-center gap-4">
+          {/* Cart & Search Buttons */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="p-2 text-gray-700 hover:text-primary-600 transition-colors"
+            >
+              <Search className="w-6 h-6" />
+            </button>
+            
             <button
               onClick={openCart}
               className="relative p-2 text-gray-700 hover:text-primary-600 transition-colors"
@@ -128,6 +148,44 @@ export default function Navbar() {
         </div>
       </div>
 
+      {/* Search Modal */}
+      <AnimatePresence>
+        {isSearchOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/50 flex items-start justify-center pt-24"
+            onClick={() => setIsSearchOpen(false)}
+          >
+            <motion.div
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -20, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-xl mx-4 bg-white rounded-xl shadow-2xl"
+            >
+              <form onSubmit={handleSearch} className="p-4">
+                <div className="relative">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search products..."
+                    autoFocus
+                    className="w-full pl-12 pr-4 py-3 text-lg border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                  />
+                </div>
+                <p className="mt-2 text-sm text-gray-500">
+                  Press Enter to search or ESC to close
+                </p>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Mobile Menu */}
       <AnimatePresence>
         {isMenuOpen && (
@@ -138,6 +196,18 @@ export default function Navbar() {
             className="md:hidden bg-white border-t border-gray-100"
           >
             <div className="px-4 py-4 space-y-3">
+              {/* Mobile Search */}
+              <form onSubmit={handleSearch} className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search products..."
+                  className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg"
+                />
+              </form>
+
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
