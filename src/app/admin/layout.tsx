@@ -37,7 +37,15 @@ export default function AdminLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // Skip auth check for login page
+  const isLoginPage = pathname === '/admin/login';
+
   useEffect(() => {
+    if (isLoginPage) {
+      setLoading(false);
+      return;
+    }
+
     const checkAuth = async () => {
       try {
         const response = await fetch('/api/admin/auth/session', {
@@ -56,7 +64,7 @@ export default function AdminLayout({
     };
 
     checkAuth();
-  }, [router]);
+  }, [router, isLoginPage]);
 
   const handleLogout = async () => {
     try {
