@@ -6,11 +6,11 @@ import bcrypt from 'bcryptjs';
 import type { Admin, AdminSession } from '@/types';
 
 const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'auntie-araba-shop-secret-key-2024'
+  process.env.JWT_SECRET || 'eb047b3f9a8a2c20c89bb0132abf2c8bd380d601cc2962b273da21e61e963448'
 );
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@auntiearaba.com';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@shopauntiearaba.com';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'JWTsecretadmin1310';
 
 export async function createAdminSession(admin: Admin): Promise<string> {
   const token = await new SignJWT({
