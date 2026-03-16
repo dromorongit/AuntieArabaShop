@@ -27,9 +27,9 @@ export async function POST(request: NextRequest) {
 
     // Check Cloudinary config
     console.log('Cloudinary config:', {
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME || cloudinary.config().cloud_name,
-      has_api_key: !!(process.env.CLOUDINARY_API_KEY || cloudinary.config().api_key),
-      has_api_secret: !!(process.env.CLOUDINARY_API_SECRET || cloudinary.config().api_secret),
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      has_api_key: !!process.env.CLOUDINARY_API_KEY,
+      has_api_secret: !!process.env.CLOUDINARY_API_SECRET,
     });
 
     // Convert file to base64 using FileReader
