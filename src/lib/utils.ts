@@ -61,17 +61,17 @@ Thank you for shopping with Shop Auntie Araba!`;
 }
 
 export const categories = [
-  { name: 'Ladies Basic Tops', slug: 'ladies-basic-tops' },
-  { name: 'Crop Tops', slug: 'crop-tops' },
-  { name: 'Night Wear', slug: 'night-wear' },
-  { name: 'Bum Shorts', slug: 'bum-shorts' },
-  { name: '2 in 1 Night Wears', slug: '2-in-1-night-wears' },
-  { name: '2 in 1 Tops and Downs', slug: '2-in-1-tops-and-downs' },
-  { name: 'Elegant Dresses', slug: 'elegant-dresses' },
-  { name: 'Stylish Dresses', slug: 'stylish-dresses' },
-  { name: 'Office Dresses', slug: 'office-dresses' },
-  { name: 'Panties', slug: 'panties' },
-  { name: 'Unisex NFL Jerseys', slug: 'unisex-nfl-jerseys' },
+  { name: 'Ladies Basic Tops', slug: 'ladies-basic-tops', image: '/ladiesbasictops.jpg' },
+  { name: 'Crop Tops', slug: 'crop-tops', image: '/croptops.jpg' },
+  { name: 'Night Wear', slug: 'night-wear', image: '/nightwear.jpg' },
+  { name: 'Bum Shorts', slug: 'bum-shorts', image: '/bumshortsimage.jpg' },
+  { name: '2 in 1 Night Wears', slug: '2-in-1-night-wears', image: '/2in1nightwear.jpg' },
+  { name: '2 in 1 Tops and Downs', slug: '2-in-1-tops-and-downs', image: '/2in1topsanddowns.jpg' },
+  { name: 'Elegant Dresses', slug: 'elegant-dresses', image: '/elegantdresses.jpg' },
+  { name: 'Stylish Dresses', slug: 'stylish-dresses', image: '/stylishdresses.jpg' },
+  { name: 'Office Dresses', slug: 'office-dresses', image: '/officedresses.jpg' },
+  { name: 'Panties', slug: 'panties', image: '/panties.jpg' },
+  { name: 'Unisex NFL Jerseys', slug: 'unisex-nfl-jerseys', image: '/nfljerseys.jpg' },
 ];
 
 export const whatsappNumber = '233244152807';

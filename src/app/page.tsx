@@ -241,11 +241,21 @@ export default function Home() {
                   <div className="group relative h-48 bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary-50 to-secondary-50 group-hover:from-primary-100 group-hover:to-secondary-100 transition-all duration-300" />
                     <div className="relative h-full flex flex-col items-center justify-center p-6 text-center">
-                      <div className="w-16 h-16 mb-4 bg-gradient-to-br from-primary-400 to-secondary-500 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
-                        <span className="text-2xl text-white font-bold">
-                          {category.name.charAt(0)}
-                        </span>
-                      </div>
+                      {category.image ? (
+                        <div className="w-16 h-16 mb-4 rounded-full overflow-hidden transform group-hover:scale-110 transition-transform duration-300">
+                          <img 
+                            src={category.image} 
+                            alt={category.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-16 h-16 mb-4 bg-gradient-to-br from-primary-400 to-secondary-500 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+                          <span className="text-2xl text-white font-bold">
+                            {category.name.charAt(0)}
+                          </span>
+                        </div>
+                      )}
                       <h3 className="font-semibold text-gray-800 group-hover:text-primary-600 transition-colors">
                         {category.name}
                       </h3>
