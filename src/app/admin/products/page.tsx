@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { ObjectId } from 'mongodb';
 import { 
   Plus, 
@@ -8,10 +8,9 @@ import {
   Edit, 
   Trash2, 
   Loader2,
-  Filter,
-  ChevronLeft,
-  ChevronRight,
-  X
+  Upload,
+  X,
+  Image as ImageIcon
 } from 'lucide-react';
 import { formatPrice, categories } from '@/lib/utils';
 import type { Product, ProductVariant } from '@/types';
@@ -35,6 +34,8 @@ export default function AdminProducts() {
   const [totalPages, setTotalPages] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [customSizeInput, setCustomSizeInput] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     shortDescription: '',
@@ -45,14 +46,19 @@ export default function AdminProducts() {
     categorySlug: '',
     inStock: true,
     stock: '',
-    images: '',
+    coverImage: '',
+    additionalImages: [] as string[],
     tags: '',
     sizes: [] as string[],
+    customSizes: [] as string[],
     colors: [] as string[],
     variants: [] as ProductVariant[],
     isFeatured: false,
     isBestSelling: false,
   });
+
+  const coverInputRef = useRef<HTMLInputElement>(null);
+  const additionalInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchProducts();
@@ -77,16 +83,102 @@ export default function AdminProducts() {
     }
   };
 
+  const handleImageUpload = async (file: File, isCover: boolean): Promise<string | null> => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      setUploading(true);
+      const response = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+      
+      const data = await response.json();
+      return data.url;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image. Please try again.');
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleCoverImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const url = await handleImageUpload(file, true);
+    if (url) {
+      setFormData({ ...formData, coverImage: url });
+    }
+  };
+
+  const handleAdditionalImagesChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const newImages: string[] = [];
+    
+    for (let i = 0; i < files.length; i++) {
+      const url = await handleImageUpload(files[i], false);
+      if (url) {
+        newImages.push(url);
+      }
+    }
+
+    setFormData({ 
+      ...formData, 
+      additionalImages: [...formData.additionalImages, ...newImages] 
+    });
+  };
+
+  const removeAdditionalImage = (index: number) => {
+    setFormData({
+      ...formData,
+      additionalImages: formData.additionalImages.filter((_, i) => i !== index),
+    });
+  };
+
+  const addCustomSize = () => {
+    if (customSizeInput.trim() && !formData.customSizes.includes(customSizeInput.trim())) {
+      setFormData({
+        ...formData,
+        customSizes: [...formData.customSizes, customSizeInput.trim()],
+      });
+      setCustomSizeInput('');
+    }
+  };
+
+  const removeCustomSize = (size: string) => {
+    setFormData({
+      ...formData,
+      customSizes: formData.customSizes.filter(s => s !== size),
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const allImages = formData.coverImage 
+      ? [formData.coverImage, ...formData.additionalImages]
+      : formData.additionalImages;
+
+    const allSizes = [...formData.sizes, ...formData.customSizes];
     
     const productData = {
       ...formData,
       price: parseFloat(formData.price),
       discountPrice: formData.discountPrice ? parseFloat(formData.discountPrice) : undefined,
       stock: formData.stock ? parseInt(formData.stock) : undefined,
-      images: formData.images.split(',').map(img => img.trim()).filter(Boolean),
+      images: allImages,
       tags: formData.tags.split(',').map(tag => tag.trim()).filter(Boolean),
+      sizes: allSizes,
     };
 
     try {
@@ -129,6 +221,11 @@ export default function AdminProducts() {
 
   const handleEdit = (product: Product) => {
     setEditingProduct(product);
+    
+    // Separate standard sizes from custom sizes
+    const standardSizes = product.sizes?.filter(s => SIZES.includes(s)) || [];
+    const customSizes = product.sizes?.filter(s => !SIZES.includes(s)) || [];
+    
     setFormData({
       name: product.name,
       shortDescription: product.shortDescription || '',
@@ -139,9 +236,11 @@ export default function AdminProducts() {
       categorySlug: product.categorySlug,
       inStock: product.inStock,
       stock: product.stock?.toString() || '',
-      images: product.images.join(', '),
+      coverImage: product.images[0] || '',
+      additionalImages: product.images.slice(1) || [],
       tags: product.tags?.join(', ') || '',
-      sizes: product.sizes || [],
+      sizes: standardSizes,
+      customSizes: customSizes,
       colors: product.colors || [],
       variants: product.variants || [],
       isFeatured: product.isFeatured || false,
@@ -161,14 +260,17 @@ export default function AdminProducts() {
       categorySlug: '',
       inStock: true,
       stock: '',
-      images: '',
+      coverImage: '',
+      additionalImages: [],
       tags: '',
       sizes: [],
+      customSizes: [],
       colors: [],
       variants: [],
       isFeatured: false,
       isBestSelling: false,
     });
+    setCustomSizeInput('');
   };
 
   const handleCategoryChange = (categorySlug: string) => {
@@ -300,7 +402,7 @@ export default function AdminProducts() {
             disabled={page === 1}
             className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50"
           >
-            <ChevronLeft className="h-5 w-5" />
+            {/* ChevronLeft icon */}
           </button>
           <span className="text-gray-600">Page {page} of {totalPages}</span>
           <button
@@ -308,7 +410,7 @@ export default function AdminProducts() {
             disabled={page === totalPages}
             className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50"
           >
-            <ChevronRight className="h-5 w-5" />
+            {/* ChevronRight icon */}
           </button>
         </div>
       )}
@@ -316,7 +418,7 @@ export default function AdminProducts() {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto m-4">
             <div className="flex items-center justify-between p-6 border-b">
               <h2 className="text-xl font-semibold text-gray-800">
                 {editingProduct ? 'Edit Product' : 'Add Product'}
@@ -407,15 +509,88 @@ export default function AdminProducts() {
                   />
                 </div>
 
+                {/* Cover Image */}
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Images (comma separated URLs)</label>
-                  <input
-                    type="text"
-                    value={formData.images}
-                    onChange={(e) => setFormData({ ...formData, images: e.target.value })}
-                    placeholder="/image1.jpg, /image2.jpg"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500"
-                  />
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Cover Image</label>
+                  <div className="flex items-start gap-4">
+                    <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center overflow-hidden bg-gray-50">
+                      {formData.coverImage ? (
+                        <img src={formData.coverImage} alt="Cover" className="w-full h-full object-cover" />
+                      ) : (
+                        <ImageIcon className="h-8 w-8 text-gray-400" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <input
+                        ref={coverInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleCoverImageChange}
+                        className="hidden"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => coverInputRef.current?.click()}
+                        disabled={uploading}
+                        className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+                      >
+                        {uploading ? (
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                        ) : (
+                          <Upload className="h-5 w-5" />
+                        )}
+                        {formData.coverImage ? 'Change Cover Image' : 'Upload Cover Image'}
+                      </button>
+                      <p className="text-sm text-gray-500 mt-2">Recommended: 800x800px or larger</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Additional Images */}
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Additional Images</label>
+                  <div className="space-y-3">
+                    {/* Image previews */}
+                    {formData.additionalImages.length > 0 && (
+                      <div className="flex flex-wrap gap-3">
+                        {formData.additionalImages.map((img, index) => (
+                          <div key={index} className="relative w-20 h-20 border rounded-lg overflow-hidden">
+                            <img src={img} alt={`Additional ${index + 1}`} className="w-full h-full object-cover" />
+                            <button
+                              type="button"
+                              onClick={() => removeAdditionalImage(index)}
+                              className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-0.5 hover:bg-red-600"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* Upload button */}
+                    <input
+                      ref={additionalInputRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleAdditionalImagesChange}
+                      className="hidden"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => additionalInputRef.current?.click()}
+                      disabled={uploading}
+                      className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+                    >
+                      {uploading ? (
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                      ) : (
+                        <Upload className="h-5 w-5" />
+                      )}
+                      Add More Images
+                    </button>
+                  </div>
                 </div>
 
                 <div className="col-span-2">
@@ -429,8 +604,9 @@ export default function AdminProducts() {
                   />
                 </div>
 
+                {/* Standard Sizes */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Sizes</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Sizes (Standard)</label>
                   <div className="flex flex-wrap gap-2">
                     {SIZES.map((size) => (
                       <button
@@ -452,6 +628,52 @@ export default function AdminProducts() {
                       </button>
                     ))}
                   </div>
+                </div>
+
+                {/* Custom Size Numbers */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Sizes (Numbers)</label>
+                  <div className="flex gap-2 mb-2">
+                    <input
+                      type="text"
+                      value={customSizeInput}
+                      onChange={(e) => setCustomSizeInput(e.target.value)}
+                      placeholder="e.g., 32, 34, 36"
+                      className="flex-1 px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 text-sm"
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addCustomSize();
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={addCustomSize}
+                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm"
+                    >
+                      Add
+                    </button>
+                  </div>
+                  {formData.customSizes.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {formData.customSizes.map((size) => (
+                        <span
+                          key={size}
+                          className="inline-flex items-center gap-1 px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-sm"
+                        >
+                          {size}
+                          <button
+                            type="button"
+                            onClick={() => removeCustomSize(size)}
+                            className="hover:text-purple-900"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -524,7 +746,8 @@ export default function AdminProducts() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:from-pink-600 hover:to-purple-600"
+                  disabled={uploading}
+                  className="px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:from-pink-600 hover:to-purple-600 disabled:opacity-50"
                 >
                   {editingProduct ? 'Update Product' : 'Create Product'}
                 </button>
