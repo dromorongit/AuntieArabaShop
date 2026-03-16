@@ -32,13 +32,10 @@ export async function POST(request: NextRequest) {
       has_api_secret: !!process.env.CLOUDINARY_API_SECRET,
     });
 
-    // Convert file to base64 using FileReader
-    const base64 = await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = () => reject(new Error('Failed to read file'));
-      reader.readAsDataURL(file);
-    });
+    // Convert file to base64 using Buffer (Node.js compatible)
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const base64 = `data:${file.type};base64,${buffer.toString('base64')}`;
 
     console.log('Uploading to Cloudinary...');
     
