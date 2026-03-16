@@ -1,5 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { uploadImage } from '@/lib/cloudinary';
+import { v2 as cloudinary } from 'cloudinary';
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'dfozgolu4',
+  api_key: process.env.CLOUDINARY_API_KEY || '169842313686142',
+  api_secret: process.env.CLOUDINARY_API_SECRET || 'QtsISPHvJLvHqY6zsKbKNmnxcfE',
+  secure: true,
+});
 
 export const dynamic = 'force-dynamic';
 
@@ -15,15 +23,36 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    console.log('File received:', file.name, file.type, file.size);
+
+    // Check Cloudinary config
+    console.log('Cloudinary config:', {
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME || cloudinary.config().cloud_name,
+      has_api_key: !!(process.env.CLOUDINARY_API_KEY || cloudinary.config().api_key),
+      has_api_secret: !!(process.env.CLOUDINARY_API_SECRET || cloudinary.config().api_secret),
+    });
+
     // Convert file to base64 using FileReader
     const base64 = await new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
+      reader.onerror = () => reject(new Error('Failed to read file'));
       reader.readAsDataURL(file);
     });
+
+    console.log('Uploading to Cloudinary...');
     
-    const result = await uploadImage(base64, 'auntie-araba-shop/products');
+    // Upload to Cloudinary
+    const result = await cloudinary.uploader.upload(base64, {
+      folder: 'auntie-araba-shop/products',
+      transformation: [
+        { width: 1200, height: 1200, crop: 'limit' },
+        { quality: 'auto:good' },
+        { fetch_format: 'auto' },
+      ],
+    });
+    
+    console.log('Upload successful:', result.secure_url);
     
     return NextResponse.json({
       success: true,
@@ -31,9 +60,10 @@ export async function POST(request: NextRequest) {
       publicId: result.public_id,
     });
   } catch (error) {
-    console.error('Upload error:', error);
+    console.error('Upload error details:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Failed to upload image' },
+      { error: 'Failed to upload image', details: errorMessage },
       { status: 500 }
     );
   }
