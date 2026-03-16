@@ -75,14 +75,14 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-16 px-2">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
         {/* Back Button */}
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-gray-600 hover:text-primary-600 mb-8 transition-colors"
+          className="inline-flex items-center gap-1 text-sm sm:text-base text-gray-600 hover:text-primary-600 mb-4 sm:mb-8 transition-colors"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
           Continue Shopping
         </Link>
 
@@ -90,16 +90,16 @@ export default function CheckoutPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-8">Checkout</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-4 sm:mb-8">Checkout</h1>
 
-          <div className="grid lg:grid-cols-2 gap-12">
+          <div className="grid md:grid-cols-2 gap-6 md:gap-12">
             {/* Order Summary */}
             <div>
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">Order Summary</h2>
-              <div className="bg-gray-50 rounded-2xl p-6 space-y-4">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3 sm:mb-4">Order Summary</h2>
+              <div className="bg-gray-50 rounded-xl sm:rounded-2xl p-3 sm:p-6 space-y-3 sm:space-y-4">
                 {items.map((item) => (
-                  <div key={`${item.product._id}-${item.selectedSize}-${item.selectedColor}`} className="flex gap-4">
-                    <div className="relative w-20 h-24 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                  <div key={`${item.product._id}-${item.selectedSize}-${item.selectedColor}`} className="flex gap-2 sm:gap-4">
+                    <div className="relative w-14 h-16 sm:w-20 sm:h-24 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">
                       {item.product.images && item.product.images.length > 0 ? (
                         <Image
                           src={item.product.images[0]}
@@ -163,11 +163,11 @@ export default function CheckoutPage() {
 
             {/* Checkout Form */}
             <div>
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">Shipping Details</h2>
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3 sm:mb-4">Shipping Details</h2>
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                 {/* Name */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                     Full Name *
                   </label>
                   <input
@@ -175,14 +175,14 @@ export default function CheckoutPage() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-gray-200 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-sm sm:text-base"
                     placeholder="Enter your full name"
                   />
                 </div>
 
                 {/* Phone */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                     Phone Number *
                   </label>
                   <input
@@ -190,36 +190,36 @@ export default function CheckoutPage() {
                     required
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-gray-200 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-sm sm:text-base"
                     placeholder="e.g., +233 244 123 456"
                   />
                 </div>
 
                 {/* Address */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">
                     Delivery Address *
                   </label>
                   <textarea
                     required
-                    rows={3}
+                    rows={2}
                     value={formData.address}
                     onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-gray-200 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-200 text-sm sm:text-base"
                     placeholder="Enter your delivery address"
                   />
                 </div>
 
                 {/* Payment Method */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-2 sm:mb-3">
                     Payment Method *
                   </label>
-                  <div className="space-y-3">
+                  <div className="space-y-2 sm:space-y-3">
                     {paymentMethods.map((method) => (
                       <label
                         key={method.id}
-                        className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-colors ${
+                        className={`flex items-start gap-2 sm:gap-3 p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 cursor-pointer transition-colors ${
                           formData.paymentMethod === method.id
                             ? 'border-primary-500 bg-primary-50'
                             : 'border-gray-200 hover:border-gray-300'
@@ -236,11 +236,11 @@ export default function CheckoutPage() {
                               paymentMethod: e.target.value as typeof formData.paymentMethod,
                             })
                           }
-                          className="mt-1"
+                          className="mt-0.5 sm:mt-1"
                         />
                         <div>
-                          <p className="font-semibold text-gray-800">{method.label}</p>
-                          <p className="text-sm text-gray-500">{method.description}</p>
+                          <p className="font-semibold text-gray-800 text-sm sm:text-base">{method.label}</p>
+                          <p className="text-xs sm:text-sm text-gray-500">{method.description}</p>
                         </div>
                       </label>
                     ))}
@@ -251,13 +251,13 @@ export default function CheckoutPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold rounded-xl hover:shadow-lg hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center gap-1 sm:gap-2 px-4 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold rounded-lg sm:rounded-xl hover:shadow-lg hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                 >
-                  <MessageCircle className="w-5 h-5" />
+                  <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                   {isSubmitting ? 'Processing...' : 'Place Order via WhatsApp'}
                 </button>
 
-                <p className="text-sm text-gray-500 text-center">
+                <p className="text-xs sm:text-sm text-gray-500 text-center">
                   After placing your order, you will be redirected to WhatsApp to complete your order.
                 </p>
               </form>
