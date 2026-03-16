@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ChevronLeft, Heart, Share2, ShoppingBag, Check, Loader2 } from 'lucide-react';
+import { ChevronLeft, Heart, Share2, ShoppingBag, Check, Loader2, Minus, Plus } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { useCartStore } from '@/store/cart';
 import { Product } from '@/types';
@@ -70,14 +70,48 @@ function ProductContent({ product }: { product: Product }) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [selectedColor, setSelectedColor] = useState<string>('');
+  const [quantity, setQuantity] = useState<Record<string, number>>({});
   const { addItem, openCart } = useCartStore();
+
+  // Initialize quantities for each size and color
+  useEffect(() => {
+    const initialQuantities: Record<string, number> = {};
+    
+    if (product.sizes && product.sizes.length > 0) {
+      product.sizes.forEach(size => {
+        initialQuantities[`size-${size}`] = 1;
+      });
+    }
+    if (product.colors && product.colors.length > 0) {
+      product.colors.forEach(color => {
+        initialQuantities[`color-${color}`] = 1;
+      });
+    }
+    setQuantity(initialQuantities);
+  }, [product]);
+
+  const updateQuantity = (key: string, delta: number) => {
+    setQuantity(prev => ({
+      ...prev,
+      [key]: Math.max(1, (prev[key] || 1) + delta)
+    }));
+  };
 
   const handleAddToCart = () => {
     if (product.sizes && product.sizes.length > 0 && !selectedSize) {
       alert('Please select a size');
       return;
     }
-    addItem(product, 1, selectedSize || undefined, selectedColor || undefined);
+    if (product.colors && product.colors.length > 0 && !selectedColor) {
+      alert('Please select a color');
+      return;
+    }
+    
+    const selectedQty = selectedSize 
+      ? quantity[`size-${selectedSize}`] || 1 
+      : quantity[`color-${selectedColor}`] || 1;
+    
+    addItem(product, selectedQty, selectedSize || undefined, selectedColor || undefined);
     openCart();
   };
 
@@ -175,45 +209,77 @@ function ProductContent({ product }: { product: Product }) {
 
             <p className="text-gray-600 leading-relaxed">{product.description}</p>
 
-            {/* Size Selection */}
+            {/* Size Selection with Quantity */}
             {product.sizes && product.sizes.length > 0 && (
               <div>
                 <h3 className="font-semibold text-gray-800 mb-3">Size</h3>
-                <div className="flex flex-wrap gap-2">
+                <div className="space-y-2">
                   {product.sizes.map((size) => (
-                    <button
-                      key={size}
-                      onClick={() => setSelectedSize(size)}
-                      className={`px-4 py-2 rounded-full border-2 transition-colors ${
-                        selectedSize === size
-                          ? 'border-primary-500 bg-primary-50 text-primary-600'
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      {size}
-                    </button>
+                    <div key={size} className="flex items-center justify-between">
+                      <button
+                        onClick={() => setSelectedSize(size)}
+                        className={`px-4 py-2 rounded-full border-2 transition-colors ${
+                          selectedSize === size
+                            ? 'border-primary-500 bg-primary-50 text-primary-600'
+                            : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                      >
+                        {size}
+                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => updateQuantity(`size-${size}`, -1)}
+                          className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100"
+                        >
+                          <Minus className="w-4 h-4" />
+                        </button>
+                        <span className="w-8 text-center font-medium">{quantity[`size-${size}`] || 1}</span>
+                        <button
+                          onClick={() => updateQuantity(`size-${size}`, 1)}
+                          className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Color Selection */}
+            {/* Color Selection with Quantity */}
             {product.colors && product.colors.length > 0 && (
               <div>
                 <h3 className="font-semibold text-gray-800 mb-3">Color</h3>
-                <div className="flex flex-wrap gap-2">
+                <div className="space-y-2">
                   {product.colors.map((color) => (
-                    <button
-                      key={color}
-                      onClick={() => setSelectedColor(color)}
-                      className={`px-4 py-2 rounded-full border-2 transition-colors ${
-                        selectedColor === color
-                          ? 'border-primary-500 bg-primary-50 text-primary-600'
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      {color}
-                    </button>
+                    <div key={color} className="flex items-center justify-between">
+                      <button
+                        onClick={() => setSelectedColor(color)}
+                        className={`px-4 py-2 rounded-full border-2 transition-colors ${
+                          selectedColor === color
+                            ? 'border-primary-500 bg-primary-50 text-primary-600'
+                            : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                      >
+                        {color}
+                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => updateQuantity(`color-${color}`, -1)}
+                          className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100"
+                        >
+                          <Minus className="w-4 h-4" />
+                        </button>
+                        <span className="w-8 text-center font-medium">{quantity[`color-${color}`] || 1}</span>
+                        <button
+                          onClick={() => updateQuantity(`color-${color}`, 1)}
+                          className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
