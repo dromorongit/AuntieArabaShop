@@ -24,6 +24,11 @@ const COLORS = [
   { name: 'Red', hex: '#EF4444' },
   { name: 'Blue', hex: '#3B82F6' },
   { name: 'Green', hex: '#22C55E' },
+  { name: 'Yellow', hex: '#EAB308' },
+  { name: 'Ash', hex: '#6B7280' },
+  { name: 'Grey', hex: '#9CA3AF' },
+  { name: 'Cyan', hex: '#06B6D4' },
+  { name: 'Magenta', hex: '#D946EF' },
 ];
 
 export default function AdminProducts() {
@@ -36,6 +41,7 @@ export default function AdminProducts() {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [uploading, setUploading] = useState(false);
   const [customSizeInput, setCustomSizeInput] = useState('');
+  const [customColorInput, setCustomColorInput] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     shortDescription: '',
@@ -52,6 +58,7 @@ export default function AdminProducts() {
     sizes: [] as string[],
     customSizes: [] as string[],
     colors: [] as string[],
+    customColors: [] as string[],
     variants: [] as ProductVariant[],
     isFeatured: false,
     isBestSelling: false,
@@ -162,6 +169,23 @@ export default function AdminProducts() {
     });
   };
 
+  const addCustomColor = () => {
+    if (customColorInput.trim() && !formData.customColors.includes(customColorInput.trim())) {
+      setFormData({
+        ...formData,
+        customColors: [...formData.customColors, customColorInput.trim()],
+      });
+      setCustomColorInput('');
+    }
+  };
+
+  const removeCustomColor = (color: string) => {
+    setFormData({
+      ...formData,
+      customColors: formData.customColors.filter(c => c !== color),
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -170,6 +194,7 @@ export default function AdminProducts() {
       : formData.additionalImages;
 
     const allSizes = [...formData.sizes, ...formData.customSizes];
+    const allColors = [...formData.colors, ...formData.customColors];
     
     const productData = {
       ...formData,
@@ -179,6 +204,7 @@ export default function AdminProducts() {
       images: allImages,
       tags: formData.tags.split(',').map(tag => tag.trim()).filter(Boolean),
       sizes: allSizes,
+      colors: allColors,
     };
 
     try {
@@ -226,6 +252,11 @@ export default function AdminProducts() {
     const standardSizes = product.sizes?.filter(s => SIZES.includes(s)) || [];
     const customSizes = product.sizes?.filter(s => !SIZES.includes(s)) || [];
     
+    // Separate standard colors from custom colors
+    const standardColorNames = COLORS.map(c => c.name);
+    const standardColors = product.colors?.filter(c => standardColorNames.includes(c)) || [];
+    const customColors = product.colors?.filter(c => !standardColorNames.includes(c)) || [];
+    
     setFormData({
       name: product.name,
       shortDescription: product.shortDescription || '',
@@ -241,7 +272,8 @@ export default function AdminProducts() {
       tags: product.tags?.join(', ') || '',
       sizes: standardSizes,
       customSizes: customSizes,
-      colors: product.colors || [],
+      colors: standardColors,
+      customColors: customColors,
       variants: product.variants || [],
       isFeatured: product.isFeatured || false,
       isBestSelling: product.isBestSelling || false,
@@ -266,11 +298,13 @@ export default function AdminProducts() {
       sizes: [],
       customSizes: [],
       colors: [],
+      customColors: [],
       variants: [],
       isFeatured: false,
       isBestSelling: false,
     });
     setCustomSizeInput('');
+    setCustomColorInput('');
   };
 
   const handleCategoryChange = (categorySlug: string) => {
@@ -678,7 +712,7 @@ export default function AdminProducts() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Colors</label>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 mb-3">
                     {COLORS.map((color) => (
                       <button
                         key={color.name}
@@ -703,6 +737,49 @@ export default function AdminProducts() {
                       </button>
                     ))}
                   </div>
+                  
+                  {/* Custom Color Input */}
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={customColorInput}
+                      onChange={(e) => setCustomColorInput(e.target.value)}
+                      placeholder="Enter custom color"
+                      className="flex-1 px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 text-sm"
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          addCustomColor();
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={addCustomColor}
+                      className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm"
+                    >
+                      Add
+                    </button>
+                  </div>
+                  {formData.customColors.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {formData.customColors.map((color) => (
+                        <span
+                          key={color}
+                          className="inline-flex items-center gap-1 px-2 py-1 bg-orange-100 text-orange-700 rounded-full text-sm"
+                        >
+                          {color}
+                          <button
+                            type="button"
+                            onClick={() => removeCustomColor(color)}
+                            className="hover:text-orange-900"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className="col-span-2 flex gap-6">
