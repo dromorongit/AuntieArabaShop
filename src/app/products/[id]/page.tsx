@@ -1,112 +1,56 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ChevronLeft, Heart, Share2, ShoppingBag, Check } from 'lucide-react';
+import { ChevronLeft, Heart, Share2, ShoppingBag, Check, Loader2 } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { useCartStore } from '@/store/cart';
 import { Product } from '@/types';
 import ProductCard from '@/components/ProductCard';
 
-// Sample product data - in production this would come from database
-const sampleProducts: Record<string, Product> = {
-  '1': {
-    _id: '1',
-    name: 'Elegant Pink Evening Dress',
-    description: 'Beautiful elegant dress perfect for special occasions. Made with premium fabric for maximum comfort and style. Features a flattering silhouette that complements all body types.',
-    price: 350,
-    images: ['/LADYSTANDARD.PNG'],
-    category: 'Elegant Dresses',
-    categorySlug: 'elegant-dresses',
-    inStock: true,
-    sizes: ['S', 'M', 'L', 'XL'],
-    colors: ['Pink', 'Purple', 'Black'],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  '2': {
-    _id: '2',
-    name: 'Trendy Crop Top',
-    description: 'Stylish crop top for casual wear. Perfect for pairing with jeans or skirts.',
-    price: 95,
-    images: ['/LADYSTANDARD.PNG'],
-    category: 'Crop Tops',
-    categorySlug: 'crop-tops',
-    inStock: true,
-    sizes: ['S', 'M', 'L'],
-    colors: ['White', 'Black', 'Pink'],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  '4': {
-    _id: '4',
-    name: 'Comfy Romper',
-    description: 'Soft and comfortable romper for relaxed nights at home.',
-    price: 180,
-    images: ['/ROMPER.jpg'],
-    category: 'Night Wear',
-    categorySlug: 'night-wear',
-    inStock: true,
-    sizes: ['S', 'M', 'L'],
-    colors: ['Blue', 'Pink'],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  '5': {
-    _id: '5',
-    name: 'Classic Bum Shorts',
-    description: 'Trendy bum shorts for everyday wear. Comfortable and stylish.',
-    price: 120,
-    images: ['/BUMSHORTS.jpg'],
-    category: 'Bum Shorts',
-    categorySlug: 'bum-shorts',
-    inStock: true,
-    sizes: ['S', 'M', 'L', 'XL'],
-    colors: ['Black', 'Denim', 'White'],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  '6': {
-    _id: '6',
-    name: 'Elegant Evening Dress',
-    description: 'Beautiful dress for special occasions. Features elegant design with premium fabric.',
-    price: 350,
-    images: ['/LADYSTANDARD.PNG'],
-    category: 'Elegant Dresses',
-    categorySlug: 'elegant-dresses',
-    inStock: true,
-    sizes: ['S', 'M', 'L', 'XL'],
-    colors: ['Red', 'Black', 'Navy'],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  '7': {
-    _id: '7',
-    name: 'NFL Super Bowl Jersey',
-    description: 'Authentic unisex NFL jersey for football fans. Official licensed product.',
-    price: 280,
-    images: ['/NFLJERSEY.jpg'],
-    category: 'Unisex NFL Jerseys',
-    categorySlug: 'unisex-nfl-jerseys',
-    inStock: true,
-    sizes: ['S', 'M', 'L', 'XL', 'XXL'],
-    colors: ['Home', 'Away'],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-};
+export default function ProductPage() {
+  const params = useParams();
+  const id = params?.id as string;
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-interface PageProps {
-  params: Promise<{ id: string }>;
-}
+  useEffect(() => {
+    async function fetchProduct() {
+      if (!id) return;
+      
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/products/${id}`);
+        
+        if (!response.ok) {
+          throw new Error('Product not found');
+        }
+        
+        const data = await response.json();
+        setProduct(data.product);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Product not found');
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    fetchProduct();
+  }, [id]);
 
-export default async function ProductPage({ params }: PageProps) {
-  const { id } = await params;
-  const product = sampleProducts[id];
+  if (loading) {
+    return (
+      <div className="min-h-screen py-20 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+      </div>
+    );
+  }
 
-  if (!product) {
+  if (error || !product) {
     return (
       <div className="min-h-screen py-20 flex items-center justify-center">
         <div className="text-center">
