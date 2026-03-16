@@ -1,6 +1,6 @@
 import { MongoClient, Db } from 'mongodb';
 
-const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/auntie-araba-shop';
+const uri = process.env.MONGODB_URI || 'mongodb://mongo:CjXRXKouiofZmNvwrZsLOdKWScyfwDAT@mongodb.railway.internal:27017';
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
