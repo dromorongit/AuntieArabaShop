@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { ObjectId } from 'mongodb';
 import { 
   Search, 
   Loader2,
@@ -48,17 +49,17 @@ export default function AdminOrders() {
     }
   };
 
-  const updateStatus = async (orderId: string, newStatus: string) => {
+  const updateStatus = async (orderId: string | ObjectId, newStatus: string) => {
     try {
       const response = await fetch('/api/admin/orders', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: orderId, status: newStatus }),
+        body: JSON.stringify({ id: String(orderId), status: newStatus }),
       });
 
       if (response.ok) {
         fetchOrders();
-        if (selectedOrder && selectedOrder._id === orderId) {
+        if (selectedOrder && String(selectedOrder._id) === String(orderId)) {
           setSelectedOrder({ ...selectedOrder, status: newStatus as Order['status'] });
         }
       }
@@ -135,8 +136,8 @@ export default function AdminOrders() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {orders.map((order) => (
-                <tr key={order._id} className="hover:bg-gray-50">
+              {orders.map((order, index) => (
+                <tr key={order._id ? String(order._id) : `order-${index}`} className="hover:bg-gray-50">
                   <td className="px-6 py-4">
                     <span className="font-mono text-sm text-gray-800">{order.orderId}</span>
                   </td>

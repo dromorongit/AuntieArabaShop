@@ -217,7 +217,7 @@ export async function PUT(request: NextRequest) {
     });
 
     await productsCollection.updateOne(
-      { _id: new ObjectId(id) as unknown as string },
+      { _id: new ObjectId(id) },
       { $set: updateData }
     );
 
@@ -252,7 +252,7 @@ export async function DELETE(request: NextRequest) {
     const db = await getDatabase();
     const productsCollection = db.collection<Product>('products');
 
-    await productsCollection.deleteOne({ _id: new ObjectId(id) as unknown as string });
+    await productsCollection.deleteOne({ _id: new ObjectId(id) });
 
     return NextResponse.json({ success: true });
   } catch (error) {

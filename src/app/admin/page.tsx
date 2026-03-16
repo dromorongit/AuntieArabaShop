@@ -129,8 +129,8 @@ export default function AdminDashboard() {
             <p className="text-gray-500 text-center py-8">No orders yet</p>
           ) : (
             <div className="space-y-4">
-              {recentOrders.slice(0, 5).map((order) => (
-                <div key={order._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              {recentOrders.slice(0, 5).map((order, index) => (
+                <div key={order._id ? String(order._id) : `order-${index}`} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div>
                     <p className="font-medium text-gray-800">{order.orderId}</p>
                     <p className="text-sm text-gray-500">{order.customerName}</p>

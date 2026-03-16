@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { ObjectId } from 'mongodb';
 import { 
   Plus, 
   Search, 
@@ -90,7 +91,7 @@ export default function AdminProducts() {
 
     try {
       const url = editingProduct 
-        ? `/api/admin/products?id=${editingProduct._id}`
+        ? `/api/admin/products?id=${String(editingProduct._id)}`
         : '/api/admin/products';
       
       const response = await fetch(url, {
@@ -110,11 +111,11 @@ export default function AdminProducts() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string | ObjectId) => {
     if (!confirm('Are you sure you want to delete this product?')) return;
     
     try {
-      const response = await fetch(`/api/admin/products?id=${id}`, {
+      const response = await fetch(`/api/admin/products?id=${String(id)}`, {
         method: 'DELETE',
       });
       
@@ -233,8 +234,8 @@ export default function AdminProducts() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {products.map((product) => (
-                <tr key={product._id} className="hover:bg-gray-50">
+              {products.map((product, index) => (
+                <tr key={product._id ? String(product._id) : `product-${index}`} className="hover:bg-gray-50">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden flex-shrink-0">

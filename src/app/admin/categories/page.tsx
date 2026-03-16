@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { ObjectId } from 'mongodb';
 import { 
   Plus, 
   Search, 
@@ -67,11 +68,11 @@ export default function AdminCategories() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string | ObjectId) => {
     if (!confirm('Are you sure you want to delete this category?')) return;
     
     try {
-      const response = await fetch(`/api/admin/categories?id=${id}`, {
+      const response = await fetch(`/api/admin/categories?id=${String(id)}`, {
         method: 'DELETE',
       });
       
@@ -156,8 +157,8 @@ export default function AdminCategories() {
           <div className="text-center py-12 text-gray-500">No categories found</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-            {filteredCategories.map((category) => (
-              <div key={category._id} className="border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow">
+            {filteredCategories.map((category, index) => (
+              <div key={category._id ? String(category._id) : `category-${index}`} className="border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow">
                 <div className="aspect-video bg-gray-100 relative">
                   {category.image ? (
                     <img src={category.image} alt={category.name} className="w-full h-full object-cover" />

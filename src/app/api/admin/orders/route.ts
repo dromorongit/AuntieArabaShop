@@ -100,7 +100,7 @@ export async function PUT(request: NextRequest) {
     const ordersCollection = db.collection<Order>('orders');
 
     await ordersCollection.updateOne(
-      { _id: new ObjectId(id) as unknown as string },
+      { _id: new ObjectId(id) },
       { 
         $set: { 
           status: status as Order['status'],
@@ -140,7 +140,7 @@ export async function PATCH(request: NextRequest) {
     const db = await getDatabase();
     const ordersCollection = db.collection<Order>('orders');
 
-    const order = await ordersCollection.findOne({ _id: new ObjectId(id) as unknown as string });
+    const order = await ordersCollection.findOne({ _id: new ObjectId(id) });
 
     if (!order) {
       return NextResponse.json(

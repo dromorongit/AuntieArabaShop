@@ -63,7 +63,7 @@ export default function CartDrawer() {
               ) : (
                 items.map((item) => (
                   <div
-                    key={`${item.product._id}-${item.selectedSize}-${item.selectedColor}`}
+                    key={`${String(item.product._id)}-${item.selectedSize}-${item.selectedColor}`}
                     className="flex gap-4 p-3 bg-gray-50 rounded-xl"
                   >
                     {/* Image */}

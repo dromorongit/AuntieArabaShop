@@ -1,13 +1,14 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { ObjectId } from 'mongodb';
 import { CartItem, Product } from '@/types';
 
 interface CartState {
   items: CartItem[];
   isOpen: boolean;
   addItem: (product: Product, quantity?: number, size?: string, color?: string) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  removeItem: (productId: string | ObjectId) => void;
+  updateQuantity: (productId: string | ObjectId, quantity: number) => void;
   clearCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
@@ -24,8 +25,9 @@ export const useCartStore = create<CartState>()(
 
       addItem: (product, quantity = 1, size, color) => {
         const items = get().items;
+        const productIdStr = String(product._id);
         const existingItem = items.find(
-          (item) => item.product._id === product._id && 
+          (item) => String(item.product._id) === productIdStr && 
           item.selectedSize === size && 
           item.selectedColor === color
         );
@@ -33,7 +35,7 @@ export const useCartStore = create<CartState>()(
         if (existingItem) {
           set({
             items: items.map((item) =>
-              item.product._id === product._id &&
+              String(item.product._id) === productIdStr &&
               item.selectedSize === size &&
               item.selectedColor === color
                 ? { ...item, quantity: item.quantity + quantity }
@@ -48,8 +50,9 @@ export const useCartStore = create<CartState>()(
       },
 
       removeItem: (productId) => {
+        const idStr = String(productId);
         set({
-          items: get().items.filter((item) => item.product._id !== productId),
+          items: get().items.filter((item) => String(item.product._id) !== idStr),
         });
       },
 
@@ -58,9 +61,10 @@ export const useCartStore = create<CartState>()(
           get().removeItem(productId);
           return;
         }
+        const idStr = String(productId);
         set({
           items: get().items.map((item) =>
-            item.product._id === productId ? { ...item, quantity } : item
+            String(item.product._id) === idStr ? { ...item, quantity } : item
           ),
         });
       },

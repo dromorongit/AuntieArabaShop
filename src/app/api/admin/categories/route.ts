@@ -105,7 +105,7 @@ export async function PUT(request: NextRequest) {
     const categoriesCollection = db.collection<Category>('categories');
 
     await categoriesCollection.updateOne(
-      { _id: new ObjectId(id) as unknown as string },
+      { _id: new ObjectId(id) },
       {
         $set: {
           name,
@@ -148,7 +148,7 @@ export async function DELETE(request: NextRequest) {
     const db = await getDatabase();
     const categoriesCollection = db.collection<Category>('categories');
 
-    await categoriesCollection.deleteOne({ _id: new ObjectId(id) as unknown as string });
+    await categoriesCollection.deleteOne({ _id: new ObjectId(id) });
 
     return NextResponse.json({ success: true });
   } catch (error) {

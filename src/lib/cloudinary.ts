@@ -32,8 +32,8 @@ export async function uploadImage(
     return {
       public_id: result.public_id,
       secure_url: result.secure_url,
-      width: result.width,
-      height: result.height,
+      width: result.width ?? 0,
+      height: result.height ?? 0,
       format: result.format,
     };
   } catch (error) {
