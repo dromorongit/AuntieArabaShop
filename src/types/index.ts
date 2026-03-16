@@ -9,7 +9,7 @@ export interface ProductVariant {
 }
 
 export interface Product {
-  _id?: string;
+  _id?: import('mongodb').ObjectId;
   name: string;
   shortDescription?: string;
   description: string;
@@ -31,7 +31,7 @@ export interface Product {
 }
 
 export interface Category {
-  _id?: string;
+  _id?: import('mongodb').ObjectId;
   name: string;
   slug: string;
   description?: string;
@@ -68,7 +68,7 @@ export interface OrderItem {
 }
 
 export interface Order {
-  _id?: string;
+  _id?: import('mongodb').ObjectId;
   orderId: string;
   customerName: string;
   phone: string;
@@ -83,7 +83,7 @@ export interface Order {
 
 // Admin Types
 export interface Admin {
-  _id?: string;
+  _id?: import('mongodb').ObjectId;
   email: string;
   password: string;
   name: string;

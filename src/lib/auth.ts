@@ -107,7 +107,7 @@ export async function getAdminById(id: string): Promise<Admin | null> {
     const adminsCollection = db.collection<Admin>('admins');
     
     const admin = await adminsCollection.findOne({ 
-      _id: new ObjectId(id) 
+      _id: new ObjectId(id) as unknown as string
     });
     
     return admin;
