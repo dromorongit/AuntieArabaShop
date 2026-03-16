@@ -1,11 +1,13 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Star, Truck, Shield, Headphones } from 'lucide-react';
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
 import Counter from '@/components/Counter';
 import { categories, formatPrice } from '@/lib/utils';
+import type { Product } from '@/types';
 
 // Sample products for demo (will be replaced with database data)
 const sampleProducts = [
@@ -87,6 +89,24 @@ const features = [
 ];
 
 export default function Home() {
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('/api/products?limit=8');
+        const data = await response.json();
+        setFeaturedProducts(data.products || []);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -294,9 +314,19 @@ export default function Home() {
           </motion.div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {sampleProducts.map((product, index) => (
-              <ProductCard key={product._id} product={product} index={index} />
-            ))}
+            {loading ? (
+              <div className="col-span-full text-center py-8">
+                <div className="animate-pulse">Loading products...</div>
+              </div>
+            ) : featuredProducts.length > 0 ? (
+              featuredProducts.slice(0, 8).map((product, index) => (
+                <ProductCard key={product._id ? String(product._id) : `product-${index}`} product={product} index={index} />
+              ))
+            ) : (
+              <div className="col-span-full text-center py-8 text-gray-500">
+                No products available
+              </div>
+            )}
           </div>
 
           <div className="text-center mt-10">
