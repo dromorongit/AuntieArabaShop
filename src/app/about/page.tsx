@@ -106,16 +106,14 @@ export default function AboutPage() {
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="relative h-96 bg-gradient-to-br from-primary-200 to-secondary-200 rounded-2xl"
+              className="relative h-96 bg-gradient-to-br from-primary-200 to-secondary-200 rounded-2xl overflow-hidden"
             >
               <div className="absolute inset-4 bg-white rounded-xl shadow-lg flex items-center justify-center">
-                <div className="text-center p-8">
-                  <div className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-primary-400 to-secondary-500 rounded-full flex items-center justify-center">
-                    <span className="text-4xl text-white font-bold">A</span>
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-800">Shop Auntie Araba</h3>
-                  <p className="text-gray-500">Since 2020</p>
-                </div>
+                <img 
+                  src="/LADYSTANDARD.PNG" 
+                  alt="Shop Auntie Araba" 
+                  className="w-full h-full object-contain p-4"
+                />
               </div>
             </motion.div>
           </div>
