@@ -11,7 +11,8 @@ import {
   LogOut,
   Menu,
   X,
-  Loader2
+  Loader2,
+  Settings
 } from 'lucide-react';
 
 interface NavItem {
@@ -25,6 +26,7 @@ const navigation: NavItem[] = [
   { name: 'Products', href: '/admin/products', icon: Package },
   { name: 'Orders', href: '/admin/orders', icon: ShoppingCart },
   { name: 'Categories', href: '/admin/categories', icon: Tags },
+  { name: 'Site Settings', href: '/admin/site-settings', icon: Settings },
 ];
 
 export default function AdminLayout({
