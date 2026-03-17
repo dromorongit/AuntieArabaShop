@@ -4,8 +4,6 @@ import type { NextRequest } from 'next/server';
 // Routes that should remain accessible even when site is locked
 const publicRoutes = [
   '/admin',
-  '/admin/login',
-  '/admin/',
   '/api/admin/auth',
   '/api/admin/site-settings',
   '/locked',
@@ -13,53 +11,55 @@ const publicRoutes = [
 
 // Check if a path matches any of the public routes
 function isPublicRoute(pathname: string): boolean {
-  return publicRoutes.some(route => {
-    if (route.endsWith('/')) {
-      return pathname.startsWith(route);
-    }
-    return pathname === route || pathname.startsWith(route + '/');
-  });
+  // Check exact matches and prefixes
+  if (pathname === '/admin' || pathname.startsWith('/admin/')) {
+    return true;
+  }
+  if (pathname === '/locked') {
+    return true;
+  }
+  if (pathname.startsWith('/api/admin/auth')) {
+    return true;
+  }
+  if (pathname.startsWith('/api/admin/site-settings')) {
+    return true;
+  }
+  return false;
 }
 
-// Check site lock status directly from database
-async function getSiteLockStatus(): Promise<boolean> {
+// Check site lock status by calling the API
+async function getSiteLockStatus(baseUrl: string): Promise<boolean> {
   try {
-    // Dynamic import to avoid issues
-    const { getDatabase } = await import('@/lib/mongodb');
-    const db = await getDatabase();
-    const settingsCollection = db.collection('siteSettings');
-    const settings = await settingsCollection.findOne({});
+    const response = await fetch(`${baseUrl}/api/admin/site-settings`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-middleware-bypass': 'true', // Mark as internal request
+      },
+      cache: 'no-store',
+    });
     
-    if (!settings) return false;
-    
-    // Check if countdown has expired and auto-unlock
-    if (settings.siteLocked && settings.enableCountdown && settings.countdownDateTime) {
-      const countdownEnd = new Date(settings.countdownDateTime).getTime();
-      const now = Date.now();
-      
-      if (now >= countdownEnd) {
-        // Auto-unlock when countdown reaches zero
-        await settingsCollection.updateOne({}, { $set: { siteLocked: false } });
-        return false;
-      }
+    if (response.ok) {
+      const data = await response.json();
+      return data.settings?.siteLocked === true;
     }
-    
-    return settings.siteLocked === true;
   } catch (error) {
     console.error('Error checking site lock status:', error);
-    return false;
   }
+  
+  // Default to unlocked if there's an error
+  return false;
 }
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow API health checks and static files
+  // Allow static files and Next.js internals
   if (
-    pathname.startsWith('/api/health') ||
     pathname.startsWith('/_next') ||
     pathname.startsWith('/static') ||
-    pathname.includes('.')
+    pathname.includes('.') ||
+    pathname === '/favicon.ico'
   ) {
     return NextResponse.next();
   }
@@ -69,12 +69,15 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Get the base URL
+  const baseUrl = request.nextUrl.origin;
+
   // Check if site is locked
-  const isLocked = await getSiteLockStatus();
+  const isLocked = await getSiteLockStatus(baseUrl);
 
   if (isLocked) {
     // Redirect to locked page
-    const lockedUrl = new URL('/locked', request.url);
+    const lockedUrl = new URL('/locked', baseUrl);
     return NextResponse.redirect(lockedUrl);
   }
 

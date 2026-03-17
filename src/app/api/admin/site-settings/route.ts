@@ -28,6 +28,9 @@ const defaultSettings: SiteSettings = {
 // GET - Fetch site settings (public endpoint for middleware)
 export async function GET(request: NextRequest) {
   try {
+    // Allow middleware bypass
+    const isMiddlewareBypass = request.headers.get('x-middleware-bypass') === 'true';
+    
     const db = await getDatabase();
     const settingsCollection = db.collection<SiteSettings>('siteSettings');
 
