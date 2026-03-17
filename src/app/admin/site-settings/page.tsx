@@ -40,9 +40,18 @@ export default function SiteSettingsPage() {
 
   const fetchSettings = async () => {
     try {
+      setLoading(true);
       const response = await fetch('/api/admin/site-settings');
       const data = await response.json();
+      
+      if (data.error) {
+        console.error('Error from API:', data.error);
+        setError(data.error);
+        return;
+      }
+      
       if (data.settings) {
+        console.log('Loaded settings:', data.settings);
         setSettings({
           siteLocked: data.settings.siteLocked ?? false,
           lockHeading: data.settings.lockHeading ?? 'We Are Coming Soon',
@@ -66,21 +75,30 @@ export default function SiteSettingsPage() {
     setSaved(false);
 
     try {
+      console.log('Saving settings:', settings);
+      
       const response = await fetch('/api/admin/site-settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings),
       });
 
+      const data = await response.json();
+      
+      console.log('Save response:', response.status, data);
+
       if (!response.ok) {
-        throw new Error('Failed to save settings');
+        throw new Error(data.error || 'Failed to save settings');
       }
 
       setSaved(true);
       setTimeout(() => setSaved(false), 3000);
+      
+      // Refresh settings after save
+      await fetchSettings();
     } catch (err) {
       console.error('Error saving settings:', err);
-      setError('Failed to save settings');
+      setError(err instanceof Error ? err.message : 'Failed to save settings');
     } finally {
       setSaving(false);
     }
