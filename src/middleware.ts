@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+// Force Node.js runtime
+export const runtime = 'nodejs';
+
 // Routes that should remain accessible even when site is locked
 const publicPaths = [
   '/admin',
@@ -17,11 +20,6 @@ function isPublicPath(pathname: string): boolean {
   if (pathname.startsWith('/api/admin/site-settings')) return true;
   return false;
 }
-
-// In-memory cache for site lock status (refreshed every request)
-let cachedLockStatus: boolean | null = null;
-let lastCheckTime = 0;
-const CACHE_TTL = 5000; // 5 seconds
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -41,48 +39,22 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check cached status first
-  const now = Date.now();
-  if (cachedLockStatus !== null && (now - lastCheckTime) < CACHE_TTL) {
-    if (cachedLockStatus) {
-      return NextResponse.redirect(new URL('/locked', request.url));
-    }
-    return NextResponse.next();
-  }
-
-  // Fetch fresh status from database
+  // Fetch status from API
   try {
-    const { getDatabase } = await import('@/lib/mongodb');
-    const db = await getDatabase();
-    const settingsCollection = db.collection('siteSettings');
-    const settings = await settingsCollection.findOne({});
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/admin/site-settings`, {
+      method: 'GET',
+      cache: 'no-store',
+    });
     
-    if (settings) {
-      // Check countdown
-      if (settings.siteLocked && settings.enableCountdown && settings.countdownDateTime) {
-        const countdownEnd = new Date(settings.countdownDateTime).getTime();
-        if (now >= countdownEnd) {
-          // Auto-unlock
-          await settingsCollection.updateOne({}, { $set: { siteLocked: false } });
-          cachedLockStatus = false;
-        } else {
-          cachedLockStatus = settings.siteLocked;
-        }
-      } else {
-        cachedLockStatus = settings.siteLocked;
+    if (response.ok) {
+      const data = await response.json();
+      if (data.settings?.siteLocked) {
+        return NextResponse.redirect(new URL('/locked', request.url));
       }
-    } else {
-      cachedLockStatus = false;
     }
-    
-    lastCheckTime = now;
   } catch (error) {
     console.error('Middleware: Error checking lock status:', error);
-    cachedLockStatus = false;
-  }
-
-  if (cachedLockStatus) {
-    return NextResponse.redirect(new URL('/locked', request.url));
   }
 
   return NextResponse.next();
