@@ -41,8 +41,10 @@ export async function middleware(request: NextRequest) {
 
   // Fetch status from API
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    const response = await fetch(`${baseUrl}/api/admin/site-settings`, {
+    // Use absolute URL with https protocol
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://auntiearabashop-production.up.railway.app';
+    const url = baseUrl.startsWith('http') ? baseUrl : `https://${baseUrl}`;
+    const response = await fetch(`${url}/api/admin/site-settings`, {
       method: 'GET',
       cache: 'no-store',
     });
